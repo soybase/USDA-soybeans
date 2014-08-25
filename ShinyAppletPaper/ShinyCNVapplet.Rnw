@@ -41,5 +41,20 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 
 \maketitle
 
+\begin{abstract}
+Some impressive-sounding description should go here eventually...
+\end{abstract}
+
+\section{Rationale}
+Explain advantages of interactivity, etc. and magnitude of the data
+
+\section{Applet Design}
+Describe different tabs in the applet, explaining the CNV methodology in minimal detail? Discuss the inclusion of genetic data and phenotype information (for reference purposes). 
+
+\section{Biological Perspectives}
+Describe ways the biologists can use the applet for inference. 
+
+\section{Conclusions}
+
 
 \end{document}
