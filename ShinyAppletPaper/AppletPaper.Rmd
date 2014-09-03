@@ -1,0 +1,42 @@
+---
+title: "Interactive Display of Population Soybean Genomic Data"
+author: "Susan VanderPlas, Di Cook, Michelle Graham"
+date: "09/03/2014"
+output: word_document
+---
+
+
+```{r setup, echo=FALSE, include=FALSE, cache=FALSE}
+rm(list=ls())
+options(replace.assign=TRUE,width=70)
+require(knitr)
+opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', fig.width=5, fig.height=5, fig.show='hold', par=TRUE, cache=TRUE, concordance=TRUE, autodep=TRUE)
+```
+
+# Abstract
+
+# Shiny Applets for Interactive Data Display
+
+What is Shiny, how does it work, etc.
+
+# Why Shiny?
+Explain interactivity, server backend, advantage of serving up data over the web. 
+
+# Data
+
+Describe magnitude of data, CNV analysis steps, etc.
+
+# Applet Descriptions
+
+## Copy Number Variation
+* Describe different tabs in the applet, explaining the CNV methodology in minimal detail? Discuss the inclusion of genetic data and phenotype information (for reference purposes). 
+
+* Include example video of Michelle using the applet.
+
+## Single Nucleotide Polymorphism
+* Describe tabs, data workflow
+
+* Include example video of Michelle using the applet
+
+## Genealogy and Phenotype Reference 
+* Describe spin-off of CNV applet - genealogy of (most) soybean varieties
