@@ -21,9 +21,12 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 
 http://kbroman.org/qtlcharts/
 
+Interactive CNV viewer (UK lab)
+
 http://www.ncbi.nlm.nih.gov/pubmed/23729504
 
 * Discuss size of the data
+    * Applet design - dplyr, preprocessing data, drawing CNV=2 as the default to reduce drawn objects
 
 * What is Shiny, how does it work, etc.
 
@@ -68,6 +71,6 @@ Describe magnitude of data, CNV analysis steps, etc.
 [cnvlistrange]:CNVListRange.png
 [cnvcopynumber]:CNVCopyNumber.png
 
-## Ubder the hood
+## Under the hood
 
 ## How does this slot into a different database like soybase?
