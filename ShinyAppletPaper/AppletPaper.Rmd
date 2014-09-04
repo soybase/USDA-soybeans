@@ -19,6 +19,8 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 
 * Literature review?
 
+http://kbroman.org/qtlcharts/
+
 * Discuss size of the data
 
 * What is Shiny, how does it work, etc.
