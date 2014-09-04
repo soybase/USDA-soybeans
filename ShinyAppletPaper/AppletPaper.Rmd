@@ -23,7 +23,7 @@ http://kbroman.org/qtlcharts/
 
 Interactive CNV viewer (UK lab)
 
-
+http://www.ncbi.nlm.nih.gov/pubmed/23729504
 
 * Discuss size of the data
     * Applet design - dplyr, preprocessing data, drawing CNV=2 as the default to reduce drawn objects
