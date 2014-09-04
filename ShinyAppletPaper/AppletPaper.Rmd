@@ -70,6 +70,6 @@ Describe magnitude of data, CNV analysis steps, etc.
 [cnvlistrange]:CNVListRange.png
 [cnvcopynumber]:CNVCopyNumber.png
 
-## Under the hood
+## Under the HOOD
 
 ## How does this slot into a different database like soybase?
