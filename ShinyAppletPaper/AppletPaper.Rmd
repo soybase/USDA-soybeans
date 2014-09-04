@@ -1,6 +1,6 @@
 ---
 title: "Interactive Display of Population Soybean Genomic Data with Shiny"
-author: "Susan VanderPlas, Di Cook, Michelle Graham"
+author: "Susan VanderPlas, Nathan Weeks, Jim Specht, Di Cook, Michelle Graham"
 date: "09/03/2014"
 output: word_document
 ---
@@ -67,3 +67,7 @@ Describe magnitude of data, CNV analysis steps, etc.
 [cnvlistfilter]:CNVListFilter.png
 [cnvlistrange]:CNVListRange.png
 [cnvcopynumber]:CNVCopyNumber.png
+
+## Ubder the hood
+
+## How does this slot into a different database like soybase?
