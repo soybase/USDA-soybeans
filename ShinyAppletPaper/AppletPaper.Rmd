@@ -37,6 +37,14 @@ Describe magnitude of data, CNV analysis steps, etc.
 ## Copy Number Variation
 * Describe different tabs in the applet, explaining the CNV methodology in minimal detail? Discuss the inclusion of genetic data and phenotype information (for reference purposes). 
 
+![Copy Number Variation Sites][cnvlocation]
+
+![Copy Numbers][cnvcopynumber]
+
+![Copy Number List with Chromosome Position Search][cnvlistrange]
+
+![Copy Number List with Filters by Variety and Chromosome][cnvlistfilter]
+
 * Include example video of Michelle using the applet.
 
 * [Applet Link](http://gsoja.agron.iastate.edu:3838/CNV/)
@@ -52,3 +60,8 @@ Describe magnitude of data, CNV analysis steps, etc.
 * Describe spin-off of CNV applet - genealogy of (most) soybean varieties
 
 * [Applet Link](http://gsoja.agron.iastate.edu:3838/Genealogy/)
+
+[cnvlocation]:CNVLocation.png
+[cnvlistfilter]:CNVListFilter.png
+[cnvlistrange]:CNVListRange.png
+[cnvcopynumber]:CNVCopyNumber.png
