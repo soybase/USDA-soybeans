@@ -21,7 +21,12 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 
 http://kbroman.org/qtlcharts/
 
+Interactive CNV viewer (UK lab)
+
+
+
 * Discuss size of the data
+    * Applet design - dplyr, preprocessing data, drawing CNV=2 as the default to reduce drawn objects
 
 * What is Shiny, how does it work, etc.
 
