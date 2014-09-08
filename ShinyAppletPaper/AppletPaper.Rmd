@@ -19,7 +19,7 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 * Literature review?
 
 ### http://kbroman.org/qtlcharts/
-Includes several visualizations similar to those included in the CNV app. The visualizations are fairly fixed in form, though, as they are generated using d3 code from R; shiny allows any visualization that can be created in R to be created in response to user input (including qtlcharts). It would be nice to extend the heatmap to display genetic data (though this is likely to run into some data size issues - how does qtlcharts get around that?). 
+Includes several visualizations similar to those included in the CNV app. The visualizations are fairly fixed in form, though, as they are generated using d3 code from R; shiny allows any visualization that can be created in R to be created in response to user input (including qtlcharts). It would be nice to extend the heatmap to display genetic data, though this is likely to run into data size issues not present in the [qtlcharts example](http://kbroman.org/qtlcharts/example/iplotCorr.html) because the example shown seems to be a single organism, rather than a population. 
 
 
 Interactive CNV viewer (UK lab)
