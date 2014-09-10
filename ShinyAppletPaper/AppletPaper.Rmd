@@ -39,13 +39,8 @@ Includes several visualizations similar to those included in the CNV app. The vi
     * Integrates with other databases (as we should probably integrate with Soybase)
     * Rather unintuitive. 
 
+## Shiny: an extensible, interactive, web-based framework for data visualization
 
-* Discuss size of the data
-    * Applet design - dplyr, preprocessing data, drawing CNV=2 as the default to reduce drawn objects
-
-* What is Shiny, how does it work, etc.
-
-## Why Shiny?
 Explain interactivity, server backend, advantage of serving up data over the web. 
 
 # Data
@@ -60,6 +55,7 @@ The methodology for analysing the biological data will be described in another p
 
 ## Copy Number Variation
 * Describe different tabs in the applet, explaining the CNV methodology in minimal detail? Discuss the inclusion of genetic data and phenotype information (for reference purposes). 
+* Discuss design considerations to deal with data size: dplyr, preprocessing data, drawing CNV=2 as the default to reduce drawn objects
 
 ![Copy Number Variation Sites][cnvlocation]
 
