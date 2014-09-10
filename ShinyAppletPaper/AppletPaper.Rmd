@@ -19,12 +19,21 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 # Interactive Display of Biological Data
 [//]: Literature Review
 
+### Nature Methods Overview of Genomic Data Visualization
+[Link](http://mipt.ru//dbmp/upload/d0d/Nielsen-arphlf450u6.pdf)
 
-### http://kbroman.org/qtlcharts/
+* Doesn't address CNV/SNP viewing
+* Lots of single-domain tools; doesn't seem to be a single extensible web-based platform. 
+
+### QTL Charts
+[Link](http://kbroman.org/qtlcharts/)
+
 Includes several visualizations similar to those included in the CNV app. The visualizations are fairly fixed in form, though, as they are generated using d3 code from R; shiny allows any visualization that can be created in R to be created in response to user input (including qtlcharts). It would be nice to extend the heatmap to display genetic data, though this is likely to run into data size issues not present in the [qtlcharts example](http://kbroman.org/qtlcharts/example/iplotCorr.html) because the example shown seems to be a single organism, rather than a population. 
 
 
-### Interactive CNV viewer (UK lab) [Paper](http://www.ncbi.nlm.nih.gov/pubmed/23729504) [Site](http://www.cnvinspector.org/search.mhtml)
+### Interactive CNV viewer (UK lab) 
+[Paper](http://www.ncbi.nlm.nih.gov/pubmed/23729504) [Site](http://www.cnvinspector.org/search.mhtml)
+
     * Seems to be mostly human focused
     * Doesn't intuitively display the entire chromosome
     * Integrates with other databases (as we should probably integrate with Soybase)
