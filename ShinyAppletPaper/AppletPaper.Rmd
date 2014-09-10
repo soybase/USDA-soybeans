@@ -57,17 +57,18 @@ The methodology for analysing the biological data will be described in another p
 * Describe different tabs in the applet, explaining the CNV methodology in minimal detail? Discuss the inclusion of genetic data and phenotype information (for reference purposes). 
 * Discuss design considerations to deal with data size: dplyr, preprocessing data, drawing CNV=2 as the default to reduce drawn objects
 
-![Copy Number Variation Sites][cnvlocation]
+The CNV Shiny applet ([Applet Link](http://gsoja.agron.iastate.edu:3838/CNV/)) contains several different tabs, which allow users to filter, manipulate, and visualize the data in different ways. The first four of these tabs, CNV Location, Copy Number, "Search CNVs by Location", and CNV List are primarily concerned with exploring the identified copy number variants; the final three tabs (Phenotype Data, Genealogy, and Methodology) provide additional information about the soybean cultivars and the experimental methodology.
 
-![Copy Numbers][cnvcopynumber]
+![CNV Location Tab. This tab is concerned with visualizing the number of copies of a gene segment that appear in each variety.][cnvlocation]
 
-![Copy Number List with Chromosome Position Search][cnvlistrange]
 
-![Copy Number List with Filters by Variety and Chromosome][cnvlistfilter]
+![Copy Number Tab. This tab displays CNV locations, to facilitate exploration of regions which might be prone to copy number variation.][cnvcopynumber]
+
+![Search CNVs by Location. This tab allows users to search for specific positions along a chromosome and reports a dynamic, searchable table with all CNVs (and all cultivars) in the specified region. The resulting list is downloadable for analysis offline.][cnvlistrange]
+
+![CNV List Tab. This tab allows users to search for CNVs identified in specific chromosomes and cultivars. The tablular result is again dynamic and searchable, and can be downloaded for offline analysis. ][cnvlistfilter]
 
 * Include example video of Michelle using the applet.
-
-* [Applet Link](http://gsoja.agron.iastate.edu:3838/CNV/)
 
 ## Single Nucleotide Polymorphisms
 * Describe tabs, data workflow
