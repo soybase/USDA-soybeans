@@ -50,8 +50,9 @@ Explain interactivity, server backend, advantage of serving up data over the web
 
 # Data
 [//]: # Describe magnitude of data, CNV analysis steps, etc.
-The data displayed in this applet is derived from 79 lines of soybean next-generation sequencing data. The files containing the results of the CNV analysis (that is, the files which are displayed using the CNV applet) are about 1.5 GB in binary form. In addition to the files containing the CNV analysis, the annotation files and other data referenced in the applet bring the total data to display up to about 2 GB. Loading that data into memory for a single user session is very reasonable; however, formatting the data so that it can be easily accessed and manipulated interactively is much more challenging. 
+The data displayed in this applet is derived from 79 lines of soybean next-generation sequencing data. The files containing the results of the CNV analysis (that is, the files which are displayed using the CNV applet) are about 1.5 GB in binary form. In addition to the files containing the CNV analysis, the annotation files and other data referenced in the applet bring the total data to display up to about 2 GB. Loading that data into memory for a single user session is very reasonable; however, formatting the data so that it can be easily accessed and manipulated interactively is much more challenging. This problem is even more acute when displaying SNP data; the compressed VCF file (which is not manipulatable or plot-able) is 12 GB, and even with strict filtration, the VCF file is still at least 2 GB. Expanding this file into a database that can be easily plotted is likely to produce a file that is at least 5 times the compressed file size. 
 
+The methodology for analysing the biological data will be described in another paper (partial citation?); in this paper we will discuss the graphics and interactive visualization of the results. 
 
 
 
