@@ -17,8 +17,8 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 # ABSTRACT
 
 # Interactive Display of Biological Data
+[//]: Literature Review
 
-* Literature review?
 
 ### http://kbroman.org/qtlcharts/
 Includes several visualizations similar to those included in the CNV app. The visualizations are fairly fixed in form, though, as they are generated using d3 code from R; shiny allows any visualization that can be created in R to be created in response to user input (including qtlcharts). It would be nice to extend the heatmap to display genetic data, though this is likely to run into data size issues not present in the [qtlcharts example](http://kbroman.org/qtlcharts/example/iplotCorr.html) because the example shown seems to be a single organism, rather than a population. 
@@ -40,8 +40,11 @@ Includes several visualizations similar to those included in the CNV app. The vi
 Explain interactivity, server backend, advantage of serving up data over the web. 
 
 # Data
+[//]: # Describe magnitude of data, CNV analysis steps, etc.
+The data displayed in this applet is derived from 79 lines of soybean next-generation sequencing data. The files containing the results of the CNV analysis (that is, the files which are displayed using the CNV applet) are about 1.5 GB in binary form. In addition to the files containing the CNV analysis, the annotation files and other data referenced in the applet bring the total data to display up to about 2 GB. Loading that data into memory for a single user session is very reasonable; however, formatting the data so that it can be easily accessed and manipulated interactively is much more challenging. 
 
-Describe magnitude of data, CNV analysis steps, etc.
+
+
 
 # Basic Usage
 
