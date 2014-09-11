@@ -68,8 +68,13 @@ In order to get more information about the number of copies of a particular gene
 
 As with the CNV Location plot, the vertical alignment of the barcode plots for different cultivars allows for an ad-hoc comparison of relatedness between cultivars. When presented with two parent varieties and their mutual child, it is possible to see which CNVs were inherited from each parent, as well as any new CNVs that were not present in either parent. 
 
+While visual  display of the CNV analysis results is important for drawing conclusions about the overall analysis, many researchers have specific genes of interest and may want to view tabular results as well. The next two tabs are designed to facilitate that goal along with providing a user-friendly method for exporting the data for outside analysis. 
+
+The first tab enables researchers to search for CNVs by chromosome and position on the chromosome. Users can select a range along a chromosome and the resulting interactive table will display all CNVs identified for the chromosome and region selected. The interactive table can be searched, sorted, and filtered; in particular, the results were merged with the annotated gff3 file so that each CNV region has a corresponding GlymaID number. All CNVs identified for the chromosome and range of interest can be easily downloaded for analysis. 
 
 ![Search CNVs by Location. This tab allows users to search for specific positions along a chromosome and reports a dynamic, searchable table with all CNVs (and all cultivars) in the specified region. The resulting list is downloadable for analysis offline.][cnvlistrange]
+
+Another tab allows researchers to filter by cultivar and chromosome; this separate tab is designed to allow researchers who are only interested in certain cultivars to download a subset of the data more easily. In addition, as there is no required input for this tab, a user could easily download all identified CNVs from this tab. As before, the table is dynamic and can be easily searched, sorted, and filtered by any field shown. 
 
 ![CNV List Tab. This tab allows users to search for CNVs identified in specific chromosomes and cultivars. The tablular result is again dynamic and searchable, and can be downloaded for offline analysis. ][cnvlistfilter]
 
