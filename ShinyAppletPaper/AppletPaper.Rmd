@@ -47,7 +47,7 @@ Explain interactivity, server backend, advantage of serving up data over the web
 <!---  Describe magnitude of data, CNV analysis steps, etc. -->
 The data displayed in this applet is derived from 79 lines of soybean next-generation sequencing data. The files containing the results of the CNV analysis (that is, the files which are displayed using the CNV applet) are about 1.5 GB in binary form. In addition to the files containing the CNV analysis, the annotation files and other data referenced in the applet bring the total data to display up to about 2 GB. Loading that data into memory for a single user session is very reasonable; however, formatting the data so that it can be easily accessed and manipulated interactively is much more challenging. This problem is even more acute when displaying SNP data; the compressed VCF file (which is not manipulatable or plot-able) is 12 GB, and even with strict filtration, the VCF file is still at least 2 GB. Expanding this file into a database that can be easily plotted is likely to produce a file that is at least 5 times the compressed file size. 
 
-The methodology for analysing the biological data will be described in another paper (partial citation?); in this paper we will discuss the graphics and interactive visualization of the results. 
+The methodology for analysing the biological data will be described in another paper (partial citation?); in this paper we will discuss the graphics and interactive visualization of the results. In summary, cn.mops (citation) was run on sequences from 79 soybean cultivars; due to computational limitations (and to provide some internal verification), cn.mops was performed separately on each genetic feature of interest defined in the genome annotation (CDS, gene, mRNA, and exons). This modification allowed us to detect copy number variation in individual exons, ** insert some biological explanation as to why this is important here **
 
 
 
@@ -59,10 +59,15 @@ The methodology for analysing the biological data will be described in another p
 
 The CNV Shiny applet ([Applet Link](http://gsoja.agron.iastate.edu:3838/CNV/)) contains several different tabs, which allow users to filter, manipulate, and visualize the data in different ways. The first four of these tabs, CNV Location, Copy Number, "Search CNVs by Location", and CNV List are primarily concerned with exploring the identified copy number variants; the final three tabs (Phenotype Data, Genealogy, and Methodology) provide additional information about the soybean cultivars and the experimental methodology.
 
-![CNV Location Tab. This tab is concerned with visualizing the number of copies of a gene segment that appear in each variety.][cnvlocation]
+The first tab is designed to show the location of an identified copy number variant for one or more cultivars. This plot is an example of a "barcode plot", where information is provided through and color intensity and location in $x$. The grey lines in the background indicate the coverage of the input sequencing data, and the green lines indicate CNV locations for a particular cultivar. The vertical alignment of different cultivars allows researchers to compare the inheritance of different CNV sites; the applet automatically sorts varieties which are related by approximate generation to facilitate these comparisons. 
+![CNV Location Tab. This tab is concerned with visualizing the number of copies of a gene segment that appear in each cultivar.][cnvlocation]
 
+In order to get more information about the number of copies of a particular genetic region, the researcher must use the next tab, "Copy Number". This tab contains information about the number of copies of a specific region, conveyed again by shades of blue. Significant copy number variants are indicated with an open circle below the vertical line. As with the last tab, this tab also contains a barcode plot, however, instead of read depth, color intensity is used to depict the number of copies of a region contained in a particular cultivar. The default copy number is 2, corresponding to one copy of the gene on each chromosome; enriched regions have a copy number higher than two, while regions that may have been deleted have a copy number of less than two. 
 
 ![Copy Number Tab. This tab displays CNV locations, to facilitate exploration of regions which might be prone to copy number variation.][cnvcopynumber]
+
+As with the CNV Location plot, the vertical alignment of the barcode plots for different cultivars allows for an ad-hoc comparison of relatedness between cultivars. When presented with two parent varieties and their mutual child, it is possible to see which CNVs were inherited from each parent, as well as any new CNVs that were not present in either parent. 
+
 
 ![Search CNVs by Location. This tab allows users to search for specific positions along a chromosome and reports a dynamic, searchable table with all CNVs (and all cultivars) in the specified region. The resulting list is downloadable for analysis offline.][cnvlistrange]
 
