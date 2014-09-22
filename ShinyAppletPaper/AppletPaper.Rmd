@@ -24,13 +24,13 @@ A theoretical genetic analysis starts with raw sequences of genetic information,
 
 A **gene** is a nucleotide sequence that encodes a specific RNA (which may be translated into a protein) sequence. It is often modified, so that portions of the gene are removed before the final RNA sequence is constructed (these portions are known as **introns**). The remaining portions of the gene (that are present in the final RNA product) are known as **exons**. The term exon refers to both the DNA sequence within a gene and to the corresponding sequence in RNA transcripts.  Exons can include both sequences that code for amino acids (red) and untranslated sequences (grey). 
 
-![Structure of a gene, with introns and exons][GeneStructure]
+![Structure of a gene, with introns and exons. [Source](http://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Gene_structure.svg/480px-Gene_structure.svg.png)][GeneStructure]
 
 ### Copy number variation
 
 One kind of genetic feature that can be analyzed using populations of genetic information is structural variation. **Copy-number variations (CNVs)**, a form of structural variation, are alterations of a genome resulting in an abnormal number of copies of one or more sections of the DNA. CNVs can occure at the gene level, or at the exon level (so that within a single gene, there are multiple copies of a sub-sequence of that gene).
 
-![Copy number variations arise when sections of genetic material are duplicated.][GeneDuplication]
+![Copy number variations arise when sections of genetic material are duplicated. [Source](http://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Gene-duplication.png/220px-Gene-duplication.png)][GeneDuplication]
 
 In the picture below, two copies of the gene (one on each chromosome) are present in the original genome (at the top of the picture), which has a copy number of **n=2**. During chromosome replication (due to meiosis or mitosis), a section of length $b+l$ is duplicated two additional times in one of the chromosomes, resulting in a final copy number (for that segment) of **n=4**. 
 [Source](http://www.plosone.org/article/fetchObject.action?uri=info%3Adoi%2F10.1371%2Fjournal.pone.0059128&representation=PDF)  
