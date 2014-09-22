@@ -16,8 +16,32 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 ```
 # ABSTRACT
 
-# Interactive Display of Biological Data
+# Interactive Displays and Analysis of Biological Data
 <!---  Literature Review -->
+
+## Biological Data and Analysis Types
+A theoretical genetic analysis starts with raw sequences of genetic information, constructed from next-generation sequencing methods. These sequences are organized by chromosome, with additional sequences called "scaffolds" which are present in the genetic material but do not fit into the chromosomal sequences in a known position. From this point, genomes are aligned to a **reference genome**, so that differences may be compared between individuals or varieties within a species. Once genomes are aligned to the reference genome, biologists can conduct several different analyses for genomic features. 
+
+A **gene** is a nucleotide sequence that encodes a specific RNA (which may be translated into a protein) sequence. It is often modified, so that portions of the gene are removed before the final RNA sequence is constructed (these portions are known as **introns**). The remaining portions of the gene (that are present in the final RNA product) are known as **exons**. The term exon refers to both the DNA sequence within a gene and to the corresponding sequence in RNA transcripts.  Exons can include both sequences that code for amino acids (red) and untranslated sequences (grey). 
+
+![Structure of a gene, with introns and exons][GeneStructure]
+
+### Copy number variation
+
+One kind of genetic feature that can be analyzed using populations of genetic information is structural variation. **Copy-number variations (CNVs)**, a form of structural variation, are alterations of a genome resulting in an abnormal number of copies of one or more sections of the DNA. CNVs can occure at the gene level, or at the exon level (so that within a single gene, there are multiple copies of a sub-sequence of that gene).
+
+![Copy number variations arise when sections of genetic material are duplicated.][GeneDuplication]
+
+In the picture below, two copies of the gene (one on each chromosome) are present in the original genome (at the top of the picture), which has a copy number of **n=2**. During chromosome replication (due to meiosis or mitosis), a section of length $b+l$ is duplicated two additional times in one of the chromosomes, resulting in a final copy number (for that segment) of **n=4**. 
+[Source](http://www.plosone.org/article/fetchObject.action?uri=info%3Adoi%2F10.1371%2Fjournal.pone.0059128&representation=PDF)  
+
+![CNVs arise when genes (or sections of a gene) are duplicated during chromosome replication][CNVexplanation]
+
+### Single-Nucleotide Polymorphisms
+
+Another genomic feature that can be analyzed at the population level is single-nucleotide mutations, called **Single-Nucleotide Polymorphisms**, or **SNPs**. These point mutations are inherited but can also occur spontaneously, providing a way to analyze population structure and inheritance patterns as well as genome-wide association (where locations of SNPs are correlated with phenotypic information). 
+
+## Displaying Biological Data and Analyses Interactively
 
 ### Nature Methods Overview of Genomic Data Visualization
 [Link](http://mipt.ru//dbmp/upload/d0d/Nielsen-arphlf450u6.pdf)
@@ -92,11 +116,6 @@ Another tab allows researchers to filter by cultivar and chromosome; this separa
 
 * [Applet Link](http://gsoja.agron.iastate.edu:3838/Genealogy/)
 
-[cnvlocation]:CNVLocation.png
-[cnvlistfilter]:CNVListFilter.png
-[cnvlistrange]:CNVListRange.png
-[cnvcopynumber]:CNVCopyNumber.png
-
 ## Under the HOOD
 
 ### CNV Applet
@@ -117,3 +136,16 @@ Another tab allows researchers to filter by cultivar and chromosome; this separa
 * phyViz package
 
 ## How does this slot into a different database like soybase?
+
+
+
+
+<!--- Picture References --->
+
+[cnvlocation]:CNVLocation.png
+[cnvlistfilter]:CNVListFilter.png
+[cnvlistrange]:CNVListRange.png
+[cnvcopynumber]:CNVCopyNumber.png
+[GeneStructure]:GeneStructure.png
+[GeneDuplication]:GeneDuplication.png
+[CNVexplanation]:CNVexplanation.png
