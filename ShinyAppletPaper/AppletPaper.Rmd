@@ -173,4 +173,4 @@ The genealogy plots are generated on the fly; the number of generations displaye
 [PhenotypeData1]:PhenotypeData1.png
 [PhenotypeData2]:PhenotypeData2.png
 [PhenotypeData3]:PhenotypeData3.png
-[GenotypeData]:GenotypeData.png
+[GenealogyTab]:GenealogyTab.png
