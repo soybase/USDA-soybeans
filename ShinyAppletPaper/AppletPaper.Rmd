@@ -102,6 +102,27 @@ Another tab allows researchers to filter by cultivar and chromosome; this separa
 
 ![CNV List Tab. This tab allows users to search for CNVs identified in specific chromosomes and cultivars. The tablular result is again dynamic and searchable, and can be downloaded for offline analysis. ][cnvlistfilter]
 
+### Contextual Information
+
+The data in this experiment consisted not only of genetic sequences but also included field trials for many of the lines that were sequenced. In addition, the ancestors and descendants of most cultivars were available; this information was provided for researchers to look for context and inheritance patterns in the CNV results.
+
+The phenotype data is presented in three sections - the main metrics for measuring soybean production (protein, oil, and yield), by year, additional soybean characteristics (maturity, seed quality, lodging, and seed size) by year, and pairwise plots of protein, oil, and yield. These sections are shown below; all graphs can be displayed simultaneously or in separate groups (for space considerations). 
+
+![Main metrics of interest for soybean production: yield, protein, and oil, by year. Plots are interactive, and clicking on points for which parental field trial data is present displays parental data as well][PhenotypeData1]
+
+Plots were constructed with [animint](http://tdhock.github.io/animint/) and allow user interaction - clicking on a point provides additional context about any parents for which field trial data is available. 
+
+
+![Additional soybean field trial data, by year. All plots are interactive, so if multiple sections are shown, interacting with any plot will change selections for all plots.][PhenotypeData2]
+
+![Pairwise plots of yield, protein, and oil; these plots show the tradeoff between protein and oil content and yield.][PhenotypeData3]
+
+In addition, genealogical information is provided for all lines which are not proprietary. This allows researchers to search for related varieties, viewing inheritance of CNVs along a cultivar's family tree. 
+
+![Genealogy of soybean cultivars. Multiple varieties can be selected; if they are related, each selected variety will be highlighted in all displayed trees.][GenealogyTab]
+
+The genealogy plots are generated on the fly; the number of generations displayed can be altered (with more generations, it becomes more difficult to see all ancestors and descendants due to exponential increases in the number of varieties that are displayed). 
+
 * Include example video of Michelle using the applet.
 
 ## Single Nucleotide Polymorphisms
@@ -149,3 +170,7 @@ Another tab allows researchers to filter by cultivar and chromosome; this separa
 [GeneStructure]:GeneStructure.png
 [GeneDuplication]:GeneDuplication.png
 [CNVexplanation]:CNVexplanation.png
+[PhenotypeData1]:PhenotypeData1.png
+[PhenotypeData2]:PhenotypeData2.png
+[PhenotypeData3]:PhenotypeData3.png
+[GenotypeData]:GenotypeData.png
