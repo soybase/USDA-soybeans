@@ -48,19 +48,19 @@ Another genomic feature that can be analyzed at the population level is single-n
 ## Displaying Biological Data and Analyses Interactively
 
 ### Nature Methods Overview of Genomic Data Visualization
-[@VisualizingGenomes]
+@VisualizingGenomes
 
 * Doesn't address CNV/SNP viewing
 * Lots of single-domain tools; doesn't seem to be a single extensible web-based platform. 
 
 ### QTL Charts
-[@qtlcharts], [Link](http://kbroman.org/qtlcharts/)
+@qtlcharts, [Link](http://kbroman.org/qtlcharts/)
 
 Includes several visualizations similar to those included in the CNV app. The visualizations are fairly fixed in form, though, as they are generated using d3 code from R; shiny allows any visualization that can be created in R to be created in response to user input (including qtlcharts). It would be nice to extend the heatmap to display genetic data, though this is likely to run into data size issues not present in the [qtlcharts example](http://kbroman.org/qtlcharts/example/iplotCorr.html) because the example shown seems to be a single organism, rather than a population. 
 
 
 ### Interactive CNV viewer (UK lab) 
-[@cnvinspector], [Paper](http://www.ncbi.nlm.nih.gov/pubmed/23729504), [Site](http://www.cnvinspector.org/search.mhtml)
+@cnvinspector, [Paper](http://www.ncbi.nlm.nih.gov/pubmed/23729504), [Site](http://www.cnvinspector.org/search.mhtml)
 
     * Seems to be mostly human focused
     * Doesn't intuitively display the entire chromosome
@@ -186,3 +186,4 @@ The genealogy plots are generated on the fly; the number of generations displaye
 [PhenotypeData3]:PhenotypeData3.png
 [GenealogyTab]:GenealogyTab.png
 [SNPdiagram]:SNPdiagram.png
+
