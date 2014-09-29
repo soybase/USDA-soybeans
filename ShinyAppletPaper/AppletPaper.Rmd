@@ -43,6 +43,8 @@ In the picture below, two copies of the gene (one on each chromosome) are presen
 
 Another genomic feature that can be analyzed at the population level is single-nucleotide mutations, called **Single-Nucleotide Polymorphisms**, or **SNPs**. These point mutations are inherited but can also occur spontaneously, providing a way to analyze population structure and inheritance patterns as well as genome-wide association (where locations of SNPs are correlated with phenotypic information). 
 
+![SNPs are single-nucleotide mutations that may alter gene function. [@Pic-SNPdiagram]][SNPdiagram]
+
 ## Displaying Biological Data and Analyses Interactively
 
 ### Nature Methods Overview of Genomic Data Visualization
@@ -176,3 +178,4 @@ The genealogy plots are generated on the fly; the number of generations displaye
 [PhenotypeData2]:PhenotypeData2.png
 [PhenotypeData3]:PhenotypeData3.png
 [GenealogyTab]:GenealogyTab.png
+[SNPdiagram]:SNPdiagram.png
