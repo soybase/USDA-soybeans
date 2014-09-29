@@ -45,6 +45,8 @@ Another genomic feature that can be analyzed at the population level is single-n
 
 ![SNPs are single-nucleotide mutations that may alter gene function. [@Pic-SNPdiagram]][SNPdiagram]
 
+SNPs can be associated with phenotypic traits using genome-wide association, but they can also be used to infer relatedness between two varieties: varieties which share more SNPs are assumed to be more closely related than varieties that have only a few overlapping SNPs. 
+
 ## Displaying Biological Data and Analyses Interactively
 
 ### Nature Methods Overview of Genomic Data Visualization
