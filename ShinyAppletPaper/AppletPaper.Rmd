@@ -1,5 +1,5 @@
 ---
-title: "Interactive Display of Soybean Population Genomic Data with Shiny"
+title: "Interactively Exploring Soybean Breeding Populations Using R and Shiny"
 author: "Susan VanderPlas, Nathan Weeks, Andrew Severin, Randy Shoemaker, Jim Specht, Di Cook, Michelle Graham"
 date: "09/03/2014"
 bibliography: soybeans.bib
