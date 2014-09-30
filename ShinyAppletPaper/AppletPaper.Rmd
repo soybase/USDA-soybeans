@@ -18,11 +18,14 @@ opts_chunk$set(fig.path='figure/fig-', cache.path='cache/', fig.align='center', 
 ```
 # ABSTRACT
 
-# Interactive Displays and Analysis of Biological Data
+# Rationale
 <!---  Literature Review -->
+
+In the last 90 years, soybean cultivars have had a genetic gain of ----. Part of this genetic gain comes from on-farm improvements (changes in growing practices, soil conservation, industrial fertilizer), but much of this genetic gain is due to genetic improvements that soybean breeders and farmers have generated over years of selection. The recent advancements in next-generation sequencing will allow researchers the data to identify signatures of breeder selection. However, the challenge remains analyzing such large, complex datasets and making the information gained useable and publically available. The aim of this paper is to describe the development of interactive visualization tools to display the data from these experiments in an intuitive format for other researchers, allowing them to ask novel biological questions using the dataset and visualization tools. 
 
 ## Biological Data and Analysis Types
 A theoretical genetic analysis starts with raw sequences of genetic information, constructed from next-generation sequencing methods. These sequences are organized by chromosome, with additional sequences called "scaffolds" which are present in the genetic material but do not fit into the chromosomal sequences in a known position. From this point, genomes are aligned to a **reference genome**, so that differences may be compared between individuals or varieties within a species. Once genomes are aligned to the reference genome, biologists can conduct several different analyses for genomic features. 
+
 
 A **gene** is a nucleotide sequence that encodes a specific RNA (which may be translated into a protein) sequence. It is often modified, so that portions of the gene are removed before the final RNA sequence is constructed (these portions are known as **introns**). The remaining portions of the gene (that are present in the final RNA product) are known as **exons**. The term exon refers to both the DNA sequence within a gene and to the corresponding sequence in RNA transcripts.  Exons can include both sequences that code for amino acids (red) and untranslated sequences (grey). 
 
@@ -80,7 +83,7 @@ Includes several visualizations similar to those included in the CNV app. The vi
 
 Explain interactivity, server backend, advantage of serving up data over the web. 
 
-# Data
+## Data
 <!---  Describe magnitude of data, CNV analysis steps, etc. -->
 The data displayed in this applet is derived from 79 lines of soybean next-generation sequencing data. The files containing the results of the CNV analysis (that is, the files which are displayed using the CNV applet) are about 1.5 GB in binary form. In addition to the files containing the CNV analysis, the annotation files and other data referenced in the applet bring the total data to display up to about 2 GB. Loading that data into memory for a single user session is very reasonable; however, formatting the data so that it can be easily accessed and manipulated interactively is much more challenging. This problem is even more acute when displaying SNP data; the compressed VCF file (which is not manipulatable or plot-able) is 12 GB, and even with strict filtration, the VCF file is still at least 2 GB. Expanding this file into a database that can be easily plotted is likely to produce a file that is at least 5 times the compressed file size. 
 
