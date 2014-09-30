@@ -1,5 +1,5 @@
 ---
-title: "Interactive Display of Population Soybean Genomic Data with Shiny"
+title: "Interactive Display of Soybean Population Genomic Data with Shiny"
 author: "Susan VanderPlas, Nathan Weeks, Jim Specht, Di Cook, Michelle Graham"
 date: "09/03/2014"
 bibliography: soybeans.bib
