@@ -27,7 +27,7 @@ In the last 90 years, soybean cultivars have had a genetic gain of ----. Part of
 
 ## Data
 <!---  Describe magnitude of data, CNV analysis steps, etc. -->
-The data displayed in this applet is derived from 79 lines of soybean next-generation sequencing data. Twenty seeds from each line were acquired from ---. Seeds were planted in the USDA greenhouse at Iowa State University. Once plants reached the trifoliolate stage, leaves from up to 10 plants were pooled and genomic DNA was extracted. DNA was sent to Hudson Alpha Institute for Biotechnology for next-generation sequencing. -------- Details on read-length, coverage, etc. ------. In addition, replicated field trials were conducted on a subset of lines (XXX of the 79 lines, plus ancestral varieties that were not sequenced) to measure protein, oil, yield, and other characteristics under standard growth conditions, to dissociate the effect of on-farm improvements from genetic gain. 
+The data displayed in this applet is derived from 79 lines of soybean next-generation sequencing data. Twenty seeds from each line were acquired from ---. Seeds were planted in the USDA greenhouse at Iowa State University. Once plants reached the trifoliolate stage, leaves from up to 10 plants were pooled and genomic DNA was extracted. DNA was sent to Hudson Alpha Institute for Biotechnology for next-generation sequencing. -------- Details on read-length, coverage, etc. ------. In addition, replicated field trials were conducted on a subset of lines (XXX of the 79 lines, plus ancestral varieties that were not sequenced) to measure protein, oil, yield, and other characteristics under standard growth conditions, to dissociate the effect of on-farm improvements from genetic gain [@specht1984contribution]. 
 
 Following sequencing, the data for each of the 79 genotypes was assembled to the *Glycine max* version 2 genome assembly [@schmutz2010genome][@phytozome10] using [GSNAP](http://research-pub.gene.com/gmap/) (version 2013-8-31) [@wu2010fast]. [samtools](http://www.htslib.org/) [@li2009sequence] was used to convert uniquely mapping reads to the BAM format. 
 
@@ -39,7 +39,7 @@ The files containing the results of the CNV analysis (that is, the files which a
 
 The methodology for analysing the biological data will be described in another paper (partial citation?); in this paper we will discuss the graphics and interactive visualization of the results. 
 
-
+<!---
 ## Biological Data and Analysis Types
 A theoretical genetic analysis starts with raw sequences of genetic information, constructed from next-generation sequencing methods. These sequences are organized by chromosome, with additional sequences called "scaffolds" which are present in the genetic material but do not fit into the chromosomal sequences in a known position. From this point, genomes are aligned to a **reference genome**, so that differences may be compared between individuals or varieties within a species. Once genomes are aligned to the reference genome, biologists can conduct several different analyses for genomic features. 
 
@@ -66,6 +66,8 @@ Another genomic feature that can be analyzed at the population level is single-n
 ![SNPs are single-nucleotide mutations that may alter gene function. [@Pic-SNPdiagram]][SNPdiagram]
 
 SNPs can be associated with phenotypic traits using genome-wide association, but they can also be used to infer relatedness between two varieties: varieties which share more SNPs are assumed to be more closely related than varieties that have only a few overlapping SNPs. 
+
+--->
 
 ## Displaying Biological Data and Analyses Interactively
 
