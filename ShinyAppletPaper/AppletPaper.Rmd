@@ -71,6 +71,12 @@ SNPs can be associated with phenotypic traits using genome-wide association, but
 
 ## Displaying Biological Data and Analyses Interactively
 
+### SegAnnDB - Visualizing Breakpoints for CNV modeling
+
+http://bioinformatics.oxfordjournals.org/content/30/11/1539
+
+Toby Hocking's pet project - interactive visualization of breakpoints. 
+
 ### Nature Methods Overview of Genomic Data Visualization
 @VisualizingGenomes
 
