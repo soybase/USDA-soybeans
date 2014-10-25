@@ -426,7 +426,7 @@ shinyServer(function(input, output, session) {
       singleton(tags$head(tags$script(src = "animint/vendor/d3.v3.js", type='text/javascript'))),
       singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="styles.css"))),
       tags$div(id="plot"),
-      tags$script("var plot = new animint('#plot','plot.json');")
+      tags$script("var plot = new animint('#plot','animint/plot.json');")
       )
   })
 })
