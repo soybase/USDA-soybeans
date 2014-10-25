@@ -176,7 +176,7 @@ ddata_y <- ggdendro::dendro_data.dendrogram(dd.col)
 # Melt matrix into a long form plot-able version
 matrixLong.snp <- melt(tmp, id.vars = 1)
 names(matrixLong.snp) <- c("variety1", "variety2", "value")
-matrixLong.snp$value <- as.numeric(matrixLong.snp$value)
+matrixLong.snp$value <- 2-as.numeric(matrixLong.snp$value)
 
 # Order factors correctly
 matrixLong.snp$variety1 <- factor(matrixLong.snp$variety1, levels=col.ord)
@@ -208,9 +208,9 @@ p1 <- ggplot() +
   ylab("Variety 2") + 
   scale_x_continuous(expand=c(0, 1), breaks=1:79, labels=col.ord) + 
   scale_y_continuous(expand=c(0, 1), breaks=1:79, labels=row.ord) + 
-  scale_fill_gradient("Relatedness",low="#ffffff", high="#374f6b") + 
-  scale_color_gradient("Relatedness",low="#ffffff", high="#374f6b") + 
-  ggtitle("Kinship Matrix Relatedness") + 
+  scale_fill_gradient("Distance", high="#ffffff", low="#374f6b") + 
+  scale_color_gradient("Distance", high="#ffffff", low="#374f6b") + 
+  ggtitle("SNP Distance") + 
   #   coord_equal()+ 
   geom_segment(data=ggdendro::segment(ddata_y), aes(x=x, y=y*dendro.multiplier+80, xend=xend, yend=yend*dendro.multiplier+80), inherit.aes=F) + 
   geom_segment(data=ggdendro::segment(ddata_x), aes(x=y*dendro.multiplier+80, y=x, xend=yend*dendro.multiplier+80, yend=xend), inherit.aes=F) + 
@@ -363,16 +363,16 @@ p4 <- ggplot() +
   geom_point(aes(y=value, x=degree.jit, showSelected=Varieties), shape=1, colour="black", fill="white", size=3, data=AllVars) + 
   geom_point(aes(y=value, x=degree.jit, clickSelects=Varieties), alpha=1, colour="#374f6b", fill="#374f6b", data=AllVars) +
   scale_x_continuous(name="Generational Distance") + 
-  ylab("SNP Kinship Relatedness") + 
-  ggtitle("Generational Distance and SNP Relatedness")
+  ylab("SNP Distance") + 
+  ggtitle("Generations and SNP Distance")
 
 p5 <- ggplot() + 
   theme_animint(width=375, height=400) +
   geom_point(aes(y=value, x=yielddiff, showSelected=Varieties), shape=1, size=3, data=fieldtrialsmatrix) + 
   geom_point(aes(y=value, x=yielddiff, clickSelects=Varieties), alpha=1, colour="#374f6b", fill="#374f6b", data=fieldtrialsmatrix) +
   scale_x_continuous(name="Yield 1 - Yield 2") + 
-  ylab("SNP Kinship Relatedness") + 
-  ggtitle("Yield Difference and SNP Relatedness")
+  ylab("SNP Distance") + 
+  ggtitle("Yield Difference and SNP Distance") + 
 
 animint2dir(list(heatmap=p1, kinshipHeatmap=p2, kinship=p3, rel=p4, yield=p5), out.dir="www", open.browser = F)
 
