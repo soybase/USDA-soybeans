@@ -1,10 +1,17 @@
 library(shiny)
 
-format.checkboxlist <- tags$head(tags$style(type="text/css", 
-                         "label.radio { display: inline-table; width: 25%; margin:2%;} 
-                          label.checkbox { display: inline-table; width: 45%; margin:2%;} 
-                          input[type='text']{ padding: 2px; height:30px;} 
-                          input[type='number'] { padding: 2px; height:35px;}")) # format checkbox inputs in 3 columns with some padding.
+head.scripts <- 
+  tags$head(
+#             tags$script(src="libs/jquery-1.11.0/jquery.min.js", type="text/javascript"),
+            tags$link(href="libs/bootstrap3-3.2.0/css/bootstrap.min.css", rel="stylesheet"),
+            tags$link(href="libs/bootstrap3-3.2.0/css/themes/cerulean/bootstrap.min.css", rel="stylesheet"),
+#             tags$script(src="libs/bootstrap3-3.2.0/js/bootstrap.min.js", type="text/javascript"),
+            tags$link(href="libs/highlightjs-8.2/highlight/idea.css", rel="stylesheet"),
+            tags$script(src="libs/highlightjs-8.2/highlight.pack.js", type="text/javascript"),
+            tags$link(href="libs/MagnificPopup-0.9.9/magnific-popup.css", rel="stylesheet"),
+            tags$script(src="libs/MagnificPopup-0.9.9/magnific-popup.js", type="text/javascript"),
+            tags$link(href="libs/knitrBootstrap-0.0.1/css/knitrBootstrap.css", rel="stylesheet" ),
+            tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"))
 
 load("ShinyStart.rda")
 
@@ -32,9 +39,6 @@ AggSNPBrowser <- function(){
                       helpText("Enter a numeric start point on the chromosome"),
                       textInput("chrStart", 
                                 "Start point", value=0
-                      ),
-                      tagList(
-                        format.checkboxlist
                       )
                       )
                     ),
@@ -86,18 +90,6 @@ VarSNPBrowser <- function(){
                       ),
                     h3("Matching Glyma IDs"),
                     dataTableOutput("glymaTable2")
-#                     ,
-#                     wellPanel(
-#                       helpText("Manually choose chromosome and location:"),
-#                       radioButtons("locationChrs2", "Choose Chromosome of Interest", unique(seqnames)),
-#                       helpText("Enter a numeric start point on the chromosome"),
-#                       textInput("chrStart2", 
-#                                 "Start point", value=0
-#                       ),
-#                       tagList(
-#                         format.checkboxlist
-#                       )
-#                     )
            ),
            column(width=9, 
                   plotOutput("VarietySnpPlot", width="100%"),
@@ -131,7 +123,12 @@ SNPKinship <- function(){
 }
 
 methodology <- function(){
-  tabPanel("Methodology", fluidRow(includeHTML("Documentation.html")))
+  tabPanel("Methodology", 
+           fluidRow(
+             includeHTML("Documentation.html"),
+             tagList(head.scripts)
+             )
+           )
 }
 
 # Define UI for page that allows selection of genetic lines with corresponding facets

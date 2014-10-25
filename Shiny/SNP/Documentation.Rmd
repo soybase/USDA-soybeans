@@ -4,14 +4,15 @@ author: "Susan VanderPlas, Di Cook, Andrew Severin, Jim Specht, Michelle Graham"
 bibliography: ../Refs.bib
 csl: ../statistics.csl
 output: 
-  knitrBootstrap:::simple_document:
+  knitrBootstrap:::bootstrap_document:
+    lib_dir: www/libs
     toc: true
-    title: "SNP Sampling Documentation"
     theme: cerulean
     highlight: idea
     theme.chooser: FALSE
     highlight.chooser: FALSE
     menu: FALSE
+    clean_supporting: TRUE
 ---
 
 # Data Collection 
@@ -103,6 +104,7 @@ ddata_x <- dendro_data(dd.row)
 ddata_y <- dendro_data(dd.col)
 ```
 
+The clusters were then formatted for plotting and plotted using ggplot2. 
 
 ```{r kinship-plot, eval=F, tidy=F}
 # Melt kinship matrix into long form
