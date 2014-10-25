@@ -358,8 +358,8 @@ fieldtrials <- read.csv("CombinedFieldTrialsData.csv", header=T, stringsAsFactor
 fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "IA 3023", "IA3023")
 fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Williams 82", "Williams82")
 fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Amsoy 71", "Amsoy")
-fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Beeson 80", "Beeson")
-fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Corsoy 79", "Corsoy")
+# fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Beeson 80", "Beeson")
+# fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Corsoy 79", "Corsoy")
 
 fieldtrials <- filter(fieldtrials, fieldtrials$Cultivar%in%varieties)
 
