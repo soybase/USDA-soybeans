@@ -1,0 +1,423 @@
+---
+title: "CNV Analysis Documentation"
+author: "Susan VanderPlas, Di Cook, Andrew Severin, Jim Specht, Michelle Graham"
+bibliography: ../Refs.bib
+csl: ../statistics.csl
+output: html_fragment
+---
+
+# Data Collection 
+The data displayed in this applet is derived from 79 lines of soybean next-generation sequencing data. Twenty seeds from each line were acquired from ---. Seeds were planted in the USDA greenhouse at Iowa State University. Once plants reached the trifoliolate stage, leaves from up to 10 plants were pooled and genomic DNA was extracted. DNA was sent to Hudson Alpha Institute for Biotechnology for next-generation sequencing. In addition, replicated field trials were conducted on a subset of lines (30 of the 79 lines, plus ancestral varieties that were not sequenced) to measure protein, oil, yield, and other characteristics under standard growth conditions, to dissociate the effect of on-farm improvements from genetic gain [@specht1984contribution],[@fox2013estimating]. 
+
+# Processing Data 
+
+1. Raw reads were aligned to the [reference soybean genome (version 2)](http://phytozome.jgi.doe.gov/pz/portal.html#!info?alias=Org_Gmax) using [GSNAP](http://research-pub.gene.com/gmap/) (version 2013-8-31) [@wu2010fast].  
+2. Reads that mapped uniquely were converted from SAM format to BAM format using [samtools](http://www.htslib.org/) [@li2009sequence].  
+3. Read groups were added for each soybean line and duplicate reads were removed using `AddOrReplaceReadGroups` and `MarkDuplicates` functions in [picard tools](http://picard.sourceforge.net).  
+4. The resulting alignment BAM files were realigned using `IndelRealigner` function in [GATK](https://www.broadinstitute.org/gatk/) [@mckenna2010genome].  The `ReduceReads` function was used to compress the alignment files by removing non-informative and redundant reads (default parameters except for downsample_coverage=1).  
+
+# Copy Number Identification
+
+Using BAM files from the previous step as input to [cn.mops](http://www.bioinf.jku.at/software/cnmops/), the program was executed separately on each geneomic feature (gene, exon, CDS, mRNA) to provide internal verification as well as reduce the problem to a more computationally manageable size. As suggested in the cn.mops manual, each region of the genome was extended by 30 bp on each side to aid in identification of CNV regions. 
+
+```{r cn.mops.setup, eval=F, echo=T}
+library(cn.mops)
+library(Rsamtools)
+
+# Remove all previous links to GATK files
+system("rm ./data/gatkLinks/*")
+
+# Copy /GATK-AUTOMATION/REALIGN/* to gatkLink folder with symlinks
+system("cp -s ~/GATK/REALIGN/*.realign.bam ./data/gatkLinks/")
+system("cp -s ~/GATK/REALIGN/*.realign.bai ./data/gatkLinks/")
+
+# Rename .bai files
+system("rename .realign.bai .realign.bam.bai ./data/gatkLinks/*.bai")
+
+filepath <- "./data/gatkLinks"
+
+BAMFiles <- list.files(filepath, pattern=".bam$", full.names = TRUE)
+BAIFiles <- list.files(filepath, pattern=".bam.bai$", full.names=TRUE)
+filenames <- list.files(filepath, pattern=".bam$", full.names=FALSE)
+filenames <- gsub(".realign.bam", "", filenames, fixed=TRUE) # get variety name alone
+
+vcfnames <- list.files("~/GATK/VCF", pattern=".vcf$", full.names=FALSE)
+vcfnames <- gsub(".vcf", "", vcfnames, fixed=TRUE) # get only varieties with successful VCF file
+vcfnames <- vcfnames[which(!grepl("combined", vcfnames))]
+
+# remove any files that don't have a valid vcf file
+BAMFiles <- BAMFiles[which(filenames %in% vcfnames)]
+BAIFiles <- BAIFiles[which(filenames %in% vcfnames)]
+filenames <- filenames[which(filenames %in% vcfnames)]
+
+# check to make sure that each bam file has a corresponding .bam.bai file
+missing.bai <- which(sapply(paste(BAMFiles, ".bai", sep=""), function(i) !i%in%BAIFiles))
+if(length(missing.bai)>0){
+  BAMFiles <- BAMFiles[-missing.bai]
+  BAIFiles <- BAIFiles[-missing.bai]
+  filenames <- filenames[-missing.bai]
+}
+
+# check to make sure headers are scan-able:
+temp <- lapply(BAMFiles, function(i) try(scanBamHeader(i)))
+failed <- unlist(lapply(temp, function(i) length(i[[1]])))==1
+BAMFiles <- BAMFiles[!failed]
+BAIFiles <- BAIFiles[!failed]
+filenames <- filenames[!failed]
+
+# Read in Annotation
+segments.full <- read.table(file="./data/Gmax_275_Wm82.a2.v1.gene_exons.gff3", sep="\t")
+names(segments.full) <- c("seqname", "source", "feature", "start", "end", "score", "strand", "frame", "group")
+
+# adjustment for new naming convention with old gff3 file.
+segments.full$seqname <- gsub("Gm", "Chr", segments.full$seqname)
+segments <- segments.full
+save(segments, segments.full, file="./data/GmaxAnnotation.rda")
+
+# sequence names
+seqs <- c(paste0("Chr0", 1:9), paste0("Chr", 10:20))
+
+samples <- filenames
+
+# keep non-scaffold segments
+segments <- subset(segments.full, !grepl("scaffold", segments.full$seqname))
+
+# paste date and time together to get a file name
+fname1 <- date <- format(Sys.time(), "%d%m%y%-%H%M%S")
+# save sample names corresponding to that file name
+fileConn <- file(paste("./data/", fname1, ".txt", sep=""))
+writeLines(samples, fileConn)
+close(fileConn)
+
+features <- unique(segments$feature)
+features <- features[!grepl("UTR", features)]
+
+for(i in features){
+  message(paste("Starting on feature ", i))
+
+	# keep only genes (don't worry about cnvs in other regions)
+	segments.sub <- subset(segments, feature==i)
+
+
+	# arrange by segment start
+	segments.sub <- segments.sub[order(segments.sub$seqname, segments.sub$start, segments.sub$end), ]
+
+	# As suggested in the cn.mops manual, extend ranges by 30bp to the right and left for better results
+	gr <- GRanges(seqnames = segments.sub[,1], 
+		      ranges=IRanges(segments.sub[,4]-30, segments.sub[,5]+30), 
+		      strand=segments.sub[,7], 
+		      mcols=segments.sub[,c(2, 3, 6, 8, 9)])
+
+
+	# Count Segment Reads
+	bamSegmentRanges <- getSegmentReadCountsFromBAM(BAMFiles, GR=gr, sampleNames=samples, parallel = 32, mode="paired")
+
+	fname <- paste( "bdr-", i, "-", fname1, sep="")
+ 
+	save(bamSegmentRanges, file=paste("./data/", fname, ".rda", sep=""))
+
+
+	# save workspace for debugging purposes
+	save(list=ls(), file=paste("debug-",i,".RData", sep=""))
+	t.5 <- Sys.time()
+	print(paste("Time Elapsed - Reading Data Set ",i, ": ", t.5-t0))
+
+######################################################################################
+# CN.MOPS
+######################################################################################
+
+	strand(bamSegmentRanges) <- rep("*",length(bamSegmentRanges))
+	res <- exomecn.mops(bamSegmentRanges, parallel=32, I=c(0.025, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5), classes=paste("CN", as.character(0:10), sep=""))
+
+	if(mode(res)!="character") 
+	save(res, file=paste("./data/", gsub("bdr", "res", fname, fixed=TRUE), ".rda", sep=""))
+}
+
+```
+
+After running cn.mops, results were assembled and merged with annotation files. 
+
+```{r cn.mops.objects, eval=FALSE, echo=T}
+suppressMessages({
+library(BiocInstaller)
+library(cn.mops)
+library(stringr)
+library(reshape2)
+library(plyr)
+library(ggplot2)
+library(ggbio)
+library(doMC)
+registerDoMC(4)
+})
+
+
+wd <- "/home/skoons/tengfei/data/cnv/data"
+setwd(wd)
+
+date <- "100414%H5228"
+
+############################# Cn.mops information ##############################
+features <- c("gene", "CDS", "mRNA", "exon")#, "three_prime_UTR", "five_prime_UTR")
+
+bamSegmentFileNames <- paste("bdr-", features, "-", date, ".rda", sep="")
+cnmopsFileNames <- paste("res-", features, "-", date, ".rda", sep="")
+resDFList <- as.list(features)
+names(resDFList) <- features
+glymaIDList <- segrangesDFList <- segrangesDFList2 <- resDFList
+
+
+segments.full <- read.table(file="./Gmax_275_Wm82.a2.v1.gene_exons.gff3", sep="\t")
+names(segments.full) <- c("seqname", "source", "feature", "start", "end", "score", "strand", "frame", "group")
+segments <- segments.full
+
+# keep non-scaffold segments
+segments <- subset(segments, !grepl("scaffold", segments.full$seqname))
+names(segments)[1] <- "seqnames"
+
+# Clean annotation information
+segments$seqnames <- gsub("Gm", "Chr", segments$seqnames)
+segments$group <- as.character(segments$group)
+segments$ID <- gsub("ID=", "", word(segments$group, sep=";"))
+segments$Name <- gsub("Name=", "", word(segments$group, 2, sep=";"))
+segments$Parent <- str_extract(as.character(segments$group), "Parent=.*;")
+
+
+# keep only certain features
+segments.list <- list(
+gene=subset(segments, feature=="gene"),
+CDS=subset(segments, feature=="CDS"),
+mRNA=subset(segments, feature=="mRNA"),
+exon=subset(segments, feature=="exon")#,
+#threeprime=subset(segments, feature=="three_prime_UTR"),
+#fiveprime=subset(segments, feature=="five_prime_UTR")
+)
+
+# arrange by segment start
+segments.list <- lapply(segments.list, function(i) i[order(i$seqname, i$start, i$end), ])
+
+gr.list <- lapply(segments.list, function(i){
+GRanges(seqnames = i[,1], 
+   ranges=IRanges(i[,4]-30, i[,5]+30), 
+   strand=i[,7], 
+   mcols=i[,c(2, 3, 6, 8, 9, 10, 11, 12)])
+})
+
+save(gr.list, segments.list, segments, segments.full, file="./GmaxAnnotation.rda")
+
+
+chr.summary <- ddply(segments, .(seqnames), summarize, start=min(start), end=max(end), CN=2)
+
+
+for(z in 1:length(features)){
+  print(paste("Analyzing ", features[z]))
+  # Load data
+  load(bamSegmentFileNames[z])
+  load(cnmopsFileNames[z])
+  
+  seqs <- c(paste("Chr0", 1:9, sep=""), paste("Chr", 10:20, sep=""))
+  strand(bamSegmentRanges) <- rep("*",length(bamSegmentRanges))
+  seqlengths(bamSegmentRanges) <- range(bamSegmentRanges)@ranges@start + range(bamSegmentRanges)@ranges@width # set seqlengths
+  
+  # Convert the segment ranges to a data frame
+  segranges.df <- mold(bamSegmentRanges)
+  segranges.df <- melt(segranges.df, id=c("seqnames", "start", "end", "width", "strand", "midpoint"), variable.name="Variety", value.name="count")
+  segranges.df$strand <- "*"
+  
+  # Convert the cnv results to a data frame
+  res.df <- mold(cnvs(res))
+  names(res.df) <- c("seqnames", "start", "end", "width", "strand", "Variety", "median", "mean", "CN", "midpoint")
+  res.df <- res.df[,-which(names(res.df)=="CN")]
+  
+  # Get copy  number counts for all genes in the segment ranges
+  # Use these to get the copy numbers for each identified CNV (since integerCopyNumber(res) returns NAs)
+  res.cnv <- as.data.frame(res@integerCopyNumber, stringsAsFactors=FALSE)
+  res.cnv$seqnames <- unlist(lapply(rownames(res.cnv), function(i) strsplit(i, split="_")[[1]][1]))
+  res.cnv$start <- as.numeric(unlist(lapply(rownames(res.cnv), function(i) strsplit(i, split="_")[[1]][2])))
+  res.cnv$end <- as.numeric(unlist(lapply(rownames(res.cnv), function(i) strsplit(i, split="_")[[1]][3])))
+  res.cnv$width <- res.cnv$end-res.cnv$start+1
+  res.cnv$strand <- "*"
+  res.cnv.df <- melt(res.cnv, id=c("seqnames", "start", "end", "width", "strand"), variable.name="Variety", value.name="CN")
+  
+  # Merge the copy number counts from res.cnv.df with segranges.df
+  segranges.df$CN <- res.cnv.df$CN
+  segranges.df$CN <- as.numeric(gsub("CN", "", segranges.df$CN))
+  segranges.df <- unique(segranges.df)
+  rm(res.cnv.df, res.cnv)
+  
+  # Merge res and segranges to get CNV numbers, but leave out res.df$end
+  # (different than segranges.df$end, probably because of the copy number variation?)
+  tmp <- merge(res.df[,c(1:2, 6)], segranges.df[,c(1:3, 7:9)], all.x=TRUE)
+  names(tmp) <- c("seqnames", "start", "Variety", "segment.end", "count", "CN")
+  tmp <- merge(res.df, unique(tmp), all.x=TRUE)
+  res.df <- tmp[,c(1, 2, 4, 3, 10, 5:9, 11:12)]
+  rm(tmp)
+  
+  # Bin segranges for plotting purposes - only need to display the read counts, and want to minimize the objects plotted for Shiny
+  segranges.df2 <- segranges.df
+  segranges.df2$start <- round(segranges.df$start/100000)*100000 
+  
+  # Remove segranges that have copy number 2 for plotting purposes - minimize objects plotted for Shiny
+  segranges.df.old <- segranges.df
+  segranges.df <- subset(segranges.df, CN!=2)
+  
+  
+  # Adjust count for binning - take the average count over the start region
+  segranges.df2 <- ddply(segranges.df2, .(seqnames, start, Variety), summarize, count=mean(count), .parallel=TRUE)
+  segranges.df2$end <- segranges.df2$start+100000
+
+  # Store results in a list of data frames - one for each type of genetic feature  
+  res.df$cnv.start <- res.df$start
+  res.df$cnv.end <- res.df$end
+  res.df$end <- res.df$segment.end-30
+  res.df$start <- res.df$start+30
+  
+  glymaIDList[[z]] <- merge(segments.list[[z]][,c(1, 3:5, 7:12)], res.df[,-c(5, 7)], all.y=TRUE, all.x=FALSE)
+  names(glymaIDList[[z]]) <- c("Chromosome", "Start", "End", "Feature", "Strand", "Frame", "Group", "ID", "Name", "Parent", "Variety", "Width", "Median", "Mean", "Midpoint", "Count", "CN", "Cnv.Start", "Cnv.End")
+  segrangesDFList[[z]] <- segranges.df
+  segrangesDFList2[[z]] <- segranges.df2
+  resDFList[[z]] <- res.df
+  
+  objects <- ls()
+  # Clean up and free memory
+  rm(list=objects[-which(objects%in%c("date", "bamSegmentFileNames", "cnmopsFileNames", "glymaIDList", "segments.list", "segments", "segrangesDFList", "segrangesDFList2", "resDFList", "features", "gr.list", "chr.summary"))])
+  rm("objects")
+  gc()
+  
+}
+
+# Save backup of lists
+save.image("DataObjectsBackup.RData")
+
+# Convert lists to data frames
+segranges.df <- rbind.fill(segrangesDFList)
+rm(segrangesDFList)
+
+segranges.df2 <- rbind.fill(segrangesDFList2)
+rm(segrangesDFList2)
+
+glymaIDs <- rbind.fill(glymaIDList)
+rm(glymaIDList)
+
+res.df <- rbind.fill(resDFList)
+rm(resDFList)
+```
+
+The results from the algorithm were back-transformed (regions were reduced by 30 bp on each side) and merged with annotation files.
+
+```{r cn.mops.cleaning, eval=F, echo=T}
+date <- "100414%H5228"
+load(paste("./ShinyDataObjects-", date, ".rda", sep=""))
+
+# res.df$Variety <- gsub("Sample_", "", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("Sample_", "", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("Sample_", "", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("Sample_", "", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub(".", "-", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub(".", "-", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub(".", "-", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub(".", "-", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("RS_", "", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("RS_", "", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("RS_", "", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("RS_", "", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("_", " ", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("_", "", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("_", "", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("_", "", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub(" ", "", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub(" ", "", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub(" ", "", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub(" ", "", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("X901-G06 ", "", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("X901-G06 ", "", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("X901-G06 ", "", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("X901-G06 ", "", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("AK004", "A.K. (Harrow)", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("AK004", "A.K. (Harrow)", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("AK004", "A.K. (Harrow)", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("AK004", "A.K. (Harrow)", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("ClarkNuGEN", "Clark", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("ClarkNuGEN", "Clark", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("ClarkNuGEN", "Clark", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("ClarkNuGEN", "Clark", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("X901-G04", "", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("X901-G04", "", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("X901-G04", "", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("X901-G04", "", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("IA3023x", "IA 3023 (NAM)", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("IA3023x", "IA 3023 (NAM)", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("IA3023x", "IA 3023 (NAM)", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("IA3023x", "IA 3023 (NAM)", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("X180501", "PI 180.501", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("X180501", "PI 180.501", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("X180501", "PI 180.501", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("X180501", "PI 180.501", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("X506-13640-2", "S06-130640-2", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("X506-13640-2", "S06-130640-2", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("X506-13640-2", "S06-130640-2", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("X506-13640-2", "S06-130640-2", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("X88788", "PI 88.788", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("X88788", "PI 88.788", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("X88788", "PI 88.788", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("X88788", "PI 88.788", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("X901-G06Bonus", "Bonus", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("X901-G06Bonus", "Bonus", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("X901-G06Bonus", "Bonus", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("X901-G06Bonus", "Bonus", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("NCRaleigh", "NC Raleigh", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("NCRaleigh", "NC Raleigh", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("NCRaleigh", "NC Raleigh", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("NCRaleigh", "NC Raleigh", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("NCRoy", "NC Roy", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("NCRoy", "NC Roy", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("NCRoy", "NC Roy", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("NCRoy", "NC Roy", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("Gasoy17", "Gasoy 17", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("Gasoy17", "Gasoy 17", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("Gasoy17", "Gasoy 17", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("Gasoy17", "Gasoy 17", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("Williams82", "Williams 82", res.df$Variety, fixed=TRUE)
+segranges.df$Variety <- gsub("Williams82", "Williams 82", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("Williams82", "Williams 82", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("Williams82", "Williams 82", glymaIDs$Variety, fixed=TRUE)
+
+# res.df$Variety <- gsub("(PI){1}( {0,})(\\d{2,3}?)(\\.{0,})(\\d{3})(-{0,}\\w{0,})", "\\1 \\3.\\5\\6", res.df$Variety)
+segranges.df$Variety <- gsub("(PI){1}( {0,})(\\d{2,3}?)(\\.{0,})(\\d{3})(-{0,}\\w{0,})", "\\1 \\3.\\5\\6", segranges.df$Variety, fixed=TRUE)
+segranges.df2$Variety <- gsub("(PI){1}( {0,})(\\d{2,3}?)(\\.{0,})(\\d{3})(-{0,}\\w{0,})", "\\1 \\3.\\5\\6", segranges.df2$Variety, fixed=TRUE)
+glymaIDs$Variety <- gsub("(PI){1}( {0,})(\\d{2,3}?)(\\.{0,})(\\d{3})(-{0,}\\w{0,})", "\\1 \\3.\\5\\6", glymaIDs$Variety, fixed=TRUE)
+
+varieties <- as.character(unique(glymaIDs$Variety))
+seqnames <- as.character(unique(glymaIDs$Chromosome))
+save(varieties, seqnames, file="ShinyStart.rda")
+
+save(glymaIDs, segranges.df, segranges.df2, chr.summary, file="ChrPlot.rda")
+save(glymaIDs, file="GlymaIDs.rda")
+
+```
+
+## Rearranging Data for Plotting
+Plots in this applet were generated using ggplot2 [@ggplot2], and are rendered interactively using Shiny [@shiny]. 
+
+> Need to add plot generation code here?
+
+
+# References
+<div class="references"></div>
+
