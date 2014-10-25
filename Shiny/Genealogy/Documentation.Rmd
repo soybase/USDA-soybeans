@@ -1,0 +1,24 @@
+---
+title: "Genealogy Documentation"
+output: 
+  knitrBootstrap:::bootstrap_document:
+    title: "Genealogy Sampling Documentation"
+    theme: cerulean
+    highlight: idea
+    theme.chooser: FALSE
+    highlight.chooser: FALSE
+    menu: FALSE
+---
+
+# Data Collection 
+
+Linked sources of genealogy information? 
+- need to ask Jim about ethics of including the info from the word doc into this applet
+
+# Processing
+
+Genealogy processing information; how years are imputed, resolving conflicts with multiple parents/children, why we're excluding backcross information.
+
+# PhyVis
+
+Lindsay's methodology, explanation of "generational distance" i.e. Kevin Bacon distance.
