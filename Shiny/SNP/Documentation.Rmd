@@ -1,0 +1,312 @@
+---
+title: "SNP Documentation"
+author: "Susan VanderPlas, Di Cook, Andrew Severin, Jim Specht, Michelle Graham"
+bibliography: ../Refs.bib
+csl: ../statistics.csl
+output: 
+  knitrBootstrap:::simple_document:
+    toc: true
+    title: "SNP Sampling Documentation"
+    theme: cerulean
+    highlight: idea
+    theme.chooser: FALSE
+    highlight.chooser: FALSE
+    menu: FALSE
+---
+
+# Data Collection 
+The data displayed in this applet is derived from 79 lines of soybean next-generation sequencing data. Twenty seeds from each line were acquired from ---. Seeds were planted in the USDA greenhouse at Iowa State University. Once plants reached the trifoliolate stage, leaves from up to 10 plants were pooled and genomic DNA was extracted. DNA was sent to Hudson Alpha Institute for Biotechnology for next-generation sequencing. In addition, replicated field trials were conducted on a subset of lines (30 of the 79 lines, plus ancestral varieties that were not sequenced) to measure protein, oil, yield, and other characteristics under standard growth conditions, to dissociate the effect of on-farm improvements from genetic gain [@specht1984contribution],[@fox2013estimating]. 
+
+# Processing Data and SNP Identification
+
+1. Raw reads were aligned to the [reference soybean genome (version 2)](http://phytozome.jgi.doe.gov/pz/portal.html#!info?alias=Org_Gmax) using [GSNAP](http://research-pub.gene.com/gmap/) (version 2013-8-31) [@wu2010fast].  
+2. Reads that mapped uniquely were converted from SAM format to BAM format using [samtools](http://www.htslib.org/) [@li2009sequence].  
+3. Read groups were added for each soybean line and duplicate reads were removed using `AddOrReplaceReadGroups` and `MarkDuplicates` functions in [picard tools](http://picard.sourceforge.net).  
+4. The resulting alignment BAM files were realigned using `IndelRealigner` function in [GATK](https://www.broadinstitute.org/gatk/) [@mckenna2010genome].  The `ReduceReads` function was used to compress the alignment files by removing non-informative and redundant reads (default parameters except for downsample_coverage=1).  
+5. SNPs and InDels were called on all reduced BAM  files together using the `HaplotypeCaller` function in [GATK](https://www.broadinstitute.org/gatk/) (version 2.7-2-g6bda569).   
+
+# SNP Sampling
+
+## Summary
+
+```{r setup1, cache=FALSE, echo=FALSE, include=FALSE}
+library(xtable)
+options(scipen=10)
+``` 
+
+```{r snipcount, eval=TRUE, echo=FALSE, include=FALSE}
+load("snpSummary.rda")
+nsnips <- as.numeric(snp.summary[1])
+```
+SNPS displayed in this applet are reliable SNPs from `r length(snp.summary)`. `r nsnips` SNPs were identified for further analysis. 
+
+> Need to delineate "reliable" criterion. 
+
+The lines included in this analysis are: 
+<div align="center">
+```{r varietylist, eval=TRUE, echo=FALSE, results='asis'}
+print(xtable(matrix(c(names(snp.summary), ""), ncol=5, byrow=FALSE)), type="html", html.table.attributes="border=1 style='width:90%;'", include.rownames=FALSE, include.colnames=FALSE)
+```
+</div>
+
+## Kinship Analysis 
+
+### Sampling Methodology
+
+Kinship matrices were generated with [TASSEL](http://www.maizegenetics.net/index.php?option=com_content&task=view&id=89&Itemid=119) [@bradbury2007tassel] using a subset of the SNP data, where one random SNP was taken from every 10,000 base interval in the genome or the next closest SNP (Supplementary Script 1).
+
+### Clustering and Plot of Kinship Distance
+
+These matrices were then clustered using Ward's method, using the distance (2- similarity). Clusters were used to lay out the rows and columns of the heatmap.
+
+```{r kinship-cluster, eval=F, tidy=F}
+library(plyr)
+library(reshape2)
+library(animint)
+library(ggplot2) # need to use fork of ggplot2: install_github("tdhock/ggplot2") for animint compatibility
+library(ggdendro)
+library(grid)
+
+
+# Symmetric kinship matrix except for the first column, which contains the variety names
+tmp <- read.csv("kinshipMatrix.txt", sep="\t", skip=1, head=F, stringsAsFactors=F)
+names(tmp) <- c("Variety", tmp[,1])
+
+# Fix names to correspond with actual usage
+rownames <- tmp$Variety
+rownames <- gsub("506-13640-2", "S06-13640-2", rownames)
+rownames <- gsub("901-G0\\d{1}_RS_", "", rownames)
+rownames <- gsub("_NuGEN", "", rownames)
+rownames <- gsub("Gasoy17", "Gasoy 17", rownames)
+rownames <- gsub("RS_", "", rownames)
+rownames <- gsub("Williams82", "Williams 82", rownames)
+rownames <- gsub("AK_004", "A.K. (Harrow)", rownames)
+rownames <- gsub("NCR", "R", rownames)
+
+# Enforce row and column names
+tmp$Variety <- rownames
+names(tmp) <- c("Variety", rownames)
+
+# Create numerical matrix for use in clustering algorithms
+meanMatrix <- data.matrix(tmp[,-1])
+# Ensure dimnames are accurate
+dimnames(meanMatrix)[[1]] <- rownames
+dimnames(meanMatrix)[[2]] <- rownames
+
+# Convert kinship (similarity) to distance matrix by subtracting relatedness from 2 (maximum relatedness)
+dd.col <- rev(as.dendrogram(hclust(as.dist(2-meanMatrix), method="ward.D")))
+dd.row <- as.dendrogram(hclust(as.dist(2-meanMatrix), method="ward.D"))
+col.ord <- labels(dd.col)
+row.ord <- labels(dd.row)
+# Get x and y coordinates
+ddata_x <- dendro_data(dd.row)
+ddata_y <- dendro_data(dd.col)
+```
+
+
+```{r kinship-plot, eval=F, tidy=F}
+# Melt kinship matrix into long form
+matrixLong <- melt(tmp, id.vars = 1)
+names(matrixLong) <- c("variety1", "variety2", "value")
+matrixLong$value <- as.numeric(matrixLong$value)
+write.csv(matrixLong, "LongKinshipMatrix.csv")
+
+# Make long matrix factor names match clustered ordering (so tree matches x and y coordinates)
+matrixLong$variety1 <- factor(matrixLong$variety1, levels=col.ord)
+matrixLong$variety2 <- factor(matrixLong$variety2, levels=row.ord)
+
+# Multiplier to ensure the tree has reasonable range compared to the heatmap
+dendro.multiplier <- 1
+
+# Static Plot
+qplot(x=as.numeric(variety1), y=as.numeric(variety2), geom="tile", fill=value, data=matrixLong) + 
+  theme_bw() + 
+  theme(axis.text.x=element_text(angle=90, hjust=1, vjust=.5)) +  
+  xlab("Variety 1") + 
+  ylab("Variety 2") + 
+  scale_x_continuous(expand=c(0, 1), breaks=1:79, labels=col.ord) + 
+  scale_y_continuous(expand=c(0, 1), breaks=1:79, labels=row.ord) + 
+  scale_fill_gradient("Relatedness",low="#ffffff", high="#374f6b") + 
+  ggtitle("Kinship Matrix-based Relatedness") + 
+  coord_equal()+ 
+  geom_segment(data=segment(ddata_y), aes(x=x, y=y*dendro.multiplier+80, xend=xend, yend=yend*dendro.multiplier+80), inherit.aes=F) + 
+  geom_segment(data=segment(ddata_x), aes(x=y*dendro.multiplier+80, y=x, xend=yend*dendro.multiplier+80, yend=xend), inherit.aes=F)
+```
+
+## SNP Imputation and QTL Analysis
+1. SNPs were imputed using [BEAGLE](http://faculty.washington.edu/browning/beagle/beagle.html) [@browning2013improving]
+2. [TASSEL](http://www.maizegenetics.net/index.php?option=com_content&task=view&id=89&Itemid=119) [@bradbury2007tassel] was used to identify QTLs using a general linear model to control for population structure.
+
+> Need more detail here from Andrew. Also, need QTL results?
+
+# Plot Documentation
+Using the combined, phased and imputed VCF file generated as a result of the SNP sampling, the following steps are performed.  
+
+## Convert the VCF file into a data frame
+We used the vcf2tsv command from [vcflib](https://github.com/ekg/vcflib#vcflib) to convert the vcf file into an easily plotable format. 
+```{r test-bash, eval=F, engine="bash"}
+vcf2tsv combined.REDUCED.1.realign.123013.uniq.sorted.SNPsOnly.MeanPlus0p150.nospace.vcf > MeanPlus0p150SD.tsv
+```
+
+Other options for performing the same function include the VariantAnnotation bioconductor package [@obenchain2014variantannotation] and the ggbio bioconduuctor package [@ggbio]. 
+```{r setup2, eval=F, tidy=F}
+library(stringr)
+library(reshape2)
+library(animint)
+library(ggplot2)
+
+# Read in the data from the TSV
+vcfTable <- read.table("MeanPlus0p150SDimputed.tsv", sep="\t", stringsAsFactors=FALSE, header=TRUE)
+
+# Correct column names
+col.names <- c("Chromosome", "Position", "id", "Reference", "Alternate", 
+               "qual", "filter", "Allele.Freq", "AlleleRSquared", "DosageRSquared",
+               "Variety", "Alt_Allele_Freq", "Genotype_Probability", "Gene_State")
+
+names(vcfTable) <- col.names
+```
+
+
+```{r vcfconvert, eval=FALSE, tidy=FALSE, include=FALSE}
+## Old Script
+tmp.info <- info(tmp)
+tmp.info2 <- as.data.frame(tmp.info)
+tmp.info2$info <- rownames(tmp.info2)
+names(tmp.info2) <- c("Allele.Freq", "Allele.R2", "Dosage.R2", "info")
+tmp.info2$Allele.Freq <- sapply(tmp.info2$Allele.Freq, 
+                                function(i) paste(i, sep=",", collapse=","))
+
+
+tmp.geno <- geno(tmp)
+# Alternate Allele Frequency
+tmp.geno2 <- geno(tmp)["DS"]
+tmp.geno2 <- as.data.frame(tmp.geno2@listData)
+
+library(reshape2)
+library(multicore)
+tmp.geno2$info <- rownames(tmp.geno2)
+tmp.geno2$snp <- sapply(tmp.geno2$info, function(i) strsplit(i, "_", fixed=TRUE)[[1]][2])
+tmp.geno2$pos <- as.numeric(sapply(tmp.geno2$info, function(i) strsplit(strsplit(i, ":", fixed=TRUE)[[1]][2], "_", fixed=TRUE)[[1]][1]))
+tmp.geno2$chr <- sapply(tmp.geno2$info, function(i) strsplit(i, ":", fixed=TRUE)[[1]][1])
+tmp.geno2$ref <- factor(word(tmp.geno2$snp, sep="/"), levels=c("A", "T", "G", "C"))
+tmp.geno2$alt <- factor(word(tmp.geno2$snp, sep="/", start=-1), levels=c("A", "T", "G", "C"))
+tmp.geno.df2 <- melt(tmp.geno2, id.vars=c("info", "snp", "pos", "chr", "ref", "alt"))
+names(tmp.geno.df2)[7:8] <- c("Variety", "Alt.Allele.Freq")
+tmp.geno.df2$Variety <- gsub("DS.", "", tmp.geno.df2$Variety)
+
+# GT: 0|1 or 1|0 indicates heterozygous state, 1|1 indicates homozygous, but doesn't differentiate between AA and aa
+tmp.geno3 <- as.data.frame(geno(tmp)["GT"]@listData)
+tmp.geno3$info <- rownames(tmp.geno3)
+tmp.geno3$snp <- sapply(tmp.geno3$info, function(i) strsplit(i, "_", fixed=TRUE)[[1]][2])
+tmp.geno3$pos <- as.numeric(sapply(tmp.geno3$info, function(i) strsplit(strsplit(i, ":", fixed=TRUE)[[1]][2], "_", fixed=TRUE)[[1]][1]))
+tmp.geno3$chr <- sapply(tmp.geno3$info, function(i) strsplit(i, ":", fixed=TRUE)[[1]][1])
+tmp.geno3$ref <- factor(word(tmp.geno3$snp, sep="/"), levels=c("A", "T", "G", "C"))
+tmp.geno3$alt <- factor(word(tmp.geno3$snp, sep="/", start=-1), levels=c("A", "T", "G", "C"))
+tmp.geno.df3 <- melt(tmp.geno3, id.vars=c("info", "snp", "pos", "chr", "ref", "alt"))
+names(tmp.geno.df3)[7:8] <- c("Variety", "Gene.State")
+tmp.geno.df3$Variety <- gsub("GT.", "", tmp.geno.df3$Variety)
+
+#GP: AA vs. Aa vs. aa - estimated genotype probability. 
+tmp.geno4 <- as.data.frame(geno(tmp)["GP"]@listData)
+tmp.geno4[,1:10] <- apply(tmp.geno4[,1:10], 2, function(i) gsub("\\)", "", gsub("c\\(", "", paste(i, sep=", "))))
+tmp.geno4$info <- rownames(tmp.geno4)
+tmp.geno4$snp <- sapply(tmp.geno4$info, function(i) strsplit(i, "_", fixed=TRUE)[[1]][2])
+tmp.geno4$pos <- as.numeric(sapply(tmp.geno4$info, function(i) strsplit(strsplit(i, ":", fixed=TRUE)[[1]][2], "_", fixed=TRUE)[[1]][1]))
+tmp.geno4$chr <- sapply(tmp.geno4$info, function(i) strsplit(i, ":", fixed=TRUE)[[1]][1])
+tmp.geno4$ref <- factor(word(tmp.geno4$snp, sep="/"), levels=c("A", "T", "G", "C"))
+tmp.geno4$alt <- factor(word(tmp.geno4$snp, sep="/", start=-1), levels=c("A", "T", "G", "C"))
+tmp.geno.df4 <- melt(tmp.geno4, id.vars=c("info", "snp", "pos", "chr", "ref", "alt"))
+names(tmp.geno.df4)[7:8] <- c("Variety", "Estimated.Genotype.Probability")
+tmp.geno.df4$Variety <- gsub("GP.", "", tmp.geno.df4$Variety)
+
+tmp.geno.df <- merge(tmp.geno.df2, tmp.geno.df3)
+tmp.geno.df <- merge(tmp.geno.df, tmp.geno.df4)
+tmp.df <- merge(tmp.geno.df, tmp.info2)
+
+
+rm(tmp.geno.df2, tmp.geno.df3, tmp.geno.df4, tmp.geno2, tmp.geno3, tmp.geno4, tmp.info2)
+
+save(list="tmp.df", file="SNPCombinedData.RData")
+
+```
+
+## Rearranging Data for Plotting
+Plots in this applet were generated using ggplot2 [@ggplot2], and are rendered interactively using Shiny [@shiny]. 
+```{r dataorganization-old, eval=FALSE, tidy=FALSE, include=FALSE}
+library(doMC)
+registerDoMC()
+library(dplyr)
+
+load("SNPCombinedData.RData")
+
+names(tmp.df)[1:7] <- c("Info", "SNP", "Position", "Chromosome", "Reference", "Alternate", "Variety")
+
+tmp.df$Alt.Allele.Count <- round(tmp.df$Alt.Allele.Freq)
+
+varieties <- as.character(unique(tmp.df$Variety))
+seqnames <- unique(tmp.df$Chromosome[grepl("Chr", tmp.df$Chromosome)])
+
+# remove scaffolds for now to make display easier
+tmp.df <- filter(tmp.df, grepl("Chr", tmp.df$Chromosome))
+```
+
+```{r dataorganization, eval=FALSE, tidy=FALSE}
+library(doMC)
+registerDoMC()
+library(dplyr)
+
+vcfTable$Alt.Allele.Count <- round(vcfTable$Alt.Allele.Freq)
+
+varieties <- as.character(unique(vcfTable$Variety))
+seqnames <- unique(vcfTable$Chromosome[grepl("Chr", vcfTable$Chromosome)])
+
+# remove scaffolds for now to make display easier
+vcfTable <- filter(vcfTable, grepl("Chr", vcfTable$Chromosome))
+
+# Change names to correspond to actual usage (instead of lab names) according to Jim's suggestions.
+vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("901-G04_RS_5601T"), "5601T")
+vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("901-G06_RS_Bonus"), "Bonus")
+vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("RS_"), "")
+vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("AK_004"), "A.K.")
+vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("Clark_NuGEN"), "Clark")
+vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("NCRaleigh"), "Raleigh")
+```
+
+### SNP Browser Plot
+The goal here is to calculate the proportion of SNPs of each base pair (including those varieties that did not differ from the reference genome at the base pair in question). 
+```{r browserplot, eval=FALSE, tidy=FALSE}
+
+
+n <- length(unique(varieties))
+snp <- snpList %>% ungroup %>% group_by(Chromosome, Position, Reference) %>% 
+  summarise(A=sum(Alt_Allele_Count*(Alternate=="A")), 
+            G=sum(Alt_Allele_Count*(Alternate=="G")), 
+            C=sum(Alt_Allele_Count*(Alternate=="C")), 
+            T=sum(Alt_Allele_Count*(Alternate=="T")), 
+            total=sum(Alt_Allele_Count)) %>%
+  mutate(A = A + (Reference=="A")*(2*n-total), 
+         G = G + (Reference=="G")*(2*n-total),
+         C = C + (Reference=="C")*(2*n-total),
+         T = T + (Reference=="T")*(2*n-total)) 
+snp <- snp[,1:7]
+
+
+library(tidyr)
+snp.counts <- snp %>% gather(Nucleotide, Count, 4:7)
+snp.counts <- filter(snp.counts, Count>0)
+save(snp.counts, file="SNPCounts.RData")
+
+```
+
+### SNP Density Plots
+This code calculates the density of SNPs along each chromosome. For each group of data, the SNP density is calculated at 8192 points along the chromosome, with a bandwidth 10% of the default kernel bandwidth. SNPs are weighted according to the count of alternate alleles. 
+```{r densityplot, eval=FALSE}
+
+snp.density <- group_by(snpList, Chromosome, Variety) %>%
+  do(as.data.frame(density(.$Position, n=2048*4, adjust=0.1, from=1, to=max(.$Position), weights=(.$Alt_Allele_Count)/sum(.$Alt_Allele_Count))[1:2]))
+save(snp.density, file="SNPDensity.RData")
+```
+
+# References
+<div class="references"></div>
+

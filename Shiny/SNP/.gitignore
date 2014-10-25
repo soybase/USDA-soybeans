@@ -1,0 +1,14 @@
+*.rda
+*.RData
+*.rdata
+*.csv
+*.tsv
+www/
+Documentation_files/
+snpSamplingDocumentation_cache/
+*.gff3
+*.html
+QTL_MAG.txt
+KevinBaconDistance.png
+SNPdb.sqlite
+kinshipMatrix.txt
