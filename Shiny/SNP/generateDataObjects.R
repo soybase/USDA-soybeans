@@ -183,7 +183,7 @@ matrixLong.snp$variety1 <- factor(matrixLong.snp$variety1, levels=col.ord)
 matrixLong.snp$variety2 <- factor(matrixLong.snp$variety2, levels=row.ord)
 
 # Multiplier to make the tree display appropriately proportioned
-dendro.multiplier <- 2
+dendro.multiplier <- 1.5
 
 # Tile boundaries correctly offset, and set mouseover to display information as well.
 matrixLong.snp$Varieties <- paste0(matrixLong.snp$variety1, ", ", matrixLong.snp$variety2)#, " = ", round(matrixLong.snp$value, 2))
@@ -217,29 +217,6 @@ p1 <- ggplot() +
   geom_segment(data=ggdendro::segment(ddata_x), aes(x=y*dendro.multiplier+80, y=x, xend=yend*dendro.multiplier+80, yend=xend), inherit.aes=F) + 
   geom_text(data=matrixLong.snp, aes(x=40, y=-3, label=paste0(Varieties, " = ", round(value, 3)), showSelected=Varieties), size=14)
 
-# animint2dir(list(kinship=p), out.dir="www", open.browser = F)
-
-# ########################## SNPs By Field Trial Data ###########################
-
-fieldtrials <- read.csv("CombinedFieldTrialsData.csv", header=T, stringsAsFactors=FALSE)
-fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "IA 3023", "IA3023")
-fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Williams 82", "Williams82")
-fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Amsoy 71", "Amsoy")
-fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Beeson 80", "Beeson")
-fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Corsoy 79", "Corsoy")
-
-fieldtrials <- filter(fieldtrials, fieldtrials$Cultivar%in%varieties)
-
-fieldtrialsmatrix <- expand.grid(variety1=unique(fieldtrials$Cultivar), variety2=unique(fieldtrials$Cultivar), stringsAsFactors = F)
-fieldtrialsmatrix <- merge(fieldtrialsmatrix, unique(fieldtrials[,c("Cultivar", "AvgYield")]), by.x="variety1", by.y="Cultivar")
-names(fieldtrialsmatrix)[3] <- "yield1"
-fieldtrialsmatrix <- merge(fieldtrialsmatrix, unique(fieldtrials[,c("Cultivar", "AvgYield")]), by.x="variety2", by.y="Cultivar")
-names(fieldtrialsmatrix)[4] <- "yield2"
-fieldtrialsmatrix$Varieties <- paste0(fieldtrialsmatrix$variety1, ", ", fieldtrialsmatrix$variety2)
-fieldtrialsmatrix$yielddiff <- with(fieldtrialsmatrix, yield1-yield2)
-fieldtrialsmatrix <- merge(fieldtrialsmatrix, matrixLong.snp[,c("Varieties", "value")], all.x=T, all.y=F)
-
-
 # ########################### Kinship By Family Tree ############################
 load("./tree-large.rda")
 tree.large <- tree
@@ -255,12 +232,39 @@ kevinbaconPaths <- merge(kevinbaconPaths, kevinbacon)
 names(kevinbacon) <- c("variety1", "variety2", "degree")
 names(kevinbaconPaths) <- c("variety1", "variety2", "vertex", "year", "order", "degree")
 
+
+# ############################## Plot shortest path ##############################
+
 # fix missing years
 kevinbaconPaths$year[kevinbaconPaths$vertex=="PI 88.788"] <- 1930
 kevinbaconPaths$year[kevinbaconPaths$vertex=="Peking"] <- 1954
 kevinbaconPaths$year[kevinbaconPaths$vertex=="IA3023"] <- 2003
 kevinbaconPaths$year <- as.numeric(kevinbaconPaths$year)
 
+# Set Varieties variable to link all plots
+kevinbaconPaths$Varieties <- paste0(kevinbaconPaths$variety1, ", ", kevinbaconPaths$variety2) #, " = ", round(kevinbaconPaths$degree, 2))
+
+# Dataset of segments for paths
+segmentPaths <- ddply(kevinbaconPaths, .(Varieties), function(df){
+  if(nrow(df)==1){
+    data.frame()
+  } else {
+    with(df, data.frame(Varieties = unique(Varieties), x=year[-length(Varieties)], y=order[-length(Varieties)],
+                        xend=year[-1], yend=order[-1], stringsAsFactors=FALSE))
+  }
+})
+
+p3 <- ggplot() + 
+  theme_animint(width=750, height=400) +
+  geom_segment(aes(x=x, y=y, xend=xend, yend=yend, showSelected=Varieties), data=segmentPaths, fill="grey", colour="grey") + 
+  geom_rect(aes(xmin=year-5, xmax=year+5, ymin=order-.1, ymax=order+.6, showSelected=Varieties), data=kevinbaconPaths, fill="white", colour="white") + 
+  geom_text(aes(x=year, y=order, label=vertex, showSelected=Varieties), data=kevinbaconPaths) + 
+  scale_y_continuous(name="Distance", breaks=c(0, 2, 4, 6, 8, 10, 12), limits=c(-1, 12)) + 
+  xlab("Year") + 
+  ggtitle("Shortest Path between Varieties")
+
+
+# ########################### Plot Heatmap of Gen Dist ###########################
 
 # Create matrix of values for similarity matrix
 meanMatrix <- acast(kevinbacon, variety1 ~ variety2, value.var="degree")
@@ -293,17 +297,6 @@ dendro.multiplier2 <- .25
 
 # Set mouseover to display information for both matrices.
 matrixLong$Varieties <- paste0(matrixLong$variety1, ", ", matrixLong$variety2) #, " = ", round(matrixLong$value, 2))
-kevinbaconPaths$Varieties <- paste0(kevinbaconPaths$variety1, ", ", kevinbaconPaths$variety2) #, " = ", round(kevinbaconPaths$degree, 2))
-
-# Dataset of segments for paths
-segmentPaths <- ddply(kevinbaconPaths, .(Varieties), function(df){
-  if(nrow(df)==1){
-    data.frame()
-  } else {
-    with(df, data.frame(Varieties = unique(Varieties), x=year[-length(Varieties)], y=order[-length(Varieties)],
-               xend=year[-1], yend=order[-1], stringsAsFactors=FALSE))
-  }
-})
 
 # Tile boundaries correctly offset
 matrixLong$xmin <- as.numeric(matrixLong$variety1)-.5
@@ -335,17 +328,7 @@ p2 <- ggplot() +
   geom_segment(data=ggdendro::segment(ddata_x2), aes(x=y*dendro.multiplier2+length(row.ord2)+1, y=x, xend=yend*dendro.multiplier2+length(row.ord2)+1, yend=xend), inherit.aes=F) + 
   geom_text(data=matrixLong, aes(x=40, y=-3, label=paste0(Varieties, " = ", value, " generations apart"), showSelected=Varieties), size=14)
 
-
-p3 <- ggplot() + 
-  theme_animint(width=750, height=400) +
-  geom_segment(aes(x=x, y=y, xend=xend, yend=yend, showSelected=Varieties), data=segmentPaths) + 
-  geom_rect(aes(xmin=year-1.5, xmax=year+1.5, ymin=order-.25, ymax=order+.25, showSelected=Varieties), data=kevinbaconPaths, fill="white", colour="white") + 
-  geom_text(aes(x=year, y=order, label=vertex, showSelected=Varieties), data=kevinbaconPaths) + 
-  theme_bw() + 
-  scale_y_continuous(name="Distance", breaks=c(0, 2, 4, 6, 8, 10, 12), limits=c(-1, 12)) + 
-  xlab("Year") + 
-  ggtitle("Shortest Path between Varieties")
-
+# ############ Association between Different Relatedness Measures ##############
 
 AllVars <- merge(kevinbacon, matrixLong.snp[,c("variety1", "variety2", "value", "Varieties")])
 AllVars$degree.jit <- jitter(AllVars$degree, amount=.4)  
@@ -368,6 +351,30 @@ p4 <- ggplot() +
   ylab("SNP Distance") + 
   ggtitle("Generations and SNP Distance")
 
+
+# ########################## SNPs By Field Trial Data ###########################
+
+fieldtrials <- read.csv("CombinedFieldTrialsData.csv", header=T, stringsAsFactors=FALSE)
+fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "IA 3023", "IA3023")
+fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Williams 82", "Williams82")
+fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Amsoy 71", "Amsoy")
+fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Beeson 80", "Beeson")
+fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Corsoy 79", "Corsoy")
+
+fieldtrials <- filter(fieldtrials, fieldtrials$Cultivar%in%varieties)
+
+fieldtrialsmatrix <- expand.grid(variety1=unique(fieldtrials$Cultivar), variety2=unique(fieldtrials$Cultivar), stringsAsFactors = F)
+fieldtrialsmatrix <- merge(fieldtrialsmatrix, unique(fieldtrials[,c("Cultivar", "AvgYield")]), by.x="variety1", by.y="Cultivar")
+names(fieldtrialsmatrix)[3] <- "yield1"
+fieldtrialsmatrix <- merge(fieldtrialsmatrix, unique(fieldtrials[,c("Cultivar", "AvgYield")]), by.x="variety2", by.y="Cultivar")
+names(fieldtrialsmatrix)[4] <- "yield2"
+fieldtrialsmatrix$Varieties <- paste0(fieldtrialsmatrix$variety1, ", ", fieldtrialsmatrix$variety2)
+fieldtrialsmatrix$yielddiff <- with(fieldtrialsmatrix, yield1-yield2)
+fieldtrialsmatrix <- merge(fieldtrialsmatrix, matrixLong.snp[,c("Varieties", "value")], all.x=T, all.y=F)
+fieldtrialsmatrix <- filter(fieldtrialsmatrix, !is.na(value))
+fieldtrialsmatrix$y1 <- with(fieldtrialsmatrix, paste0(variety1, " yield = ", round(yield1, 2)))
+fieldtrialsmatrix$y2 <- with(fieldtrialsmatrix, paste0(variety2, " yield = ", round(yield2, 2)))
+
 p5 <- ggplot() + 
   theme_animint(width=375, height=400) +
   geom_point(aes(y=value, x=yielddiff, showSelected=Varieties), shape=1, size=4, colour="black", fill="white", data=fieldtrialsmatrix) + 
@@ -375,8 +382,14 @@ p5 <- ggplot() +
   scale_x_continuous(name="Yield 1 - Yield 2") + 
   ylab("SNP Distance") + 
   ggtitle("Yield Difference and SNP Distance") + 
+  geom_text(aes(x=0, y=2.025, label=y1, showSelected=Varieties), data=fieldtrialsmatrix) + 
+  geom_text(aes(x=0, y=1.95, label=y2, showSelected=Varieties), data=fieldtrialsmatrix)  
 
-animint2dir(list(heatmap=p1, kinshipHeatmap=p2, kinship=p3, rel=p4, yield=p5), out.dir="www", open.browser = F)
+plotSet <- list(heatmap=p1, kinshipHeatmap=p2, kinship=p3, rel=p4, yield=p5)
+
+save(plotSet, p1, p2, p3, p4, p5, AllVars, fieldtrialsmatrix, matrixLong, matrixLong.snp, col.ord, col.ord2, dd.col, dd.col2, dd.row, dd.row2, ddata_x, ddata_x2, ddata_y, ddata_y2, rownames, row.ord, row.ord2, segmentPaths, kevinbaconPaths, dendro.multiplier, dendro.multiplier2, file="animintData.rda")
+
+animint2dir(plotSet, out.dir="www/animint", open.browser = F)
 
 
 #save.image(file="ShinyData.RData")
