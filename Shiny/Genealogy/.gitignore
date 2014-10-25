@@ -1,0 +1,11 @@
+*.rda
+*.RData
+*.rdata
+*.csv
+*.tsv
+www/
+*.gff3
+*.html
+QTL_MAG.txt
+.directory
+.Rhistory
