@@ -194,7 +194,8 @@ matrixLong.snp$ymax <- as.numeric(matrixLong.snp$variety2)+.5
 
 
 p1 <- ggplot() +
-  theme_animint(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.x=element_blank(), width=750, height=750) + 
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.x=element_blank(), axis.line=element_blank()) + 
+  theme_animint(width=750, height=750) + 
   geom_tile(data=matrixLong.snp, aes(x=as.numeric(variety1), y=as.numeric(variety2), fill=value, color=value, clickSelects=Varieties)) + 
   geom_segment(aes(xend=xmin, x=xmin, 
                    y=.5, yend=max(as.numeric(variety2))+.5, showSelected=Varieties), data=matrixLong.snp) + 
@@ -312,6 +313,7 @@ matrixLong$ymax <- as.numeric(matrixLong$variety2)+.5
 
 
 p2 <- ggplot() +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.x=element_blank(), axis.line=element_blank()) + 
   theme_animint(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.x=element_blank(), width=750, height=750) + 
   geom_tile(data=matrixLong, aes(x=as.numeric(variety1), y=as.numeric(variety2), fill=value, color=value, clickSelects=Varieties)) + 
   geom_segment(aes(xend=xmin, x=xmin, 
@@ -360,7 +362,7 @@ rm(AllVars2)
 
 p4 <- ggplot() + 
   theme_animint(width=375, height=400) +
-  geom_point(aes(y=value, x=degree.jit, showSelected=Varieties), shape=1, colour="black", fill="white", size=3, data=AllVars) + 
+  geom_point(aes(y=value, x=degree.jit, showSelected=Varieties), shape=1, colour="black", fill="white", size=4, data=AllVars) + 
   geom_point(aes(y=value, x=degree.jit, clickSelects=Varieties), alpha=1, colour="#374f6b", fill="#374f6b", data=AllVars) +
   scale_x_continuous(name="Generational Distance") + 
   ylab("SNP Distance") + 
@@ -368,7 +370,7 @@ p4 <- ggplot() +
 
 p5 <- ggplot() + 
   theme_animint(width=375, height=400) +
-  geom_point(aes(y=value, x=yielddiff, showSelected=Varieties), shape=1, size=3, data=fieldtrialsmatrix) + 
+  geom_point(aes(y=value, x=yielddiff, showSelected=Varieties), shape=1, size=4, colour="black", fill="white", data=fieldtrialsmatrix) + 
   geom_point(aes(y=value, x=yielddiff, clickSelects=Varieties), alpha=1, colour="#374f6b", fill="#374f6b", data=fieldtrialsmatrix) +
   scale_x_continuous(name="Yield 1 - Yield 2") + 
   ylab("SNP Distance") + 
