@@ -218,6 +218,26 @@ p1 <- ggplot() +
 
 # animint2dir(list(kinship=p), out.dir="www", open.browser = F)
 
+# ########################## SNPs By Field Trial Data ###########################
+
+fieldtrials <- read.csv("CombinedFieldTrialsData.csv", header=T, stringsAsFactors=FALSE)
+fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "IA 3023", "IA3023")
+fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Williams 82", "Williams82")
+fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Amsoy 71", "Amsoy")
+fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Beeson 80", "Beeson")
+fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Corsoy 79", "Corsoy")
+
+fieldtrials <- filter(fieldtrials, fieldtrials$Cultivar%in%varieties)
+
+fieldtrialsmatrix <- expand.grid(variety1=unique(fieldtrials$Cultivar), variety2=unique(fieldtrials$Cultivar), stringsAsFactors = F)
+fieldtrialsmatrix <- merge(fieldtrialsmatrix, unique(fieldtrials[,c("Cultivar", "AvgYield")]), by.x="variety1", by.y="Cultivar")
+names(fieldtrialsmatrix)[3] <- "yield1"
+fieldtrialsmatrix <- merge(fieldtrialsmatrix, unique(fieldtrials[,c("Cultivar", "AvgYield")]), by.x="variety2", by.y="Cultivar")
+names(fieldtrialsmatrix)[4] <- "yield2"
+fieldtrialsmatrix$Varieties <- paste0(fieldtrialsmatrix$variety1, ", ", fieldtrialsmatrix$variety2)
+fieldtrialsmatrix$yielddiff <- with(fieldtrialsmatrix, yield1-yield2)
+fieldtrialsmatrix <- merge(fieldtrialsmatrix, matrixLong.snp[,c("Varieties", "value")], all.x=T, all.y=F)
+
 
 # ########################### Kinship By Family Tree ############################
 load("./tree-large.rda")
