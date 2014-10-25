@@ -53,8 +53,10 @@ nsnips <- snpList%>% group_by(Chromosome, Position) %>% summarize(n=length(Posit
 nsnips <- nrow(nsnips)
 chr.summary <- snpList %>% group_by(Chromosome) %>% summarize(start=min(Position), end=max(Position))
 varieties <- unique(snpList$Variety)
+varieties <- varieties[order(varieties)]
+varieties <- c(varieties[!grepl("^[1-9]", varieties)], varieties[grepl("^[1-9]", varieties)])
 seqnames <- unique(snpList$Chromosome)
-save(nsnips,chr.summary, varieties, seqnames, file="ShinyStart.rda")
+save(nsnips, chr.summary, varieties, seqnames, file="ShinyStart.rda")
 
 snp.summary <- table(snpList$Variety)
 save(snp.summary, file="snpSummary.rda")
