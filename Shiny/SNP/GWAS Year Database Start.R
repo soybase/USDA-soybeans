@@ -5,9 +5,14 @@ fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Williams 82", "Willia
 fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Amsoy 71", "Amsoy")
 
 
+load("tree-large.rda")
+fulltree <- tree
 load("tree.rda")
 
-tree2 <- merge(tree, unique(fieldtrials[,c("Cultivar", "Year", "AvgYield")]), by.x=c("child"), by.y=c("Cultivar"), all.x=T, all.y=F)
+# Get years, etc from full tree
+tree.fixed <- merge(tree[,c("child", "parent")], fulltree, all.x=T, all.y=F)
+
+tree2 <- merge(tree, unique(fieldtrials[,c("Cultivar", "Year", "AvgYield", "MG")]), by.x=c("child"), by.y=c("Cultivar"), all.x=T, all.y=F)
 tree2$year <- pmin(tree2$year, tree2$Year, na.rm=T)
 tree2 <- unique(tree2[,-which(names(tree2)%in%c("Year", "year.imputed", "min.repro.year", "yield"))])
 
