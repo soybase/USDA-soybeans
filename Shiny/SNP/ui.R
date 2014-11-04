@@ -38,12 +38,11 @@ AggSNPBrowser <- function(){
                       )),
                     wellPanel(
                       helpText("Manually choose chromosome and location:"),
-                      selectizeInput("locationChrs", "Choose Chromosome of Interest", 
-                                     choices=unique(seqnames), multiple=TRUE, options=list(maxItems=1)),
+                      selectInput("locationChrs", "Choose Chromosome of Interest", 
+                                  choices=unique(seqnames), multiple=FALSE, selectize=T),
                       helpText("Enter a numeric start point on the chromosome"),
                       textInput("chrStart", 
-                                "Start point", value=0
-                      )
+                                "Start point", value=0)
                       )
                     ),
              column(width=9, 
