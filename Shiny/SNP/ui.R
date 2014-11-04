@@ -57,8 +57,8 @@ AggSNPBrowser <- function(){
                                                    class="2x pull-left")
                             )
                           ),
-                          tags$td(rowspan=6, width='70%', display='none', ''),
-                          tags$td(
+                          tags$td(rowspan=7, width='75%', display='none', ''),
+                          tags$td(align="right",
                             actionButton("down", 
                                          "Move downstream", 
                                          icon=icon('angle-double-right', 
