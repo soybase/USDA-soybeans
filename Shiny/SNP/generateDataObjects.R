@@ -119,6 +119,33 @@ save(GlymaIDList, file="./GlymaID.rda")
 # dbWriteTable(conn = db, name="GlymaIDList", value=as.data.frame(GlymaIDList), row.names=FALSE, overwrite=T)
 dbDisconnect(db)
 
+# get list of unique snp sites
+snpList2 <- snpList %>% 
+  group_by(Chromosome, Position) %>%
+  select(Chromosome, Position) %>% 
+  unique()
+
+# combine unique snps with glymaIDs if the snp falls within an identified glymaID range
+snpList3 <- snpList2 %>% rowwise() %>%
+  do(data.frame(., GlymaIDMatch = str_replace(paste(filter(GlymaIDList, seqnames%in%.$Chromosome & start <=.$Position & end >=.$Position)$ID, collapse=", "), ", $", ""), stringsAsFactors=F))
+save(snpList3, file="./GlymaIDsnps.rda")
+
+snpList2 <- filter(snpList3, GlymaIDMatch!="")
+snpList2 <- plyr::join(snpList, snpList2)
+
+# Summarize snps by number of Varieties at that position
+snpList.VarietySummary <- snpList2 %>% group_by(Chromosome, Position)%>% select(Variety, Reference, Alternate, Allele.Freq, GlymaIDMatch) %>% summarize(nvars=length(Variety), Reference=unique(Reference), Alternate=unique(Alternate), GlymaIDMatch=unique(GlymaIDMatch)) 
+names(snpList.VarietySummary)[6] <- "ID"
+names(snpList.VarietySummary)[3] <- "Number.of.Varieties"
+snpList.VarietySummary <- left_join(snpList.VarietySummary, GlymaIDList[,c("ID", "chrnum", "searchstr")])
+
+# Summarize snps by number of sites assoc. with each glymaID
+snpList.GlymaSummary <- snpList2 %>% group_by(Chromosome, GlymaIDMatch)%>% select(Variety, Position) %>% summarize(nvars=length(unique(Variety)), npos=length(unique(Position)))
+names(snpList.GlymaSummary)[2] <- "ID"
+names(snpList.GlymaSummary)[3:4] <- c("Number.of.Varieties", "Number.of.SNP.Sites")
+snpList.GlymaSummary <- left_join(snpList.GlymaSummary, GlymaIDList[,c("ID", "chrnum", "searchstr")])
+snpList.GlymaSummary$GlymaIDMatch[is.na(snpList.GlymaSummary$GlymaIDMatch)] <- "No Matching GlymaID"
+save(snpList.VarietySummary, snpList.GlymaSummary, file="./GlymaSNPsummary.rda")
 
 rm(GlymaIDList, segments.full, segments)
 gc()
