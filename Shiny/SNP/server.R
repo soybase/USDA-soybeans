@@ -228,10 +228,10 @@ shinyServer(function(input, output, session) {
     isolate({
       tmp <- rev.snps()
       
-      # If there are more than 4*bases rows, then get the position of the 4*base-th row
-      if(nrow(tmp)>4*input$bases){
+      # If there are more than 2*bases rows, then get the position of the 2*base-th row
+      if(nrow(tmp)>2*input$bases){
         updateTextInput(session, inputId = "chrStart",
-                        value=tmp$Position[4*input$bases]-1)
+                        value=tmp$Position[2*input$bases]-1)
       } else { 
         # otherwise, find the minimum position
         updateTextInput(session, inputId = "chrStart",
@@ -248,12 +248,12 @@ shinyServer(function(input, output, session) {
     
     isolate({
       tmp <- snps()
-      if(nrow(tmp)<4*input$bases){
-        # if there aren't 4*bases rows, then keep current TextInput value
+      if(nrow(tmp)<2*input$bases){
+        # if there aren't 2*bases rows, then keep current TextInput value
         return()
       } else {
         # otherwise, move downstream by input$bases snps.
-        updateTextInput(session, inputId = "chrStart", value=tmp$Position[4*input$bases]-1)
+        updateTextInput(session, inputId = "chrStart", value=tmp$Position[2*input$bases]-1)
       }
     })
   })
@@ -276,7 +276,7 @@ shinyServer(function(input, output, session) {
       loc.start <- input$chrStart
       
       if(nrow(tmp)>0){
-        snps.sub <- tmp[1:min(nrow(tmp), 4*input$bases),]
+        snps.sub <- tmp[1:min(nrow(tmp), 2*input$bases),]
         plot <- ggplot(data=snps.sub) + 
           geom_histogram(aes(x=factor(Position), 
                              fill=factor(Nucleotide, levels=c("A", "G", "T", "C")), 
