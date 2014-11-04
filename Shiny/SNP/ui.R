@@ -121,6 +121,29 @@ SNPDensity <- function(){
   )
 }
 
+
+SNPSummary <- function(){
+  tabPanel("SNP Density", 
+           fluidRow(
+             column(width=4, 
+                    wellPanel(
+                      selectizeInput("glymaChrs", "Filter GlymaIDs by Chromosome(s)", choices=unique(seqnames), multiple=TRUE, options=list(maxItems=5))
+                    )
+             ),
+             column(width=8, 
+                    wellPanel(
+                      helpText("The table below shows the number of unique SNP locations and varieties with SNPs at those locations by GlymaID.")
+                      )
+                    )
+             ),
+           fluidRow(
+             column(width=12, 
+                    dataTableOutput("glymaSummary")
+             )
+           )
+  )
+}
+
 SNPKinship <- function(){
   tabPanel("Kinship via SNPs", fluidRow(uiOutput("KinshipSNP")))
 }
@@ -137,6 +160,7 @@ methodology <- function(){
 # Define UI for page that allows selection of genetic lines with corresponding facets
 shinyUI(navbarPage(title="Soybean SNPs", 
                    AggSNPBrowser(),
+                   SNPSummary(),
                    VarSNPBrowser(),
                    SNPDensity(), 
                    SNPKinship(),
