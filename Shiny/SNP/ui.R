@@ -11,7 +11,11 @@ head.scripts <-
             tags$link(href="libs/MagnificPopup-0.9.9/magnific-popup.css", rel="stylesheet"),
             tags$script(src="libs/MagnificPopup-0.9.9/magnific-popup.js", type="text/javascript"),
             tags$link(href="libs/knitrBootstrap-0.0.1/css/knitrBootstrap.css", rel="stylesheet" ),
-            tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"))
+            tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"),
+            tags$style(type="text/css", "input#bases { height:30pt;}"),
+            tags$style(type="text/css", "input#glymaID { height:20pt;}"),
+            tags$style(type="text/css", "input#glymaID2 { height:20pt;}"),
+            tags$style(type="text/css", "input#chrStart { height:20pt;}"))
 
 load("ShinyStart.rda")
 
