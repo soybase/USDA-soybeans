@@ -67,7 +67,7 @@ methodology <- function(){
 }
 
 #---- Page UI ----#
-shinyUI(navbarPage(title="Soybean SNPs", 
+shinyUI(navbarPage(title="Soybean Genealogy", 
                    TreeBrowser(),
                    KevinBacon(),
 #                    TraitLinkage(),
