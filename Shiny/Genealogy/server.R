@@ -9,9 +9,9 @@ library(reshape2)
 # created in generateDataObjects.R (run once to set up data for display)
 
 load("tree.rda")
-source("SelectGeneology.R")
+# source("SelectGeneology.R")
 library(phyViz)
-treeGraph <- processTreeGraph(tree)
+treeGraph <- treeToIG(tree, isDirected=FALSE)
 
 objlist <- ls()
 if(!"kevinbacon"%in%objlist){
@@ -92,8 +92,8 @@ shinyServer(function(input, output, session) {
 
 
   output$KevinBaconDistance <- renderPlot({  
-    path <- getPath(input$var1, input$var2, ig=treeGraph)
-    print(generatePathPlot(path))
+    path <- getPath(input$var1, input$var2, ig=treeGraph, tree=tree)
+    print(plotPath(path))
   })
   
 #   output$nameList <- renderDataTable({
