@@ -1,11 +1,8 @@
 library(shiny)
 
 head.scripts <- 
-  tags$head(
-#             tags$script(src="libs/jquery-1.11.0/jquery.min.js", type="text/javascript"),
-            tags$link(href="libs/bootstrap3-3.2.0/css/bootstrap.min.css", rel="stylesheet"),
+  tags$head(tags$link(href="libs/bootstrap3-3.2.0/css/bootstrap.min.css", rel="stylesheet"),
             tags$link(href="libs/bootstrap3-3.2.0/css/themes/cerulean/bootstrap.min.css", rel="stylesheet"),
-#             tags$script(src="libs/bootstrap3-3.2.0/js/bootstrap.min.js", type="text/javascript"),
             tags$link(href="libs/highlightjs-8.2/highlight/idea.css", rel="stylesheet"),
             tags$script(src="libs/highlightjs-8.2/highlight.pack.js", type="text/javascript"),
             tags$link(href="libs/MagnificPopup-0.9.9/magnific-popup.css", rel="stylesheet"),
@@ -15,6 +12,7 @@ head.scripts <-
             tags$style(type="text/css", "input#bases { height:30pt;}"),
             tags$style(type="text/css", "input#glymaID { height:20pt;}"),
             tags$style(type="text/css", "input#glymaID2 { height:20pt;}"),
+            tags$style(type="text/css", "input#glymaID3 { height:30pt;}"),
             tags$style(type="text/css", "input#chrStart { height:20pt;}"))
 
 load("ShinyStart.rda")
@@ -46,7 +44,7 @@ AggSNPBrowser <- function(){
                       )
                     ),
              column(width=9, 
-                    plotOutput("AggregatePlot", width="100%"),
+                    plotOutput("AggregatePlot", width="100%", height="400px"),
                     tagList(
                       tags$table(
                         tags$tr(
@@ -95,7 +93,7 @@ VarSNPBrowser <- function(){
                     dataTableOutput("glymaTable2")
            ),
            column(width=9, 
-                  plotOutput("VarietySnpPlot", width="100%"),
+                  plotOutput("VarietySnpPlot", width="100%", height="800px"),
                   br(),
                   h3("Matching SNPs"),
                   dataTableOutput("snpTable")
@@ -121,25 +119,46 @@ SNPDensity <- function(){
   )
 }
 
-
 SNPSummary <- function(){
-  tabPanel("SNP Density", 
+  tabPanel("SNP Counts by GlymaID", 
+           wellPanel(
+             fluidRow(
+               column(width=2),
+               column(width=2, 
+                      selectizeInput("glymaChrs", "Filter GlymaIDs by Chromosome(s)", 
+                                     choices=unique(seqnames), multiple=TRUE, options=list(maxItems=5))
+                      ), 
+               column(width=4),
+               column(width=2,
+                      textInput("glymaID3", 
+                                "Locate Position by Glyma ID",
+                                value="")
+                      ),
+               column(width=2)
+             ),
+             fluidRow(
+               column(width=1),
+               column(width=4,
+                      helpText("The table below shows the number of unique SNP locations and 
+                               varieties with SNPs at those locations by GlymaID")
+                      ),
+               column(width=2),
+               column(width=4,
+                      helpText("The table directly below shows the number of varieties with SNPs at a specific location")
+                      ),
+               column(width=1)
+            )
+           ),
            fluidRow(
+             column(width=1),
              column(width=4, 
-                    wellPanel(
-                      selectizeInput("glymaChrs", "Filter GlymaIDs by Chromosome(s)", choices=unique(seqnames), multiple=TRUE, options=list(maxItems=5))
-                    )
-             ),
-             column(width=8, 
-                    wellPanel(
-                      helpText("The table below shows the number of unique SNP locations and varieties with SNPs at those locations by GlymaID.")
-                      )
-                    )
-             ),
-           fluidRow(
-             column(width=12, 
                     dataTableOutput("glymaSummary")
-             )
+             ),
+             column(width=2),
+#              column(width=4, 
+#                     dataTableOutput("varietySummary")
+#              ), 
+             column(width=1)
            )
   )
 }
