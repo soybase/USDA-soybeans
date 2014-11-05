@@ -1,6 +1,5 @@
 library(stringr)
 library(reshape2)
-# library(ggdendro)
 library(animint)
 library(ggplot2)
 library(doMC)
@@ -43,7 +42,7 @@ vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("AK_004"), "A.K.")
 vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("Clark_NuGEN"), "Clark")
 vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("NCRaleigh"), "Raleigh")
 
- 
+
 snpList <- vcfTable[,c(1, 2, 4, 5, 8, 11, 12, 13, 14, 15)] %>% group_by(Chromosome, Variety)
 snpList <- filter(snpList, Alt_Allele_Freq>0)
 save(snpList, file="snpList.rda")
@@ -120,33 +119,41 @@ save(GlymaIDList, file="./GlymaID.rda")
 dbDisconnect(db)
 
 # get list of unique snp sites
-snpList2 <- snpList %>% 
+uniqueSNPs <- snpList %>% 
   group_by(Chromosome, Position) %>%
   select(Chromosome, Position) %>% 
   unique()
 
 # combine unique snps with glymaIDs if the snp falls within an identified glymaID range
-snpList3 <- snpList2 %>% rowwise() %>%
-  do(data.frame(., GlymaIDMatch = str_replace(paste(filter(GlymaIDList, seqnames%in%.$Chromosome & start <=.$Position & end >=.$Position)$ID, collapse=", "), ", $", ""), stringsAsFactors=F))
-save(snpList3, file="./GlymaIDsnps.rda")
+snpGlymaFull <- uniqueSNPs %>% rowwise() %>%
+  do(data.frame(., ID = str_replace(paste(filter(GlymaIDList, seqnames%in%.$Chromosome & start <=.$Position & end >=.$Position)$ID, collapse=", "), ", $", ""), stringsAsFactors=F))
+names(snpGlymaFull)[3] <- "ID"
+tmp <- subset(snpGlymaFull, str_detect(snpGlymaFull$ID, ", "))summarize
+tmp2 <- tidyr::extract(tmp, ID, into=c("ID.1", "ID.2", "ID.3"), regex="(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1), (Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1, )?(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1)")
+tmp2$ID.2 <- gsub(", ", "", tmp2$ID.2)
+tmp2 <- melt(tmp2, id.vars=1:2, value.name = "ID", variable.name = "var")
+tmp2 <- tmp2[nchar(tmp2$ID)>0,c("Chromosome", "Position", "ID")]
+snpGlymaFull <- filter(snpGlymaFull, !str_detect(snpGlymaFull$ID, ", "))
+snpGlymaFull <- rbind(snpGlymaFull, tmp2) %>% arrange(Chromosome, Position) %>% unique()
+save(snpGlymaFull, file="./GlymaIDsnps.rda")
+rm(tmp, tmp2)
 
-snpList2 <- filter(snpList3, GlymaIDMatch!="")
-snpList2 <- plyr::join(snpList, snpList2)
+GlymaIDSNPs <- filter(snpGlymaFull, ID!="")
+GlymaIDSNPs <- left_join(snpList, GlymaIDSNPs) %>% group_by(Chromosome, Position, ID)
 
 # Summarize snps by number of Varieties at that position
-snpList.VarietySummary <- snpList2 %>% group_by(Chromosome, Position)%>% select(Variety, Reference, Alternate, Allele.Freq, GlymaIDMatch) %>% summarize(nvars=length(Variety), Reference=unique(Reference), Alternate=unique(Alternate), GlymaIDMatch=unique(GlymaIDMatch)) 
-names(snpList.VarietySummary)[6] <- "ID"
-names(snpList.VarietySummary)[3] <- "Number.of.Varieties"
+snpList.VarietySummary <- GlymaIDSNPs %>% group_by(Chromosome, Position, ID) %>% dplyr::summarise(nvars=length(unique(Variety))) 
+names(snpList.VarietySummary)[4] <- "Number.of.Varieties"
 snpList.VarietySummary <- left_join(snpList.VarietySummary, GlymaIDList[,c("ID", "chrnum", "searchstr")])
+snpList.VarietySummary$ID[is.na(snpList.VarietySummary$ID)] <- "No Matching GlymaID"
 
 # Summarize snps by number of sites assoc. with each glymaID
-snpList.GlymaSummary <- snpList2 %>% group_by(Chromosome, GlymaIDMatch)%>% select(Variety, Position) %>% summarize(nvars=length(unique(Variety)), npos=length(unique(Position)))
-names(snpList.GlymaSummary)[2] <- "ID"
-names(snpList.GlymaSummary)[3:4] <- c("Number.of.Varieties", "Number.of.SNP.Sites")
+snpList.GlymaSummary <- GlymaIDSNPs %>% group_by(Chromosome, ID)%>% select(Variety, Position) %>% dplyr::summarize(Number.of.Varieties=length(unique(Variety)), Number.of.SNP.Sites=length(unique(Position)))
 snpList.GlymaSummary <- left_join(snpList.GlymaSummary, GlymaIDList[,c("ID", "chrnum", "searchstr")])
-snpList.GlymaSummary$GlymaIDMatch[is.na(snpList.GlymaSummary$GlymaIDMatch)] <- "No Matching GlymaID"
+snpList.GlymaSummary$ID[is.na(snpList.GlymaSummary$ID)] <- "No Matching GlymaID"
 save(snpList.VarietySummary, snpList.GlymaSummary, file="./GlymaSNPsummary.rda")
 
+rm(snpGlymaFull, uniqueSNPs, GlymaIDSNPs)
 rm(GlymaIDList, segments.full, segments)
 gc()
 # 
