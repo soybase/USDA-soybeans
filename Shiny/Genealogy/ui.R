@@ -44,17 +44,18 @@ KevinBacon <- function(){
            fluidRow(
              column(4, 
                     format.selectize,
-                    selectizeInput("var1", "Variety 1", choices=varieties, multiple=FALSE)),
+                    selectInput("var1", "Variety 1", choices=varieties, selected="Tokyo", multiple=FALSE, selectize=T)),
              column(4, 
                     format.selectize,
-                    selectizeInput("var2", "Variety 2", choices=varieties, multiple=FALSE)),
+                    selectInput("var2", "Variety 2", choices=varieties, selected="Amsoy", multiple=FALSE, selectize=T)),
              column(4, 
                     helpText("Select two varieties to see if/how they are related"))
              ),
-           column(12, 
-                  plotOutput("KevinBaconDistance", width='100%', height="600px")
+           fluidRow(
+             column(8, plotOutput("KevinBaconDistance", width='100%', height="600px")),
+             column(4, plotOutput("Var12", width='100%', height="600px"))
            )
-           )
+  )
 }
 
 Phenotype <- function(){
