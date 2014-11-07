@@ -125,21 +125,23 @@ uniqueSNPs <- snpList %>%
   unique()
 
 # combine unique snps with glymaIDs if the snp falls within an identified glymaID range
-snpGlymaFull <- uniqueSNPs %>% rowwise() %>%
-  do(data.frame(., ID = str_replace(paste(filter(GlymaIDList, seqnames%in%.$Chromosome & start <=.$Position & end >=.$Position)$ID, collapse=", "), ", $", ""), stringsAsFactors=F))
-names(snpGlymaFull)[3] <- "ID"
-tmp <- subset(snpGlymaFull, str_detect(snpGlymaFull$ID, ", "))summarize
-tmp2 <- tidyr::extract(tmp, ID, into=c("ID.1", "ID.2", "ID.3"), regex="(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1), (Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1, )?(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1)")
-tmp2$ID.2 <- gsub(", ", "", tmp2$ID.2)
-tmp2 <- melt(tmp2, id.vars=1:2, value.name = "ID", variable.name = "var")
-tmp2 <- tmp2[nchar(tmp2$ID)>0,c("Chromosome", "Position", "ID")]
-snpGlymaFull <- filter(snpGlymaFull, !str_detect(snpGlymaFull$ID, ", "))
-snpGlymaFull <- rbind(snpGlymaFull, tmp2) %>% arrange(Chromosome, Position) %>% unique()
-save(snpGlymaFull, file="./GlymaIDsnps.rda")
-rm(tmp, tmp2)
+load("./GlymaIDsnps.rda")
+# snpGlymaFull <- uniqueSNPs %>% rowwise() %>%
+#   do(data.frame(., ID = str_replace(paste(filter(GlymaIDList, seqnames%in%.$Chromosome & start <=.$Position & end >=.$Position)$ID, collapse=", "), ", $", ""), stringsAsFactors=F))
+# names(snpGlymaFull)[3] <- "ID"
+# tmp <- subset(snpGlymaFull, str_detect(snpGlymaFull$ID, ", "))
+# tmp2 <- tidyr::extract(tmp, ID, into=c("ID.1", "ID.2", "ID.3"), regex="(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1), (Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1, )?(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1)")
+# tmp2$ID.2 <- gsub(", ", "", tmp2$ID.2)
+# tmp2 <- melt(tmp2, id.vars=1:2, value.name = "ID", variable.name = "var")
+# tmp2 <- tmp2[nchar(tmp2$ID)>0,c("Chromosome", "Position", "ID")]
+# snpGlymaFull <- filter(snpGlymaFull, !str_detect(snpGlymaFull$ID, ", "))
+# snpGlymaFull <- rbind(snpGlymaFull, tmp2) %>% arrange(Chromosome, Position) %>% unique()
+# save(snpGlymaFull, file="./GlymaIDsnps.rda")
+# rm(tmp, tmp2)
 
 GlymaIDSNPs <- filter(snpGlymaFull, ID!="")
-GlymaIDSNPs <- left_join(snpList, GlymaIDSNPs) %>% group_by(Chromosome, Position, ID)
+GlymaIDSNPs <- left_join(snpList, GlymaIDSNPs) %>% group_by(Chromosome, Position, ID) %>% select(ID, Chromosome, Position, Variety, Gene_State)
+save(GlymaIDSNPs, file="./GlymaSNPFullList.rda")
 
 # Summarize snps by number of Varieties at that position
 snpList.VarietySummary <- GlymaIDSNPs %>% group_by(Chromosome, Position, ID) %>% dplyr::summarise(nvars=length(unique(Variety))) 
