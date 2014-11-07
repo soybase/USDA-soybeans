@@ -32,11 +32,11 @@ if(!"snpList.GlymaSummary"%in%objlist | !"snpList.PositionSummary"%in%objlist){
   snpList.PositionSummary <- snpList.VarietySummary %>% group_by(Chromosome, Position, ID)
   rm(snpList.VarietySummary)
 }
-
-if(!"GlymaIDSNPs"%in%objlist){
-  load("GlymaSNPFullList.rda")
-  GlymaIDSNPs <- GlymaIDSNPs %>% group_by(ID, Chromosome, Position, Variety)
-}
+# 
+# if(!"GlymaIDSNPs"%in%objlist){
+#   load("GlymaSNPFullList.rda")
+#   GlymaIDSNPs <- GlymaIDSNPs %>% group_by(ID, Chromosome, Position, Variety)
+# }
 
 if(!"snp.density"%in%objlist){
 #   snp.density <- tbl(src_sqlite("SNPdb.sqlite"), "snpDensity") %>% group_by(Chromosome, Variety)
@@ -290,33 +290,33 @@ shinyServer(function(input, output, session) {
     }
   }, searchDelay=250)
   
-  output$varietySummary <- renderDataTable({
-    if(length(input$glymaChrs)>0){
-      x <- input$glymaChrs
-    } else {
-      x <- seqnames
-    }
-    
-    if(length(input$glymaPosition)>0){
-      if(nchar(input$glymaID3)>0){
-        gid <- id3()$ID
-        res <- GlymaIDSNPs %>% filter(Chromosome%in%x) %>% 
-          filter(str_detect(ID, gid)) %>% 
-          filter(Position==as.numeric(input$glymaPosition)) %>%
-          arrange(ID, Chromosome, Position, Variety)
-      } else {
-        res <- GlymaIDSNPs %>% filter(Chromosome%in%x) %>% 
-          filter(Position==as.numeric(input$glymaPosition)) %>%
-          arrange(ID, Chromosome, Position, Variety)
-      }
-    } else {
-      res <- data.frame(problem = "Please Enter a GlymaID or Position", Variety = "No Varieties Found")
-    }
-    
-    res   
-    
-  }, searchDelay=250)
-  
+#   output$varietySummary <- renderDataTable({
+#     if(length(input$glymaChrs)>0){
+#       x <- input$glymaChrs
+#     } else {
+#       x <- seqnames
+#     }
+#     
+#     if(length(input$glymaPosition)>0){
+#       if(nchar(input$glymaID3)>0){
+#         gid <- id3()$ID
+#         res <- GlymaIDSNPs %>% filter(Chromosome%in%x) %>% 
+#           filter(str_detect(ID, gid)) %>% 
+#           filter(Position==as.numeric(input$glymaPosition)) %>%
+#           arrange(ID, Chromosome, Position, Variety)
+#       } else {
+#         res <- GlymaIDSNPs %>% filter(Chromosome%in%x) %>% 
+#           filter(Position==as.numeric(input$glymaPosition)) %>%
+#           arrange(ID, Chromosome, Position, Variety)
+#       }
+#     } else {
+#       res <- data.frame(problem = "Please Enter a GlymaID or Position", Variety = "No Varieties Found")
+#     }
+#     
+#     res   
+#     
+#   }, searchDelay=250)
+#   
   # Scan up genome
   observe({
     # depend on input$up
