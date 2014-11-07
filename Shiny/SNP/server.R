@@ -24,10 +24,18 @@ if(!"snpList"%in%objlist){
   snpList <- snpList %>% group_by(Chromosome, Variety)
 }
 
-if(!"snpList.GlymaSummary"%in%objlist | !"snpList.VarietySummary"%in%objlist){
+if(!"snpList.GlymaSummary"%in%objlist | !"snpList.PositionSummary"%in%objlist){
   load("GlymaSNPsummary.rda")
+  names(snpList.GlymaSummary) <- gsub("Number.of.Varieties", "TotalVarietiesWithSNPs", names(snpList.GlymaSummary))
+  names(snpList.GlymaSummary) <- gsub("Number.of.SNP.Sites", "NumberOfSNPs", names(snpList.GlymaSummary))
   snpList.GlymaSummary <- snpList.GlymaSummary %>% group_by(Chromosome, ID)
-  snpList.VarietySummary <- snpList.VarietySummary %>% group_by(Chromosome, Position, ID)
+  snpList.PositionSummary <- snpList.VarietySummary %>% group_by(Chromosome, Position, ID)
+  rm(snpList.VarietySummary)
+}
+
+if(!"GlymaIDSNPs"%in%objlist){
+  load("GlymaSNPFullList.rda")
+  GlymaIDSNPs <- GlymaIDSNPs %>% group_by(ID, Chromosome, Position, Variety)
 }
 
 if(!"snp.density"%in%objlist){
@@ -260,7 +268,7 @@ shinyServer(function(input, output, session) {
   }, searchDelay=250)
   
   # Output a data table of tabulated SNPs + Varieties for each glymaID
-  output$varietySummary <- renderDataTable({
+  output$positionSummary <- renderDataTable({
     if(length(input$glymaChrs)>0){
       x <- input$glymaChrs
     } else {
@@ -269,17 +277,44 @@ shinyServer(function(input, output, session) {
     
     if(nchar(input$glymaID3)>0){
       gid <- id3()$ID
-      res <- snpList.VarietySummary %>% filter(Chromosome%in%x) %>% 
-        filter(str_detect(ID, gid))
+      res <- snpList.PositionSummary %>% filter(Chromosome%in%x) %>% 
+        filter(str_detect(ID, gid)) %>% arrange(ID, Chromosome, Position)
       if(nrow(res)>0){
         res[,1:4]
       } else {
         data.frame()
       }
     } else {
-      res <- filter(snpList.VarietySummary, Chromosome%in%x)%>% select(1:4)
+      res <- filter(snpList.PositionSummary, Chromosome%in%x)%>% select(1:4) %>% arrange(ID, Chromosome, Position)
       res[1:min(50000, nrow(res)),]
     }
+  }, searchDelay=250)
+  
+  output$varietySummary <- renderDataTable({
+    if(length(input$glymaChrs)>0){
+      x <- input$glymaChrs
+    } else {
+      x <- seqnames
+    }
+    
+    if(length(input$glymaPosition)>0){
+      if(nchar(input$glymaID3)>0){
+        gid <- id3()$ID
+        res <- GlymaIDSNPs %>% filter(Chromosome%in%x) %>% 
+          filter(str_detect(ID, gid)) %>% 
+          filter(Position==as.numeric(input$glymaPosition)) %>%
+          arrange(ID, Chromosome, Position, Variety)
+      } else {
+        res <- GlymaIDSNPs %>% filter(Chromosome%in%x) %>% 
+          filter(Position==as.numeric(input$glymaPosition)) %>%
+          arrange(ID, Chromosome, Position, Variety)
+      }
+    } else {
+      res <- data.frame(problem = "Please Enter a GlymaID or Position", Variety = "No Varieties Found")
+    }
+    
+    res   
+    
   }, searchDelay=250)
   
   # Scan up genome

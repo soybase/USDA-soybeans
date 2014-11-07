@@ -123,42 +123,48 @@ SNPSummary <- function(){
   tabPanel("SNP Counts by GlymaID", 
            wellPanel(
              fluidRow(
-               column(width=2),
-               column(width=2, 
+               column(width=1),
+               column(width=3, 
                       selectizeInput("glymaChrs", "Filter GlymaIDs by Chromosome(s)", 
                                      choices=unique(seqnames), multiple=TRUE, options=list(maxItems=5))
                       ), 
-               column(width=4),
+               column(width=1),
                column(width=2,
                       textInput("glymaID3", 
                                 "Locate Position by Glyma ID",
                                 value="")
                       ),
-               column(width=2)
+               column(width=1),
+               column(width=3,
+                      numericInput("glymaPosition", "SNP Position",
+                                   value=NULL, min=255, max=58100000)),
+               column(width=1)
              ),
              fluidRow(
                column(width=1),
-               column(width=4,
-                      helpText("The table below shows the number of unique SNP locations and 
-                               varieties with SNPs at those locations by GlymaID")
+               column(width=3,
+                      helpText("Use the table below to see what GlymaIDs have SNPs on a specific chromosome.")
                       ),
-               column(width=2),
-               column(width=4,
-                      helpText("The table directly below shows the number of varieties with SNPs at a specific location")
+               column(width=1),
+               column(width=3,
+                      helpText("Use the table below to see SNPs at specific locations within a GlymaID.")
                       ),
-               column(width=1)
+               column(width=1), 
+               column(width=3,
+                      helpText("Use the table below to see which varieties have SNPs at a specific location within a GlymaID.")
+               )
             )
            ),
            fluidRow(
-             column(width=1),
-             column(width=4, 
-                    dataTableOutput("glymaSummary")
-             ),
-             column(width=2),
-#              column(width=4, 
-#                     dataTableOutput("varietySummary")
-#              ), 
-             column(width=1)
+             column(width=4, wellPanel(
+               dataTableOutput("glymaSummary")
+               )),
+             column(width=4, wellPanel(
+               dataTableOutput("positionSummary")
+             )),
+             column(width=4, wellPanel(
+               dataTableOutput("varietySummary")
+             ))
            )
   )
 }
