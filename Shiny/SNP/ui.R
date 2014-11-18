@@ -10,10 +10,10 @@ head.scripts <-
             tags$link(href="libs/knitrBootstrap-0.0.1/css/knitrBootstrap.css", rel="stylesheet" ),
             tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"),
             tags$style(type="text/css", "input#bases { height:30pt;}"),
-            tags$style(type="text/css", "input#glymaID { height:20pt;}"),
-            tags$style(type="text/css", "input#glymaID2 { height:20pt;}"),
+            tags$style(type="text/css", "input#glymaID { height:30pt;}"),
+            tags$style(type="text/css", "input#glymaID2 { height:30pt;}"),
             tags$style(type="text/css", "input#glymaID3 { height:30pt;}"),
-            tags$style(type="text/css", "input#chrStart { height:20pt;}"))
+            tags$style(type="text/css", "input#chrStart { height:30pt;}"))
 
 load("ShinyStart.rda")
 
@@ -126,13 +126,15 @@ SNPSummary <- function(){
                column(width=2),
                column(width=3, 
                       selectizeInput("glymaChrs", "Filter GlymaIDs by Chromosome(s)", 
-                                     choices=unique(seqnames), multiple=TRUE, options=list(maxItems=5))
+                                     choices=unique(seqnames), multiple=TRUE, options=list(maxItems=5)),
+                      helpText("The table below will show GlymaIDs with SNPs")
                       ), 
                column(width=2),
                column(width=3,
                       textInput("glymaID3", 
-                                "Locate Position by Glyma ID",
-                                value="")
+                                "View SNP sites within a GlymaID",
+                                value=""),
+                      helpText("Input a glyma ID such as 01g000200")
                       ),
                column(width=2)
              )
