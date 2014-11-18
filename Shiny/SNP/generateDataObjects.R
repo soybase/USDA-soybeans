@@ -234,13 +234,13 @@ p1 <- ggplot() +
   theme_animint(width=750, height=750) + 
   geom_tile(data=matrixLong.snp, aes(x=as.numeric(variety1), y=as.numeric(variety2), fill=value, color=value, clickSelects=Varieties)) + 
   geom_segment(aes(xend=xmin, x=xmin, 
-                   y=.5, yend=max(as.numeric(variety2))+.5, showSelected=Varieties), data=matrixLong.snp) + 
+                   y=.5, yend=max(as.numeric(variety2))+.5, showSelected=Varieties), data=matrixLong.snp, chunk_vars=character()) + 
   geom_segment(aes(xend=xmax, x=xmax, 
-                   y=.5, yend=max(as.numeric(variety2))+.5, showSelected=Varieties), data=matrixLong.snp) + 
+                   y=.5, yend=max(as.numeric(variety2))+.5, showSelected=Varieties), data=matrixLong.snp, chunk_vars=character()) + 
   geom_segment(aes(y=ymin, yend=ymin, 
-                   xend=.5, x=max(as.numeric(variety1)+.5), showSelected=Varieties), data=matrixLong.snp) + 
+                   xend=.5, x=max(as.numeric(variety1)+.5), showSelected=Varieties), data=matrixLong.snp, chunk_vars=character()) + 
   geom_segment(aes(y=ymax, yend=ymax, 
-                   xend=.5, x=max(as.numeric(variety1)+.5), showSelected=Varieties), data=matrixLong.snp) + 
+                   xend=.5, x=max(as.numeric(variety1)+.5), showSelected=Varieties), data=matrixLong.snp, chunk_vars=character()) + 
   xlab("Variety 1") + 
   ylab("Variety 2") + 
   scale_x_continuous(expand=c(0, 1), breaks=1:79, labels=col.ord) + 
@@ -251,7 +251,7 @@ p1 <- ggplot() +
   #   coord_equal()+ 
   geom_segment(data=ggdendro::segment(ddata_y), aes(x=x, y=y*dendro.multiplier+80, xend=xend, yend=yend*dendro.multiplier+80), inherit.aes=F) + 
   geom_segment(data=ggdendro::segment(ddata_x), aes(x=y*dendro.multiplier+80, y=x, xend=yend*dendro.multiplier+80, yend=xend), inherit.aes=F) + 
-  geom_text(data=matrixLong.snp, aes(x=40, y=-3, label=paste0(Varieties, " = ", round(value, 3)), showSelected=Varieties), size=14)
+  geom_text(data=matrixLong.snp, aes(x=40, y=-3, label=paste0(Varieties, " = ", round(value, 3)), showSelected=Varieties), size=14, chunk_vars=character())
 
 # ########################### Kinship By Family Tree ############################
 load("./tree-large.rda")
@@ -346,13 +346,13 @@ p2 <- ggplot() +
   theme_animint(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.x=element_blank(), width=750, height=750) + 
   geom_tile(data=matrixLong, aes(x=as.numeric(variety1), y=as.numeric(variety2), fill=value, color=value, clickSelects=Varieties)) + 
   geom_segment(aes(xend=xmin, x=xmin, 
-                   y=.5, yend=max(as.numeric(variety2))+.5, showSelected=Varieties), data=matrixLong) + 
+                   y=.5, yend=max(as.numeric(variety2))+.5, showSelected=Varieties), data=matrixLong, chunk_vars=character()) + 
   geom_segment(aes(xend=xmax, x=xmax, 
-                   y=.5, yend=max(as.numeric(variety2))+.5, showSelected=Varieties), data=matrixLong) + 
+                   y=.5, yend=max(as.numeric(variety2))+.5, showSelected=Varieties), data=matrixLong, chunk_vars=character()) + 
   geom_segment(aes(y=ymin, yend=ymin, 
-                   xend=.5, x=max(as.numeric(variety1)+.5), showSelected=Varieties), data=matrixLong) + 
+                   xend=.5, x=max(as.numeric(variety1)+.5), showSelected=Varieties), data=matrixLong, chunk_vars=character()) + 
   geom_segment(aes(y=ymax, yend=ymax, 
-                   xend=.5, x=max(as.numeric(variety1)+.5), showSelected=Varieties), data=matrixLong) + 
+                   xend=.5, x=max(as.numeric(variety1)+.5), showSelected=Varieties), data=matrixLong, chunk_vars=character()) + 
   xlab("Variety 1") + 
   ylab("Variety 2") + 
   scale_x_continuous(expand=c(0, 1), breaks=1:length(col.ord2), labels=col.ord2) + 
@@ -362,7 +362,7 @@ p2 <- ggplot() +
   ggtitle("Generational (Kevin Bacon) Distance") + 
   geom_segment(data=ggdendro::segment(ddata_y2), aes(x=x, y=y*dendro.multiplier2+length(col.ord2)+1, xend=xend, yend=yend*dendro.multiplier2+length(col.ord2)+1), inherit.aes=F) + 
   geom_segment(data=ggdendro::segment(ddata_x2), aes(x=y*dendro.multiplier2+length(row.ord2)+1, y=x, xend=yend*dendro.multiplier2+length(row.ord2)+1, yend=xend), inherit.aes=F) + 
-  geom_text(data=matrixLong, aes(x=40, y=-3, label=paste0(Varieties, " = ", value, " generations apart"), showSelected=Varieties), size=14)
+  geom_text(data=matrixLong, aes(x=40, y=-3, label=paste0(Varieties, " = ", value, " generations apart"), showSelected=Varieties), size=14, chunk_vars=character())
 
 # ############ Association between Different Relatedness Measures ##############
 
@@ -381,8 +381,8 @@ rm(AllVars2)
 
 p4 <- ggplot() + 
   theme_animint(width=375, height=400) +
-  geom_point(aes(y=value, x=degree.jit, showSelected=Varieties), shape=1, colour="black", fill="white", size=4, data=AllVars) + 
   geom_point(aes(y=value, x=degree.jit, clickSelects=Varieties), alpha=1, colour="#374f6b", fill="#374f6b", data=AllVars) +
+  geom_point(aes(y=value, x=degree.jit, showSelected=Varieties), shape=1, colour="red", fill="red", size=4, data=AllVars) + 
   scale_x_continuous(name="Generational Distance") + 
   ylab("SNP Distance") + 
   ggtitle("Generations and SNP Distance")
@@ -413,8 +413,8 @@ fieldtrialsmatrix$y2 <- with(fieldtrialsmatrix, paste0(variety2, " yield = ", ro
 
 p5 <- ggplot() + 
   theme_animint(width=375, height=400) +
-  geom_point(aes(y=value, x=yielddiff, showSelected=Varieties), shape=1, size=4, colour="black", fill="white", data=fieldtrialsmatrix) + 
   geom_point(aes(y=value, x=yielddiff, clickSelects=Varieties), alpha=1, colour="#374f6b", fill="#374f6b", data=fieldtrialsmatrix) +
+  geom_point(aes(y=value, x=yielddiff, showSelected=Varieties), shape=1, size=4, colour="red", fill="red", data=fieldtrialsmatrix) + 
   scale_x_continuous(name="Yield 1 - Yield 2") + 
   ylab("SNP Distance") + 
   ggtitle("Yield Difference and SNP Distance") + 
