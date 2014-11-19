@@ -281,20 +281,26 @@ kevinbaconPaths$year <- as.numeric(kevinbaconPaths$year)
 kevinbaconPaths$Varieties <- paste0(kevinbaconPaths$variety1, ", ", kevinbaconPaths$variety2) #, " = ", round(kevinbaconPaths$degree, 2))
 
 # Dataset of segments for paths
-segmentPaths <- ddply(kevinbaconPaths, .(Varieties), function(df){
+segmentPaths <- ddply(kevinbaconPaths, .(Varieties,variety1), function(df){
   if(nrow(df)==1){
     data.frame()
   } else {
-    with(df, data.frame(Varieties = unique(Varieties), x=year[-length(Varieties)], y=order[-length(Varieties)],
+    with(df, data.frame(Varieties = unique(Varieties), variety1=unique(variety1), x=year[-length(Varieties)], y=order[-length(Varieties)],
                         xend=year[-1], yend=order[-1], stringsAsFactors=FALSE))
   }
 })
 
 p3 <- ggplot() + 
   theme_animint(width=750, height=400) +
-  geom_segment(aes(x=x, y=y, xend=xend, yend=yend, showSelected=Varieties), data=segmentPaths, fill="grey", colour="grey") + 
-  geom_rect(aes(xmin=year-5, xmax=year+5, ymin=order-.1, ymax=order+.6, showSelected=Varieties), data=kevinbaconPaths, fill="white", colour="white") + 
-  geom_text(aes(x=year, y=order, label=vertex, showSelected=Varieties), data=kevinbaconPaths) + 
+  geom_segment(aes(x=x, y=y, xend=xend, yend=yend, 
+                   showSelected=Varieties), 
+               chunk_vars=character(), data=segmentPaths, fill="grey", colour="grey") + 
+  geom_rect(aes(xmin=year-5, xmax=year+5, ymin=order-.1, ymax=order+.6, 
+                showSelected=Varieties), 
+            chunk_vars=character(), data=kevinbaconPaths, fill="white", colour="white") + 
+  geom_text(aes(x=year, y=order, label=vertex, 
+                showSelected=Varieties), 
+            chunk_vars=character(),  data=kevinbaconPaths) + 
   scale_y_continuous(name="Distance", breaks=c(0, 2, 4, 6, 8, 10, 12), limits=c(-1, 12)) + 
   xlab("Year") + 
   ggtitle("Shortest Path between Varieties")
@@ -381,8 +387,10 @@ rm(AllVars2)
 
 p4 <- ggplot() + 
   theme_animint(width=375, height=400) +
-  geom_point(aes(y=value, x=degree.jit, clickSelects=Varieties), alpha=1, colour="#374f6b", fill="#374f6b", data=AllVars) +
-  geom_point(aes(y=value, x=degree.jit, showSelected=Varieties), shape=1, colour="red", fill="red", size=4, data=AllVars) + 
+  geom_point(aes(y=value, x=degree.jit, clickSelects=Varieties),
+             alpha=1, colour="#374f6b", fill="#374f6b", data=AllVars) +
+  geom_point(aes(y=value, x=degree.jit, showSelected=Varieties), chunk_vars=character(), 
+             shape=1, colour="red", fill="red", size=4, data=AllVars) + 
   scale_x_continuous(name="Generational Distance") + 
   ylab("SNP Distance") + 
   ggtitle("Generations and SNP Distance")
@@ -413,13 +421,17 @@ fieldtrialsmatrix$y2 <- with(fieldtrialsmatrix, paste0(variety2, " yield = ", ro
 
 p5 <- ggplot() + 
   theme_animint(width=375, height=400) +
-  geom_point(aes(y=value, x=yielddiff, clickSelects=Varieties), alpha=1, colour="#374f6b", fill="#374f6b", data=fieldtrialsmatrix) +
-  geom_point(aes(y=value, x=yielddiff, showSelected=Varieties), shape=1, size=4, colour="red", fill="red", data=fieldtrialsmatrix) + 
+  geom_point(aes(y=value, x=yielddiff, clickSelects=Varieties), 
+             alpha=1, colour="#374f6b", fill="#374f6b", data=fieldtrialsmatrix) +
+  geom_point(aes(y=value, x=yielddiff, showSelected=Varieties), chunk_vars=character(), 
+             shape=1, size=4, colour="red", fill="red", data=fieldtrialsmatrix) + 
   scale_x_continuous(name="Yield 1 - Yield 2") + 
   ylab("SNP Distance") + 
   ggtitle("Yield Difference and SNP Distance") + 
-  geom_text(aes(x=0, y=2.025, label=y1, showSelected=Varieties), data=fieldtrialsmatrix) + 
-  geom_text(aes(x=0, y=1.95, label=y2, showSelected=Varieties), data=fieldtrialsmatrix)  
+  geom_text(aes(x=0, y=2.025, label=y1, showSelected=Varieties), 
+            chunk_vars=character(), data=fieldtrialsmatrix) + 
+  geom_text(aes(x=0, y=1.95, label=y2, showSelected=Varieties), 
+            chunk_vars=character(), data=fieldtrialsmatrix)  
 
 plotSet <- list(heatmap=p1, kinshipHeatmap=p2, kinship=p3, rel=p4, yield=p5)
 
