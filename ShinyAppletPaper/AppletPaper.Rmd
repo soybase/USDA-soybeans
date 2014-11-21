@@ -165,6 +165,42 @@ The genealogy plots are generated on the fly; the number of generations displaye
 
 * [Applet Link](http://gsoja.agron.iastate.edu:3838/SNP/)
 
+The SNP Shiny applet aims to provide an interface for biologists to search for SNPs, view SNPs along the genome, and examine the distribution of SNPs along the genome. A preliminary analysis, which heavily filtered SNPs using several criteria, still identified more than one million SNP sites, with nearly 20 million total SNPs in 79 different varieties. This data is much too large to visualize in detail with static plots, as the data must be heavily summarized for the plots to be readable. The applet aims to provide a "zoom and filter" approach to the data; displaying summaries while providing more detail and searchable tabular results. Like the CNV applet, the SNP applet has several tabs which provide data at different levels of detail. 
+
+![Aggregate SNP Browser. This tab displays the proportion of varieties with SNPs at each position along the chromosome.][SNPAggregateBrowser]
+
+The first tab provides a nucleotide level view of the frequency of each SNP. Up to 50 SNPs can be viewed in the same window, and researchers can identify sites with rare SNPs or sites with large amounts of variability. The chromosome and position along the chromosome can be changed through several different methods: researchers can enter a gene ID, and the plot will update to show SNPs at the start of a gene; alternately, researchers can choose a chromosome and a position manually. Researchers can also move upstream and downstream along the genome directly, using buttons located beneath the plot. A table below the plot displays gene IDs matching the string entered; this allows researchers to search for partial string matches, or list all genes on a specific chromosome to explore. 
+
+
+![SNP Counts by Glyma ID. This tab allows researchers to explore which Glyma IDs have SNPs (and how many varieties have a SNP along that gene), and then further explore the number of varieties with each SNP for a chosen gene.][SNPCountsByID]
+
+The next tab allows researchers to see which IDs have a large number of SNPs (or SNPs that are extremely common). Initially, results can be filtered by chromosome, and a table displaying the number of SNPs associated with each gene ID and the number of varieties with SNPs along that gene is provided. An additional breakdown of SNP locations within a single gene shows the number of varieties with a SNP at a specific position. These tables are interactive and can be sorted, searched, and filtered by any field shown. 
+
+![SNP Counts by Glyma ID. Searching by a specific Glyma ID shows all of the positions along the chromosome (but within the gene) that have identified SNPs, along with the number of varieties having a SNP at each position.][SNPCountsByID1]
+
+In addition to facilitating browsing by position along the genome, SNPs for a specific gene can also be visualized by variety. If no varieties are specified, SNPs will be displayed for the first 10 alphabetical varieties with SNPs identified along the specified gene. This type of plot allows researchers to look at the distribution of SNPs within a population; varieties with a certain genotype can be visually grouped, and could be potentially associated with known phenotypes. 
+
+![Variety-Level SNP Browser. Searching by a specific Glyma ID shows all of the identified SNPs along a gene, and the identified frequency of the alternate allele (compared to the reference) for up to 10 varieties.][SNPVarietyBrowser]
+
+For instance, Glyma.18G000100.Wm82.a2.v1 has several SNPs that are common in older varieties descended from CNS, A.K.,  and Mukden; S-100 and Hawkeye are both heterozygous for several SNPs in that gene as well. Underneath the plot, an interactive table provides estimated allele frequency, gene state, and approximate allele count for each displayed variety. 
+
+![Variety-Level SNP Browser. A table underneath the plot provides details, including estimated allele frequency and estimated gene state.][SNPVarietyBrowser1]
+
+For a more high-level view, another tab provides a density plot, by chromosome and variety, showing the distribution of SNPs along a chromosome. This allows researchers to visually identify regions with numerous SNPs for comparison to QTL data and identification of regions of the genome which might merit further exploration. 
+
+![SNP Density. This plot shows the density of identififed alternate alleles for a number of varieties.][SNPDensity]
+
+In the plot above, Harosoy and Corsoy are obviously related (Corsoy is Harosoy's direct descendant), as they have extremely similar alternate allele densities at the end of the chromosome, however, Harosoy has several regions of SNP activity in the middle of chromosome 20 that are not present in Corsoy. Zane, a descendant of all of the other displayed varieties, has two extremely dense regions of SNPs that have been concentrated through inbreeding, and relatively few SNPs in other locations on chromosome 20. 
+
+![SNP Kinship. This plot shows the kinship between different lines based on SNP dissimilarity and generational distance. Users can click on a specific square of the heatmap and the other plots will change accordingly.][SNPKinship]
+
+* Add information on SNP Kinship calculation and Kevin Bacon distance
+
+![SNP Kinship. Underneath the two heatmaps, there are three additional plots (also linked with the heatmaps) which provide additional information showing the shortest path between two varieties, the relationship between SNP dissimilarity and generational distance, and the difference in yield between the two varieties (if both varieties were utilized in the field trial associated with the sequencing study).][SNPKinship1]
+
+The first plot shown above provides the genealogical link between any two related varieties; the shortest path was calculated using the phyViz package. The second plot shows the relationship between generational distance and SNP distance; as the number of generations increases, the SNP distance increases (the maximum SNP distance is 2). The third plot shows the SNP distance between the two varieties as a function of SNP Distance; lower SNP distance is associated with a lower yield difference, but higher SNP distance does not necessarily indicate a large difference in yield. Clicking on any point in the two scatterplots will highlight the associated varieties on the linked heatmaps, and the shortest path between the two varieties will also be displayed. 
+
+
 ## Genealogy and Phenotype Reference 
 * Describe spin-off of CNV applet - genealogy of (most) soybean varieties
 
@@ -208,4 +244,11 @@ The genealogy plots are generated on the fly; the number of generations displaye
 [PhenotypeData3]:PhenotypeData3.png
 [GenealogyTab]:GenealogyTab.png
 [SNPdiagram]:SNPdiagram.png
-
+[SNPAggregateBrowser]:SNPAggregateBrowser.png
+[SNPCountsByID]:SNPCountsByID.png
+[SNPCountsByID1]:SNPCountsByID1.png
+[SNPVarietyBrowser]:SNPVarietyBrowser.png
+[SNPVarietyBrowser1]:SNPVarietyBrowser1.png
+[SNPDensity]:SNPDensity.png
+[SNPKinship]:SNPKinship.png
+[SNPKinship1]:SNPKinship1.png
