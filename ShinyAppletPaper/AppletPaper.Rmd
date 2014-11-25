@@ -200,19 +200,18 @@ In the plot above, Harosoy and Corsoy are obviously related (Corsoy is Harosoy's
 
 The first plot shown above provides the genealogical link between any two related varieties; the shortest path was calculated using the phyViz package. The second plot shows the relationship between generational distance and SNP distance; as the number of generations increases, the SNP distance increases (the maximum SNP distance is 2). The third plot shows the SNP distance between the two varieties as a function of SNP Distance; lower SNP distance is associated with a lower yield difference, but higher SNP distance does not necessarily indicate a large difference in yield. Clicking on any point in the two scatterplots will highlight the associated varieties on the linked heatmaps, and the shortest path between the two varieties will also be displayed. 
 
-
-## Genealogy and Phenotype Reference 
-* Describe spin-off of CNV applet - genealogy of (most) soybean varieties
-
-* [Applet Link](http://gsoja.agron.iastate.edu:3838/Genealogy/)
-
 ## Under the HOOD
+Displaying large data sets over the web using Shiny applets and interactive javascript plots requires that we carefully consider the computational and bandwidth requirements of each section and feature of the applet. This section describes the problems we encountered during the applet construction process, and the solutions we found to be most helpful in resolving the issue. 
+
+One issue common to both applets was the difference between data shared between sessions and data loaded within each session. When multiple users are connected to the same applet, if data is shared between the users, the second user to connect has a nearly-instantaneous applet loading time (compared to a several-second period as the data is loaded if each user must re-load the data). Sharing data between sessions does require that no session modify the data (so all operations on the data set must be stored in temporary variables and computed on the fly). 
 
 ### CNV Applet
 
-* Preprocessing data step
-* Reducing the number of objects in a plot
-* Using javascript tables to do filtration
+All of the data displayed using the CNV applet has been carefully constructed to provide the relevant information (copy number, CNV location, glymaID, etc.) while minimizing the amount of data that must be transferred. For instance, the CNV location plot uses binned read count data, and the copy number plot uses a default background of CN=2; both of these modifications are designed to reduce the number of rectangles that have to be drawn (and thus, reduce the amount of time it takes to update the plot). The binned read count data and the copy number variant tables are pre-computed in a processing script that is run after the cn.mops program identifies CNVs. 
+
+The genealogy search function is written as a recursive function that is extremely fast; the generational limits speed the database search up even more (and also reduce the number of things plotted, for visibility and speed). 
+
+DataTables, a javascript library, is used to display reported CNV information. This library provides search, sort, and filtration features, reducing the need to communicate with the server for these operations. Certain operations (filtering by variety and chromosome) do utilize the server, but this step is necessary for creating the barcode plots, and so it is only natural to require table output that is consistent with the plots.
 
 ### SNP Applet
 
