@@ -207,17 +207,23 @@ One issue common to both applets was the difference between data shared between 
 
 ### CNV Applet
 
+* Add stats on size of data, etc.
+
 All of the data displayed using the CNV applet has been carefully constructed to provide the relevant information (copy number, CNV location, glymaID, etc.) while minimizing the amount of data that must be transferred. For instance, the CNV location plot uses binned read count data, and the copy number plot uses a default background of CN=2; both of these modifications are designed to reduce the number of rectangles that have to be drawn (and thus, reduce the amount of time it takes to update the plot). The binned read count data and the copy number variant tables are pre-computed in a processing script that is run after the cn.mops program identifies CNVs. 
 
 The genealogy search function is written as a recursive function that is extremely fast; the generational limits speed the database search up even more (and also reduce the number of things plotted, for visibility and speed). 
 
 DataTables, a javascript library, is used to display reported CNV information. This library provides search, sort, and filtration features, reducing the need to communicate with the server for these operations. Certain operations (filtering by variety and chromosome) do utilize the server, but this step is necessary for creating the barcode plots, and so it is only natural to require table output that is consistent with the plots. The linked plots in the Phenotype data tab are also rendered using the d3 javascript library (they were compiled into d3 code using the animint R package [@animint]); the interactive plots are designed to minimize load time by reading in only the necessary data during the initial rendering. 
 
+These modifications helped to make the CNV applet much more responsive and user-friendly. Modifying the CNV applet to streamline the loading process was extremely good training for the SNP applet, which has magnitudes more data and required even more pre-processing.
+
 ### SNP Applet
 
 * Preprocessing data (VCF -> flat file, removing rows that don't correspond to SNPs that are present)
 * Limiting the number of SNPs that can be viewed (for perceptual AND computational reasons)
 * ?
+
+
 
 ### Genealogy Applet
 
