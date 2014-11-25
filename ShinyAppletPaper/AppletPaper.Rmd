@@ -211,7 +211,7 @@ All of the data displayed using the CNV applet has been carefully constructed to
 
 The genealogy search function is written as a recursive function that is extremely fast; the generational limits speed the database search up even more (and also reduce the number of things plotted, for visibility and speed). 
 
-DataTables, a javascript library, is used to display reported CNV information. This library provides search, sort, and filtration features, reducing the need to communicate with the server for these operations. Certain operations (filtering by variety and chromosome) do utilize the server, but this step is necessary for creating the barcode plots, and so it is only natural to require table output that is consistent with the plots.
+DataTables, a javascript library, is used to display reported CNV information. This library provides search, sort, and filtration features, reducing the need to communicate with the server for these operations. Certain operations (filtering by variety and chromosome) do utilize the server, but this step is necessary for creating the barcode plots, and so it is only natural to require table output that is consistent with the plots. The linked plots in the Phenotype data tab are also rendered using the d3 javascript library (they were compiled into d3 code using the animint R package [@animint]); the interactive plots are designed to minimize load time by reading in only the necessary data during the initial rendering. 
 
 ### SNP Applet
 
