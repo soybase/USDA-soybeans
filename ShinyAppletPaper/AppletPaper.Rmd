@@ -162,9 +162,9 @@ In the plot above, Harosoy and Corsoy are obviously related (Corsoy is Harosoy's
 
 The first plot shown above provides the genealogical link between any two related varieties; the shortest path was calculated using the phyViz package. The second plot shows the relationship between generational distance and SNP distance; as the number of generations increases, the SNP distance increases (the maximum SNP distance is 2). The third plot shows the SNP distance between the two varieties as a function of SNP Distance; lower SNP distance is associated with a lower yield difference, but higher SNP distance does not necessarily indicate a large difference in yield. Clicking on any point in the two scatterplots will highlight the associated varieties on the linked heatmaps, and the shortest path between the two varieties will also be displayed. 
 
-## Materials and Methods
+# Materials and Methods
 
-### Other Visualization Software 
+## Other Visualization Software 
  * SegAnnDB - Visualizing Breakpoints for CNV modeling - http://bioinformatics.oxfordjournals.org/content/30/11/1539 - Toby Hocking's pet project - interactive visualization of breakpoints. 
  * Nature Methods Overview of Genomic Data Visualization    
 @VisualizingGenomes
@@ -180,14 +180,14 @@ Includes several visualizations similar to those included in the CNV app. The vi
     * Integrates with other databases (as we should probably integrate with Soybase)
     * Rather unintuitive. 
     
-### Animint
+## Animint
 @animint
     * Doesn't require server backend
     * Data all has to be loaded into browser memory - unwieldly for large or extremely complex datasets
     * Allows interactivity
     * Can be used within other applications (shiny bindings, rmarkdown)
 
-### Shiny: an extensible, interactive, web-based framework for data visualization
+## Shiny: an extensible, interactive, web-based framework for data visualization
 
 Explain interactivity, server backend, advantage of serving up data over the web. 
 
@@ -195,7 +195,7 @@ Displaying large data sets over the web using Shiny applets and interactive java
 
 One issue common to both applets was the difference between data shared between sessions and data loaded within each session. When multiple users are connected to the same applet, if data is shared between the users, the second user to connect has a nearly-instantaneous applet loading time (compared to a several-second period as the data is loaded if each user must re-load the data). Sharing data between sessions does require that no session modify the data (so all operations on the data set must be stored in temporary variables and computed on the fly). 
 
-### CNV Applet
+## CNV Applet
 
 * Add stats on size of data, etc.
 
@@ -207,13 +207,14 @@ DataTables, a javascript library, is used to display reported CNV information. T
 
 These modifications helped to make the CNV applet much more responsive and user-friendly. Modifying the CNV applet to streamline the loading process was extremely good training for the SNP applet, which has magnitudes more data and required even more pre-processing.
 
-### SNP Applet
+## SNP Applet
 
 * Preprocessing data (VCF -> flat file, removing rows that don't correspond to SNPs that are present)
 * Limiting the number of SNPs that can be viewed (for perceptual AND computational reasons)
 * ?
 
 
+# Discussion
 ## How does this slot into a different database like soybase?
 
 
