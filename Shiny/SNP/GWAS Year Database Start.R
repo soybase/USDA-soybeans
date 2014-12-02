@@ -2,9 +2,13 @@ library(stringr)
 
 fieldtrials <- read.csv("CombinedFieldTrialsData.csv", header=T, stringsAsFactors=F)
 fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Williams 82", "Williams82")
-fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Amsoy 71", "Amsoy")
+# fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "Amsoy 71", "Amsoy")
 fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "IA 3023", "IA3023")
 fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "506-13640-2", "S06-13640-2")
+fieldtrials$Cultivar2 <- fieldtrials$Cultivar
+idx <- fieldtrials$Source=="Pioneer" & nchar(as.character(fieldtrials$name2)==4)
+fieldtrials$Cultivar[idx] <- with(fieldtrials[idx,], paste(Source, name2))
+fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, fixed("AK (Harrow)"), fixed("A.K. (Harrow)"))
 
 
 load("tree-large.rda")
@@ -25,6 +29,9 @@ fulltree$parent <- gsub("No\\. 18", "180501", fulltree$parent)
 fulltree$child <- gsub("No\\. 18", "180501", fulltree$child)
 fulltree$parent <- gsub("PI 88\\.788", "88788", fulltree$parent)
 fulltree$child <- gsub("PI 88\\.788", "88788", fulltree$child)
+fulltree$parent <- gsub("P9381", "Pioneer 9381", fulltree$parent)
+fulltree$year[fulltree$child=="IA3023"] <- 2003
+fulltree$year.imputed[fulltree$child=="IA3023"] <- FALSE
 load("tree.rda")
 
 
@@ -42,6 +49,7 @@ while(nrow(tree.fixed)>tmp){
   tmp <- nrow(tree.fixed)
   tree.fixed <- unique(rbind(tree.fixed, subset(fulltree, fulltree$parent %in% tree.fixed$child)))
 }
+varieties <- str_replace(str_replace(varieties, "506-13640-2", "S06-13640-2"), "NCRoy", "Roy")
 
 tree2 <- merge(tree.fixed, unique(fieldtrials[,c("Cultivar", "Year", "AvgYield", "MG")]), by.x=c("child"), by.y=c("Cultivar"), all.x=T, all.y=F)
 tree2$year <- pmin(tree2$year, tree2$Year, na.rm=T)
@@ -72,4 +80,4 @@ tree2$PredYield[!is.na(tree2$MaturityGroup) & !is.na(tree2$year) &  tree2$Maturi
 tmp <- tree2$year[!is.na(tree2$MaturityGroup) & !is.na(tree2$year) & tree2$MaturityGroup==4]
 tree2$PredYield[!is.na(tree2$MaturityGroup) & !is.na(tree2$year) &  tree2$MaturityGroup==4] <- with(predmg[3,], I(tmp<=change)*(slope1*tmp + int1 ) + I(tmp>change)*(slope2*(tmp-change)+int2))
 
-ggplot2::qplot(data=unique(tree2[,c("child", "AvgYield", "PredYield")]), x=AvgYield, y=PredYield, geom="point")
+# ggplot2::qplot(data=unique(tree2[,c("child", "AvgYield", "PredYield")]), x=AvgYield, y=PredYield, geom="point")
