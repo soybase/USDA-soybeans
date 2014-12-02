@@ -223,12 +223,6 @@ These modifications helped to make the CNV applet much more responsive and user-
 * ?
 
 
-
-### Genealogy Applet
-
-* Recursive search algorithm
-* phyViz package
-
 ## How does this slot into a different database like soybase?
 
 
