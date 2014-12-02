@@ -2,11 +2,10 @@
 title: "Interactively Exploring Soybean Breeding Populations Using R and Shiny"
 author: Susan VanderPlas, Nathan Weeks, Andrew Severin, Randy Shoemaker, Jim Specht,
   Di Cook, Michelle Graham
-date: "10/28/2014"
+csl: statistics.csl
 output:
   word_document:
     fig_caption: yes
-csl: statistics.csl
 bibliography: soybeans.bib
 ---
 
