@@ -121,8 +121,6 @@ The genealogy plots are generated on the fly; the number of generations displaye
 * Include example video of Michelle using the applet.
 
 ## Single Nucleotide Polymorphisms
-* Describe tabs, data workflow
-
 * Include example video of Michelle using the applet
 
 * [Applet Link](http://gsoja.agron.iastate.edu:3838/SNP/)
@@ -208,10 +206,13 @@ DataTables, a javascript library, is used to display reported CNV information. T
 These modifications helped to make the CNV applet much more responsive and user-friendly. Modifying the CNV applet to streamline the loading process was extremely good training for the SNP applet, which has magnitudes more data and required even more pre-processing.
 
 ## SNP Applet
+The SNP applet contains several tabs which display different aspects of a single underlying data file (the Kinship tab incorporates some additional data as well). The underlying data file contains the (heavily filtered) SNPs for each of 79 varieties; when compressed, it is 1.18 GB, but when expanded to a tabular format which can be plotted easily, the file grows to 5.2 GB. On a sufficiently powerful computer, R can handle data of this magnitude, but each operation is proportionately slower. To optimize applet performance, we first removed all lines from the expanded table which did not correspond to SNPs for a combination of position and Variety, as well as SNPs on scaffolds. This reduced the dataset from 87 million rows to 20 million rows. The resulting dataset can now be loaded on most modern computers, and critical operations (sort, summarize, filter) are now much more feasible. 
 
-* Preprocessing data (VCF -> flat file, removing rows that don't correspond to SNPs that are present)
-* Limiting the number of SNPs that can be viewed (for perceptual AND computational reasons)
-* ?
+In order to minimize the number of operations that have to be completed while the applet is running, several summary data files are pre-computed. The aggregate browser and the SNP Density tab both display summaries of data (over variety or position); these summaries are pre-computed and then filtered in response to user input. The SNP Counts tab similarly relies on filtering aggregated data; its purpose is to bridge the gap between the aggregate SNP browser and the glymaIDs necessary to use the variety-level SNP browser. 
+
+In addition to pre-computed files, the applet is carefully designed so that user queries do not return enough results to overwhelm the server (or the client). The aggregate SNP browser, for instance, is limited to 50 SNPs at a time; the variety-level SNP browser can only display 10 cultivars and a single GlymaID. These modifications are essential both for the responsiveness of the server and to prevent visual overload. The SNP counts tab utilizes a combination of server-side filtration using user inputs, and client-side filtration and sorting using DataTables.js. This combination provides responsiveness through client-side interaction without overwhelming the browser's rendering system. 
+
+Even with these modifications, we found that the applet is computationally intensive enough to justify purchasing the pro version of Shiny Server, which has threaded performance and other features that allow the applet to run more smoothly for multiple simultaneous users. 
 
 
 # Discussion
