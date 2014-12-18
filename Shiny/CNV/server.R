@@ -40,38 +40,10 @@ glymacols <- c(11,1:4,17,8)
 # Define server logic required to generate and plot a subset of varieties with a subset of chromosomes
 shinyServer(function(input, output, session) {
 
-  
-  output$VarietyList <- renderUI({
-    tmp <- sort(unique(varieties))
-    selectizeInput("varieties", "Choose Varieties", tmp, NULL, multiple=TRUE)
-  })
-  
-  output$VarietyList2 <- renderUI({
-    tmp <- sort(unique(varieties))
-    selectizeInput("genvarieties", "Choose Varieties", tmp, NULL, multiple=TRUE)
-  })
-  
-  output$ChromosomeList <- renderUI({
-    chrs <- unique(seqnames)
-    selectizeInput("chromosomes", "Choose Chromosomes", chrs, NULL, multiple=TRUE)
-  })
-
-  output$ChrSelect2 <- renderUI({
-    chrs <- unique(seqnames)
-    radioButtons("locationChrs", "Choose Chromosome of Interest", chrs)
-  })
-  
-  output$CNVTypeList <- renderUI({
-    selectizeInput("featuretypes", "Choose Features (optional)", c("gene", "CDS", "mRNA", "exon"), c("gene", "CDS", "mRNA", "exon"), multiple=TRUE)
-  })
-  
   output$ChrSlider <- renderUI({
     if(length(input$locationChrs)>0){
-
       start <- min(floor(subset(chr.summary, seqnames%in%input$locationChrs)$start/10000)*10000)
       end <- max(ceiling(subset(chr.summary, seqnames%in%input$locationChrs)$end/10000)*10000)
-#       min <- floor(subset(chr.summary, seqnames%in%input$locationChrs)$start/10000)*10000
-#       max <- ceiling(subset(chr.summary, seqnames%in%input$locationChrs)$end/1000000)*1000000
     } else {
       start <- 0
       end <- 60000000
@@ -389,9 +361,13 @@ shinyServer(function(input, output, session) {
       if(nrow(temp)>0) write.csv(temp, con) else write.csv(data.frame(), con)
     }
   )
-    
+
   output$GlymaTable <- renderUI({
-    dataTableOutput("glymaIDs")
+    tagList(
+      dataTableOutput("glymaIDs"),
+      br(),
+      helpText("Use the Search field (top-right) to filter by Glyma ID.")
+      )
   })
 
   output$CNVList <- renderUI({
@@ -415,9 +391,9 @@ shinyServer(function(input, output, session) {
 
   output$YieldInfo <- renderUI({
     tagList(
-      singleton(tags$head(tags$script(src = "animint.js", type='text/javascript'))),
-      singleton(tags$head(tags$script(src = "vendor/d3.v3.js", type='text/javascript'))),
-      singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="styles.css"))),
+      singleton(tags$head(tags$script(src = "fieldtrials/animint.js", type='text/javascript'))),
+      singleton(tags$head(tags$script(src = "fieldtrials/vendor/d3.v3.js", type='text/javascript'))),
+      singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="fieldtrials/styles.css"))),
       singleton(tags$body(tags$script("
                       changeHiding = function(id){
                         var plotEl = document.getElementById(id).parentNode.parentNode.parentNode;
@@ -432,7 +408,7 @@ shinyServer(function(input, output, session) {
                       }
                                       "))),
       tags$div(id="plot"),
-      tags$script("var plot = new animint('#plot','plot.json');"),
+      tags$script("var plot = new animint('#plot','fieldtrials/plot.json');"),
       tags$script("var monitor = true; 
                    var doMonitor = function(){
                       monitor=document.getElementById('yieldOil')==null | document.getElementById('maturity')==null;
@@ -451,20 +427,28 @@ shinyServer(function(input, output, session) {
                    ")
     )
   })
-  
-  output$DebugText <- renderPrint({
-    print(input$plottype)
-    print(input$chromosomes)
-    print(input$varieties)
-    print(input$genvarieties)
-    print(input$locationChrs)
-    print(input$chrRange)
-#     head(subset(res.df, 
-#                 seqnames%in%input$chromosomes & 
-#                 Variety%in%input$varieties))
-#     head(subset(segranges.df2, 
-#                 seqnames%in%input$chromosomes &
-#                 Variety%in%input$varieties))
+
+  output$overview <- renderUI({
+    tagList(
+      singleton(tags$head(tags$script(src = "overview/animint.js", type='text/javascript'))),
+      singleton(tags$head(tags$script(src = "overview/vendor/d3.v3.js", type='text/javascript'))),
+      singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="overview/styles.css"))),
+      tags$div(id="plot", align="center"),
+      tags$script("var plot = new animint('#plot','overview/plot.json');"),
+      tags$script("var monitor = true; 
+                  var doMonitor = function(){
+                  monitor=document.getElementById('chromosomeplot')==null | document.getElementById('overview')==null;
+                  if(!monitor){
+                  tmp = document.getElementById('chromosomeplot').parentNode.parentNode.parentNode; 
+                  var br = document.createElement('br'); 
+                  document.getElementById('plot').insertBefore(br, tmp);
+                  } else {
+                  setTimeout(doMonitor, 500);
+                  }
+                  }
+                  setTimeout(doMonitor,500);
+                  ")
+      )
   })
 
 })
