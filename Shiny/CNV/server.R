@@ -173,7 +173,7 @@ shinyServer(function(input, output, session) {
                        Chromosome%in%input$chromosomes & 
                        Variety%in%input$varieties & 
                        Feature%in%input$featuretypes)
-      
+      names(cnvs)[1] <-  "seqnames"
       
       tmp <- data.frame(old.name=input$varieties, new.name=input$varieties)
       tmp$year <- sapply(tmp$new.name, function(i) min(tree$year[which(tree$child==i)]))
@@ -196,7 +196,6 @@ shinyServer(function(input, output, session) {
                               low="#FFFFFF", high="#000000",
                               breaks=c(1, 20, 400, 8000, 160000),
                               na.value="#FFFFFF") + 
-        facet_grid(Variety~seqnames, scales="free") + 
         theme_bw() + 
         theme(axis.text.y=element_blank(), 
               axis.ticks.y=element_blank(), 
@@ -206,10 +205,12 @@ shinyServer(function(input, output, session) {
         plot <- plot + 
           geom_rect(data=cnvs, 
                     aes(xmin=Cnv.Start, xmax=Cnv.End, ymin=-.6, ymax=.6),
-                    fill="green", colour="green")
+                    fill="green", colour="green") + 
+          facet_grid(Variety~seqnames, scales="free")
       }
     } else {
       plot <- ggplot() + 
+        facet_grid(Variety~seqnames, scales="free") + 
         geom_text(aes(x=0, y=0, label="Please select varieties and chromosomes\n\n Note: It may take a minute to process the input")) +         
         theme_bw() + 
         theme(axis.text=element_blank(), 
@@ -246,6 +247,8 @@ shinyServer(function(input, output, session) {
         xlab("")
       
       cnvs <- subset(glymaIDs, Chromosome%in%input$chromosomes & Variety%in%input$varieties & Feature%in%input$featuretypes)
+      names(cnvs)[1] <- "seqnames"
+      
       if(nrow(cnvs)>0){
         plot <-  plot + geom_point(data=subset(cnvs), aes(x=(Cnv.Start+Cnv.End)/2, y=-.55, shape="CNV")) + 
           scale_shape("CNV Location", solid=FALSE)
@@ -374,21 +377,6 @@ shinyServer(function(input, output, session) {
     dataTableOutput("glymaIDs2")
   })
 
-  output$Methods <- renderUI({
-    tagList(h3("Data Collection"), 
-            p("Biology info goes here... plant methods, climate conditions, whatever other green/slimy stuff..."),
-            h3("Processing"), 
-            p("Andrew's stuff goes here... raw data to BAM file pipeline with parameters"),
-            h3("Copy Number Identification"),
-            h5("cn.mops"),
-            p("Using BAM files from the previous step as input to ", a(href="http://www.bioinf.jku.at/software/cnmops/", target="_blank", "cn.mops."), "The program was executed separately on each geneomic feature (gene, exon, CDS, mRNA) to provide internal verification as well as reduce the problem to a more computationally manageable size. As suggested in the cn.mops manual, each region of the genome was extended by 30 bp on each side to aid in identification of CNV regions. Once these modifications were performed, the command used to run the analysis was:", tags$blockquote("exomecn.mops(bamSegmentRanges, parallel=32, I=c(0.025, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5), classes=paste0('CN', as.character(0:10)))"), "The results from the algorithm were back-transformed (regions were reduced by 30 bp on each side) and merged with annotation files."),
-            h5("Additional Analysis"),
-            p("In order to verify the reliability of cn.mops, cross-validation was performed on a subset of lines. This step ensures that the results from the algorithm are not unduly affected by one or two varieties. Results of cross validation confirm that most of the variants identified by cn.mops are present in 90% or more of the cross-validation runs."),
-            h3("Genealogy"),
-            p("Link sources for genealogy compilation here")
-    )
-  })
-
   output$YieldInfo <- renderUI({
     tagList(
       singleton(tags$head(tags$script(src = "fieldtrials/animint.js", type='text/javascript'))),
@@ -407,8 +395,8 @@ shinyServer(function(input, output, session) {
                         vec.forEach(function(d){ changeHiding(d)});
                       }
                                       "))),
-      tags$div(id="plot"),
-      tags$script("var plot = new animint('#plot','fieldtrials/plot.json');"),
+      tags$div(id="YieldPlot", align="center"),
+      tags$script("var plot = new animint('#YieldPlot','fieldtrials/plot.json');"),
       tags$script("var monitor = true; 
                    var doMonitor = function(){
                       monitor=document.getElementById('yieldOil')==null | document.getElementById('maturity')==null;
@@ -416,9 +404,9 @@ shinyServer(function(input, output, session) {
                         nonyear = document.getElementById('yieldOil').parentNode.parentNode.parentNode; 
                         extrainfo = document.getElementById('maturity').parentNode.parentNode.parentNode;
                         var br = document.createElement('br'); 
-                        document.getElementById('plot').insertBefore(br, nonyear);
+                        document.getElementById('YieldPlot').insertBefore(br, nonyear);
                         var br = document.createElement('br'); 
-                        document.getElementById('plot').insertBefore(br, extrainfo);
+                        document.getElementById('YieldPlot').insertBefore(br, extrainfo);
                       } else {
                         setTimeout(doMonitor, 500);
                       }
@@ -433,8 +421,8 @@ shinyServer(function(input, output, session) {
       singleton(tags$head(tags$script(src = "overview/animint.js", type='text/javascript'))),
       singleton(tags$head(tags$script(src = "overview/vendor/d3.v3.js", type='text/javascript'))),
       singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="overview/styles.css"))),
-      tags$div(id="plot", align="center"),
-      tags$script("var plot = new animint('#plot','overview/plot.json');"),
+      tags$div(id="OverviewPlot", align="center"),
+      tags$script("var plot = new animint('#OverviewPlot','overview/plot.json');"),
       tags$script("var monitor = true; 
                   var doMonitor = function(){
                   monitor=document.getElementById('chromosomeplot')==null | document.getElementById('overview')==null;
