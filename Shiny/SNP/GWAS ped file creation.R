@@ -80,12 +80,14 @@ tmp$indID <- fixids(tmp$indID)
 tmp$fatID <- fixids(tmp$fatID)
 tmp$matID <- fixids(tmp$matID)
 
-write.table(tmp[,1:4], file="~/Documents/Rprojects/Soybeans/snp/soybeanParents", sep="\t", row.names = F, quote = F)
-tmp$genotype <- 0
-write.table(tmp[,1:6], file="~/Documents/Rprojects/Soybeans/snp/soybeanYield.tfam", sep="\t", row.names = F, col.names=F, quote = F)
+# write.table(tmp[,1:4], file="~/Documents/Rprojects/Soybeans/snp/soybeanParents", sep="\t", row.names = F, quote = F)
+# tmp$genotype <- 0
+# write.table(tmp[,1:6], file="~/Documents/Rprojects/Soybeans/snp/soybeanYield.tfam", sep="\t", row.names = F, col.names=F, quote = F)
 
-mapfile <- read.table("~/Documents/Rprojects/Soybeans/snp/MeanPlus0p150SD.map", head=F, sep="\t")
-# mapfile <- mapfile[1,]
-tmp$genotype <- paste0(rep(" 0 0 ", nrow(mapfile)), collapse="")
-write.table(tmp, file="~/Documents/Rprojects/Soybeans/snp/soybeanYield.ped", sep="\t", row.names = F, col.names=F, quote = F)
-write.table(mapfile, file="~/Documents/Rprojects/Soybeans/snp/soybeanYield.map", sep="\t", row.names = F, col.names=F, quote = F)
+ndummies <- length(which(is.na(tmp$fatID)))
+tmp$fatID[which(is.na(tmp$fatID))] <- paste0("DUMMY", 1:ndummies)
+tmp$matID[which(is.na(tmp$matID))] <- paste0("DUMMY", (ndummies + 1):(ndummies + length(which(is.na(tmp$matID)))))
+tmp$famID <- tmp$indID
+
+write.table(tmp, file="~/Documents/Rprojects/Soybeans/snp/soybeanYieldInfo.ped", sep="\t", row.names = F, col.names=F, quote = F)
+
