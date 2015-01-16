@@ -2,11 +2,10 @@
 title: "Interactively Exploring Soybean Breeding Populations Using R and Shiny"
 author: Susan VanderPlas, Nathan Weeks, Andrew Severin, Randy Shoemaker, Jim Specht,
   Di Cook, Michelle Graham
-date: "10/28/2014"
+csl: statistics.csl
 output:
   word_document:
     fig_caption: yes
-csl: statistics.csl
 bibliography: soybeans.bib
 ---
 
@@ -26,7 +25,7 @@ In the last 90 years, soybean cultivars have seen yield increases on the order o
 
 ## Data
 <!---  Describe magnitude of data, CNV analysis steps, etc. -->
-Data comes from multiple sources: next-generation sequencing, large yield trials, and genealogy literature. The data is derived from 79 lines of soybean next-generation sequencing data. Twenty seeds from each line were acquired from ---. Seeds were planted in the USDA greenhouse at Iowa State University. Once plants reached the trifoliolate stage, leaves from up to 10 plants were pooled and genomic DNA was extracted. DNA was sent to Hudson Alpha Institute for Biotechnology for next-generation sequencing. -------- Details on read-length, coverage, etc. ------. In addition, replicated field trials were conducted on a subset of lines (30 of the 79 lines, plus ancestral varieties that were not sequenced) to measure protein, oil, yield, and other characteristics under standard growth conditions, to dissociate the effect of on-farm improvements from genetic gain [@specht1984contribution],[@fox2013estimating]. 
+Data comes from multiple sources: next-generation sequencing, large field trials, and genealogy literature. The sequencing data is derived from 79 lines of soybean next-generation sequencing data. Twenty seeds from each line were acquired from ---. Seeds were planted in the USDA greenhouse at Iowa State University. Once plants reached the trifoliolate stage, leaves from up to 10 plants were pooled and genomic DNA was extracted. DNA was sent to Hudson Alpha Institute for Biotechnology for next-generation sequencing. -------- Details on read-length, coverage, etc. ------. The replicated field trials were conducted on 30 of the 79 lines, and another 138 ancestral varieties that were not sequenced, to measure protein, oil, yield, and several other characteristics, under standardized growth conditions, to dissociate the effect of on-farm improvements from genetic gain [@specht1984contribution],[@fox2013estimating]. 
 
 Following sequencing, the data for each of the 79 genotypes was assembled to the *Glycine max* version 2 genome assembly [@schmutz2010genome][@phytozome10] using [GSNAP](http://research-pub.gene.com/gmap/) (version 2013-8-31) [@wu2010fast]. [samtools](http://www.htslib.org/) [@li2009sequence] was used to convert uniquely mapping reads to the BAM format. 
 
@@ -68,47 +67,10 @@ SNPs can be associated with phenotypic traits using genome-wide association, but
 
 --->
 
-## Displaying Biological Data and Analyses Interactively
-
-### SegAnnDB - Visualizing Breakpoints for CNV modeling
-
-http://bioinformatics.oxfordjournals.org/content/30/11/1539
-
-Toby Hocking's pet project - interactive visualization of breakpoints. 
-
-### Nature Methods Overview of Genomic Data Visualization
-@VisualizingGenomes
-
-* Doesn't address CNV/SNP viewing
-* Lots of single-domain tools; doesn't seem to be a single extensible web-based platform. 
-
-### QTL Charts
-@qtlcharts, [Link](http://kbroman.org/qtlcharts/)
-
-Includes several visualizations similar to those included in the CNV app. The visualizations are fairly fixed in form, though, as they are generated using d3 code from R; shiny allows any visualization that can be created in R to be created in response to user input (including qtlcharts). It would be nice to extend the heatmap to display genetic data, though this is likely to run into data size issues not present in the [qtlcharts example](http://kbroman.org/qtlcharts/example/iplotCorr.html) because the example shown seems to be a single organism, rather than a population. 
-
-
-### Interactive CNV viewer (UK lab) 
-@cnvinspector, [Paper](http://www.ncbi.nlm.nih.gov/pubmed/23729504), [Site](http://www.cnvinspector.org/search.mhtml)
-
-    * Seems to be mostly human focused
-    * Doesn't intuitively display the entire chromosome
-    * Integrates with other databases (as we should probably integrate with Soybase)
-    * Rather unintuitive. 
-    
-### Animint
-@animint
-    * Doesn't require server backend
-    * Data all has to be loaded into browser memory - unwieldly for large or extremely complex datasets
-    * Allows interactivity
-    * Can be used within other applications (shiny bindings, rmarkdown)
-
-## Shiny: an extensible, interactive, web-based framework for data visualization
-
-Explain interactivity, server backend, advantage of serving up data over the web. 
-
 
 # Basic Usage
+
+There are three apps that have been constructed to address different components of the analysis: CNV, SNP, genealogy. The apps can be accessed from the [soybase web site](http://www.soybase.org). 
 
 ## Copy Number Variation
 * Describe different tabs in the applet, explaining the CNV methodology in minimal detail? Discuss the inclusion of genetic data and phenotype information (for reference purposes). 
@@ -159,8 +121,6 @@ The genealogy plots are generated on the fly; the number of generations displaye
 * Include example video of Michelle using the applet.
 
 ## Single Nucleotide Polymorphisms
-* Describe tabs, data workflow
-
 * Include example video of Michelle using the applet
 
 * [Applet Link](http://gsoja.agron.iastate.edu:3838/SNP/)
@@ -200,12 +160,40 @@ In the plot above, Harosoy and Corsoy are obviously related (Corsoy is Harosoy's
 
 The first plot shown above provides the genealogical link between any two related varieties; the shortest path was calculated using the phyViz package. The second plot shows the relationship between generational distance and SNP distance; as the number of generations increases, the SNP distance increases (the maximum SNP distance is 2). The third plot shows the SNP distance between the two varieties as a function of SNP Distance; lower SNP distance is associated with a lower yield difference, but higher SNP distance does not necessarily indicate a large difference in yield. Clicking on any point in the two scatterplots will highlight the associated varieties on the linked heatmaps, and the shortest path between the two varieties will also be displayed. 
 
-## Under the HOOD
+# Materials and Methods
+
+## Other Visualization Software 
+ * SegAnnDB - Visualizing Breakpoints for CNV modeling - http://bioinformatics.oxfordjournals.org/content/30/11/1539 - Toby Hocking's pet project - interactive visualization of breakpoints. 
+ * Nature Methods Overview of Genomic Data Visualization    
+@VisualizingGenomes
+    * Doesn't address CNV/SNP viewing
+    * Lots of single-domain tools; doesn't seem to be a single extensible web-based platform. 
+ * QTL Charts     
+@qtlcharts, [Link](http://kbroman.org/qtlcharts/)    
+Includes several visualizations similar to those included in the CNV app. The visualizations are fairly fixed in form, though, as they are generated using d3 code from R; shiny allows any visualization that can be created in R to be created in response to user input (including qtlcharts). It would be nice to extend the heatmap to display genetic data, though this is likely to run into data size issues not present in the [qtlcharts example](http://kbroman.org/qtlcharts/example/iplotCorr.html) because the example shown seems to be a single organism, rather than a population. 
+ * Interactive CNV viewer (UK lab)     
+@cnvinspector, [Paper](http://www.ncbi.nlm.nih.gov/pubmed/23729504), [Site](http://www.cnvinspector.org/search.mhtml)    
+    * Seems to be mostly human focused
+    * Doesn't intuitively display the entire chromosome
+    * Integrates with other databases (as we should probably integrate with Soybase)
+    * Rather unintuitive. 
+    
+## Animint
+@animint
+    * Doesn't require server backend
+    * Data all has to be loaded into browser memory - unwieldly for large or extremely complex datasets
+    * Allows interactivity
+    * Can be used within other applications (shiny bindings, rmarkdown)
+
+## Shiny: an extensible, interactive, web-based framework for data visualization
+
+Explain interactivity, server backend, advantage of serving up data over the web. 
+
 Displaying large data sets over the web using Shiny applets and interactive javascript plots requires that we carefully consider the computational and bandwidth requirements of each section and feature of the applet. This section describes the problems we encountered during the applet construction process, and the solutions we found to be most helpful in resolving the issue. 
 
 One issue common to both applets was the difference between data shared between sessions and data loaded within each session. When multiple users are connected to the same applet, if data is shared between the users, the second user to connect has a nearly-instantaneous applet loading time (compared to a several-second period as the data is loaded if each user must re-load the data). Sharing data between sessions does require that no session modify the data (so all operations on the data set must be stored in temporary variables and computed on the fly). 
 
-### CNV Applet
+## CNV Applet
 
 * Add stats on size of data, etc.
 
@@ -217,19 +205,17 @@ DataTables, a javascript library, is used to display reported CNV information. T
 
 These modifications helped to make the CNV applet much more responsive and user-friendly. Modifying the CNV applet to streamline the loading process was extremely good training for the SNP applet, which has magnitudes more data and required even more pre-processing.
 
-### SNP Applet
+## SNP Applet
+The SNP applet contains several tabs which display different aspects of a single underlying data file (the Kinship tab incorporates some additional data as well). The underlying data file contains the (heavily filtered) SNPs for each of 79 varieties; when compressed, it is 1.18 GB, but when expanded to a tabular format which can be plotted easily, the file grows to 5.2 GB. On a sufficiently powerful computer, R can handle data of this magnitude, but each operation is proportionately slower. To optimize applet performance, we first removed all lines from the expanded table which did not correspond to SNPs for a combination of position and Variety, as well as SNPs on scaffolds. This reduced the dataset from 87 million rows to 20 million rows. The resulting dataset can now be loaded on most modern computers, and critical operations (sort, summarize, filter) are now much more feasible. 
 
-* Preprocessing data (VCF -> flat file, removing rows that don't correspond to SNPs that are present)
-* Limiting the number of SNPs that can be viewed (for perceptual AND computational reasons)
-* ?
+In order to minimize the number of operations that have to be completed while the applet is running, several summary data files are pre-computed. The aggregate browser and the SNP Density tab both display summaries of data (over variety or position); these summaries are pre-computed and then filtered in response to user input. The SNP Counts tab similarly relies on filtering aggregated data; its purpose is to bridge the gap between the aggregate SNP browser and the glymaIDs necessary to use the variety-level SNP browser. 
+
+In addition to pre-computed files, the applet is carefully designed so that user queries do not return enough results to overwhelm the server (or the client). The aggregate SNP browser, for instance, is limited to 50 SNPs at a time; the variety-level SNP browser can only display 10 cultivars and a single GlymaID. These modifications are essential both for the responsiveness of the server and to prevent visual overload. The SNP counts tab utilizes a combination of server-side filtration using user inputs, and client-side filtration and sorting using DataTables.js. This combination provides responsiveness through client-side interaction without overwhelming the browser's rendering system. 
+
+Even with these modifications, we found that the applet is computationally intensive enough to justify purchasing the pro version of Shiny Server, which has threaded performance and other features that allow the applet to run more smoothly for multiple simultaneous users. 
 
 
-
-### Genealogy Applet
-
-* Recursive search algorithm
-* phyViz package
-
+# Discussion
 ## How does this slot into a different database like soybase?
 
 
