@@ -40,10 +40,38 @@ glymacols <- c(11,1:4,17,8)
 # Define server logic required to generate and plot a subset of varieties with a subset of chromosomes
 shinyServer(function(input, output, session) {
 
+  
+  output$VarietyList <- renderUI({
+    tmp <- sort(unique(varieties))
+    selectizeInput("varieties", "Choose Varieties", tmp, NULL, multiple=TRUE)
+  })
+  
+  output$VarietyList2 <- renderUI({
+    tmp <- sort(unique(varieties))
+    selectizeInput("genvarieties", "Choose Varieties", tmp, NULL, multiple=TRUE)
+  })
+  
+  output$ChromosomeList <- renderUI({
+    chrs <- unique(seqnames)
+    selectizeInput("chromosomes", "Choose Chromosomes", chrs, NULL, multiple=TRUE)
+  })
+
+  output$ChrSelect2 <- renderUI({
+    chrs <- unique(seqnames)
+    radioButtons("locationChrs", "Choose Chromosome of Interest", chrs)
+  })
+  
+  output$CNVTypeList <- renderUI({
+    selectizeInput("featuretypes", "Choose Features (optional)", c("gene", "CDS", "mRNA", "exon"), c("gene", "CDS", "mRNA", "exon"), multiple=TRUE)
+  })
+  
   output$ChrSlider <- renderUI({
     if(length(input$locationChrs)>0){
+
       start <- min(floor(subset(chr.summary, seqnames%in%input$locationChrs)$start/10000)*10000)
       end <- max(ceiling(subset(chr.summary, seqnames%in%input$locationChrs)$end/10000)*10000)
+#       min <- floor(subset(chr.summary, seqnames%in%input$locationChrs)$start/10000)*10000
+#       max <- ceiling(subset(chr.summary, seqnames%in%input$locationChrs)$end/1000000)*1000000
     } else {
       start <- 0
       end <- 60000000
@@ -173,7 +201,7 @@ shinyServer(function(input, output, session) {
                        Chromosome%in%input$chromosomes & 
                        Variety%in%input$varieties & 
                        Feature%in%input$featuretypes)
-      names(cnvs)[1] <-  "seqnames"
+      
       
       tmp <- data.frame(old.name=input$varieties, new.name=input$varieties)
       tmp$year <- sapply(tmp$new.name, function(i) min(tree$year[which(tree$child==i)]))
@@ -196,6 +224,7 @@ shinyServer(function(input, output, session) {
                               low="#FFFFFF", high="#000000",
                               breaks=c(1, 20, 400, 8000, 160000),
                               na.value="#FFFFFF") + 
+        facet_grid(Variety~seqnames, scales="free") + 
         theme_bw() + 
         theme(axis.text.y=element_blank(), 
               axis.ticks.y=element_blank(), 
@@ -205,12 +234,10 @@ shinyServer(function(input, output, session) {
         plot <- plot + 
           geom_rect(data=cnvs, 
                     aes(xmin=Cnv.Start, xmax=Cnv.End, ymin=-.6, ymax=.6),
-                    fill="green", colour="green") + 
-          facet_grid(Variety~seqnames, scales="free")
+                    fill="green", colour="green")
       }
     } else {
       plot <- ggplot() + 
-        facet_grid(Variety~seqnames, scales="free") + 
         geom_text(aes(x=0, y=0, label="Please select varieties and chromosomes\n\n Note: It may take a minute to process the input")) +         
         theme_bw() + 
         theme(axis.text=element_blank(), 
@@ -247,8 +274,6 @@ shinyServer(function(input, output, session) {
         xlab("")
       
       cnvs <- subset(glymaIDs, Chromosome%in%input$chromosomes & Variety%in%input$varieties & Feature%in%input$featuretypes)
-      names(cnvs)[1] <- "seqnames"
-      
       if(nrow(cnvs)>0){
         plot <-  plot + geom_point(data=subset(cnvs), aes(x=(Cnv.Start+Cnv.End)/2, y=-.55, shape="CNV")) + 
           scale_shape("CNV Location", solid=FALSE)
@@ -364,24 +389,35 @@ shinyServer(function(input, output, session) {
       if(nrow(temp)>0) write.csv(temp, con) else write.csv(data.frame(), con)
     }
   )
-
+    
   output$GlymaTable <- renderUI({
-    tagList(
-      dataTableOutput("glymaIDs"),
-      br(),
-      helpText("Use the Search field (top-right) to filter by Glyma ID.")
-      )
+    dataTableOutput("glymaIDs")
   })
 
   output$CNVList <- renderUI({
     dataTableOutput("glymaIDs2")
   })
 
+  output$Methods <- renderUI({
+    tagList(h3("Data Collection"), 
+            p("Biology info goes here... plant methods, climate conditions, whatever other green/slimy stuff..."),
+            h3("Processing"), 
+            p("Andrew's stuff goes here... raw data to BAM file pipeline with parameters"),
+            h3("Copy Number Identification"),
+            h5("cn.mops"),
+            p("Using BAM files from the previous step as input to ", a(href="http://www.bioinf.jku.at/software/cnmops/", target="_blank", "cn.mops."), "The program was executed separately on each geneomic feature (gene, exon, CDS, mRNA) to provide internal verification as well as reduce the problem to a more computationally manageable size. As suggested in the cn.mops manual, each region of the genome was extended by 30 bp on each side to aid in identification of CNV regions. Once these modifications were performed, the command used to run the analysis was:", tags$blockquote("exomecn.mops(bamSegmentRanges, parallel=32, I=c(0.025, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5), classes=paste0('CN', as.character(0:10)))"), "The results from the algorithm were back-transformed (regions were reduced by 30 bp on each side) and merged with annotation files."),
+            h5("Additional Analysis"),
+            p("In order to verify the reliability of cn.mops, cross-validation was performed on a subset of lines. This step ensures that the results from the algorithm are not unduly affected by one or two varieties. Results of cross validation confirm that most of the variants identified by cn.mops are present in 90% or more of the cross-validation runs."),
+            h3("Genealogy"),
+            p("Link sources for genealogy compilation here")
+    )
+  })
+
   output$YieldInfo <- renderUI({
     tagList(
-      singleton(tags$head(tags$script(src = "fieldtrials/animint.js", type='text/javascript'))),
-      singleton(tags$head(tags$script(src = "fieldtrials/vendor/d3.v3.js", type='text/javascript'))),
-      singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="fieldtrials/styles.css"))),
+      singleton(tags$head(tags$script(src = "animint.js", type='text/javascript'))),
+      singleton(tags$head(tags$script(src = "vendor/d3.v3.js", type='text/javascript'))),
+      singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="styles.css"))),
       singleton(tags$body(tags$script("
                       changeHiding = function(id){
                         var plotEl = document.getElementById(id).parentNode.parentNode.parentNode;
@@ -395,8 +431,8 @@ shinyServer(function(input, output, session) {
                         vec.forEach(function(d){ changeHiding(d)});
                       }
                                       "))),
-      tags$div(id="YieldPlot", align="center"),
-      tags$script("var plot = new animint('#YieldPlot','fieldtrials/plot.json');"),
+      tags$div(id="plot"),
+      tags$script("var plot = new animint('#plot','plot.json');"),
       tags$script("var monitor = true; 
                    var doMonitor = function(){
                       monitor=document.getElementById('yieldOil')==null | document.getElementById('maturity')==null;
@@ -404,9 +440,9 @@ shinyServer(function(input, output, session) {
                         nonyear = document.getElementById('yieldOil').parentNode.parentNode.parentNode; 
                         extrainfo = document.getElementById('maturity').parentNode.parentNode.parentNode;
                         var br = document.createElement('br'); 
-                        document.getElementById('YieldPlot').insertBefore(br, nonyear);
+                        document.getElementById('plot').insertBefore(br, nonyear);
                         var br = document.createElement('br'); 
-                        document.getElementById('YieldPlot').insertBefore(br, extrainfo);
+                        document.getElementById('plot').insertBefore(br, extrainfo);
                       } else {
                         setTimeout(doMonitor, 500);
                       }
@@ -415,28 +451,20 @@ shinyServer(function(input, output, session) {
                    ")
     )
   })
-
-  output$overview <- renderUI({
-    tagList(
-      singleton(tags$head(tags$script(src = "overview/animint.js", type='text/javascript'))),
-      singleton(tags$head(tags$script(src = "overview/vendor/d3.v3.js", type='text/javascript'))),
-      singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="overview/styles.css"))),
-      tags$div(id="OverviewPlot", align="center"),
-      tags$script("var plot = new animint('#OverviewPlot','overview/plot.json');"),
-      tags$script("var monitor = true; 
-                  var doMonitor = function(){
-                  monitor=document.getElementById('chromosomeplot')==null | document.getElementById('overview')==null;
-                  if(!monitor){
-                  tmp = document.getElementById('chromosomeplot').parentNode.parentNode.parentNode; 
-                  var br = document.createElement('br'); 
-                  document.getElementById('plot').insertBefore(br, tmp);
-                  } else {
-                  setTimeout(doMonitor, 500);
-                  }
-                  }
-                  setTimeout(doMonitor,500);
-                  ")
-      )
+  
+  output$DebugText <- renderPrint({
+    print(input$plottype)
+    print(input$chromosomes)
+    print(input$varieties)
+    print(input$genvarieties)
+    print(input$locationChrs)
+    print(input$chrRange)
+#     head(subset(res.df, 
+#                 seqnames%in%input$chromosomes & 
+#                 Variety%in%input$varieties))
+#     head(subset(segranges.df2, 
+#                 seqnames%in%input$chromosomes &
+#                 Variety%in%input$varieties))
   })
 
 })
