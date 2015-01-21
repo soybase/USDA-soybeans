@@ -80,5 +80,5 @@ tree2$PredYield[!is.na(tree2$MaturityGroup) & !is.na(tree2$year) &  tree2$Maturi
 tmp <- tree2$year[!is.na(tree2$MaturityGroup) & !is.na(tree2$year) & tree2$MaturityGroup==4]
 tree2$PredYield[!is.na(tree2$MaturityGroup) & !is.na(tree2$year) &  tree2$MaturityGroup==4] <- with(predmg[3,], I(tmp<=change)*(slope1*tmp + int1 ) + I(tmp>change)*(slope2*(tmp-change)+int2))
 
-write.csv(subset(tree2, !is.na(yield)), "~/Dropbox/Shoemaker_Specht/yield-analysis/PredictedYieldTreeDB.csv", row.names=F)
+write.csv(subset(tree2, !is.na(AvgYield)), "~/Dropbox/Shoemaker_Specht/yield-analysis/PredictedYieldTreeDB.csv", row.names=F)
 # ggplot2::qplot(data=unique(tree2[,c("child", "AvgYield", "PredYield")]), x=AvgYield, y=PredYield, geom="point")
