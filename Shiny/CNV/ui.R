@@ -99,14 +99,14 @@ header <- {
                                             text box for options"),
                                 div(
                                   selectizeInput("chromosomes", "Choose Chromosomes", 
-                                                 seqnames, NULL, multiple=TRUE), 
+                                                 seqnames, selected="Chr18", multiple=TRUE), 
                                   display="inline-table", align="center")
                ),
                # Chromosome Radio Buttons
                conditionalPanel(condition="input.plottype=='Search CNVs by Location'", 
                                 div(
                                   selectizeInput("locationChrs", "Choose Chromosome", 
-                                                 seqnames, NULL, multiple=FALSE), 
+                                                 seqnames, selected="Chr18", multiple=FALSE), 
                                   display="inline-table", align="center"
                                 )
                ),
@@ -127,7 +127,8 @@ header <- {
                conditionalPanel(condition="input.plottype!='Genealogy' & 
                                              input.plottype!='Search CNVs by Location'", 
                                 div(
-                                  selectizeInput("varieties", "Choose Varieties", varieties, NULL, multiple=TRUE), 
+                                  selectizeInput("varieties", "Choose Varieties", varieties, 
+                                                 selected=c("Amsoy", "Adams"), multiple=TRUE), 
                                   display="inline-table", align="center")),
                
                # Variety Selectize Input (Genealogy Tab)
