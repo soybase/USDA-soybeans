@@ -195,7 +195,7 @@ shinyServer(function(input, output, session) {
   #
   output$ChromosomePlot <- renderPlot({
 
-    if(length(input$chromosomes)>0 & length(input$varieties)>0){
+    if(length(input$chromosomes)>0 & length(input$varieties)>0 & length(input$featuretypes)>0){
 
       cnvs <- subset(glymaIDs, 
                        Chromosome%in%input$chromosomes & 
