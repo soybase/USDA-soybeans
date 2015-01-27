@@ -210,7 +210,6 @@ shinyServer(function(input, output, session) {
       }
     } else {
       plot <- ggplot() + 
-        facet_grid(Variety~seqnames, scales="free") + 
         geom_text(aes(x=0, y=0, label="Please select varieties and chromosomes\n\n Note: It may take a minute to process the input")) +         
         theme_bw() + 
         theme(axis.text=element_blank(), 
