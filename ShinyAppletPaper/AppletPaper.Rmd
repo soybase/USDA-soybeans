@@ -76,9 +76,13 @@ There are three apps that have been constructed to address different components 
 * Describe different tabs in the applet, explaining the CNV methodology in minimal detail? Discuss the inclusion of genetic data and phenotype information (for reference purposes). 
 * Discuss design considerations to deal with data size: dplyr, preprocessing data, drawing CNV=2 as the default to reduce drawn objects
 
-The CNV Shiny applet ([Applet Link](http://gsoja.agron.iastate.edu:3838/CNV/)) contains several different tabs, which allow users to filter, manipulate, and visualize the data in different ways. The first four of these tabs, CNV Location, Copy Number, "Search CNVs by Location", and CNV List are primarily concerned with exploring the identified copy number variants; the final three tabs (Phenotype Data, Genealogy, and Methodology) provide additional information about the soybean cultivars and the experimental methodology.
+The CNV Shiny applet ([Applet Link](http://gsoja.agron.iastate.edu:3838/CNV/)) contains several different tabs, which allow users to filter, manipulate, and visualize the data in different ways. Four of these tabs: CNV Location, Copy Number, "Search CNVs by Location", and CNV List, are primarily concerned with exploring the identified copy number variants; the final three tabs (Phenotype Data, Genealogy, and Methodology) provide additional information about the soybean cultivars and the experimental methodology. 
 
-The first tab is designed to show the location of an identified copy number variant for one or more cultivars. This plot is an example of a "barcode plot", where information is provided through and color intensity and location in $x$. The grey lines in the background indicate the coverage of the input sequencing data, and the green lines indicate CNV locations for a particular cultivar. The vertical alignment of different cultivars allows researchers to compare the inheritance of different CNV sites; the applet automatically sorts varieties which are related by approximate generation to facilitate these comparisons. 
+An initial tab provides an interactive overview of the distribution of identified CNVs by chromosome and variety. The plots shown in this tab are interactive, utilizing mouseovers to identify varieties and chromosomes, and clicks to select chromosomes or varieties to display additional information. This tab is designed to encourage the user to identify areas which may be interesting to investigate using other tabs. 
+
+![CNV Overview. Upon initial loading, this tab displays an overview of the distribution of CNVs for each chromosome and variety. Users can interact with the plots directly through mouseovers, which provide more information, and clicks, which change plot appearance.][cnvoverview]
+
+The second tab is designed to show the location of an identified copy number variant for one or more cultivars. This plot is an example of a "barcode plot", where information is provided through and color intensity and location in $x$. The grey lines in the background indicate the coverage of the input sequencing data, and the green lines indicate CNV locations for a particular cultivar. The vertical alignment of different cultivars allows researchers to compare the inheritance of different CNV sites; the applet automatically sorts varieties which are related by approximate generation to facilitate these comparisons. 
 ![CNV Location Tab. This tab is concerned with visualizing the number of copies of a gene segment that appear in each cultivar.][cnvlocation]
 
 In order to get more information about the number of copies of a particular genetic region, the researcher must use the next tab, "Copy Number". This tab contains information about the number of copies of a specific region, conveyed again by shades of blue. Significant copy number variants are indicated with an open circle below the vertical line. As with the last tab, this tab also contains a barcode plot, however, instead of read depth, color intensity is used to depict the number of copies of a region contained in a particular cultivar. The default copy number is 2, corresponding to one copy of the gene on each chromosome; enriched regions have a copy number higher than two, while regions that may have been deleted have a copy number of less than two. 
@@ -89,7 +93,7 @@ As with the CNV Location plot, the vertical alignment of the barcode plots for d
 
 While visual  display of the CNV analysis results is important for drawing conclusions about the overall analysis, many researchers have specific genes of interest and may want to view tabular results as well. The next two tabs are designed to facilitate that goal along with providing a user-friendly method for exporting the data for outside analysis. 
 
-The first tab enables researchers to search for CNVs by chromosome and position on the chromosome. Users can select a range along a chromosome and the resulting interactive table will display all CNVs identified for the chromosome and region selected. The interactive table can be searched, sorted, and filtered; in particular, the results were merged with the annotated gff3 file so that each CNV region has a corresponding GlymaID. All CNVs identified for the chromosome and range of interest can be easily downloaded for analysis. 
+The first set of tabular results enables researchers to search for CNVs by chromosome and position on the chromosome. Users can select a range along a chromosome and the resulting interactive table will display all CNVs identified for the chromosome and region selected. The interactive table can be searched, sorted, and filtered; in particular, the results were merged with the annotated gff3 file so that each CNV region has a corresponding GlymaID. All CNVs identified for the chromosome and range of interest can be easily downloaded for analysis. 
 
 ![Search CNVs by Location. This tab allows users to search for specific positions along a chromosome and reports a dynamic, searchable table with all CNVs (and all cultivars) in the specified region. The resulting list is downloadable for analysis offline.][cnvlistrange]
 
@@ -223,6 +227,7 @@ Even with these modifications, we found that the applet is computationally inten
 
 <!--- Picture References --->
 
+[cnvoverview]:CNVOverview.png
 [cnvlocation]:CNVLocation.png
 [cnvlistfilter]:CNVListFilter.png
 [cnvlistrange]:CNVListRange.png
