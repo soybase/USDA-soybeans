@@ -23,14 +23,22 @@ pairwise.btn <- tags$button(
 header <- {
   wellPanel(
     class="well-sm",
+    tags$script(
+      'Shiny.addCustomMessageHandler(
+        \'setTab\',
+        function(data) {
+          var nav_ref = \'li a:contains(\\"\' + data + \'\\")\';
+          $(nav_ref).tab(\'show\');
+        });'
+    ),
     fluidRow(
       # Overview Tab
-      conditionalPanel(condition="input.plottype=='Overview'",
+      conditionalPanel(condition="input.tabname=='Overview'",
                        div(helpText("Use the first two plots to select a chromosome and one or more varieties."), 
                        display="inline-table", align="center")),
       
       # Phenotype Tab
-      conditionalPanel(condition="input.plottype=='Phenotype Data'",
+      conditionalPanel(condition="input.tabname=='Phenotype Data'",
                        column(3, helpText("Click on data points in the plot to see field trial data.")),
                        column(3, h6("Yield, Protein, and Oil by Year"), yield.btn),
                        column(3, h6("More Field Trial Data by Year"), 
@@ -40,20 +48,20 @@ header <- {
       ),
       
       # Methodology Tab
-      conditionalPanel(condition="input.plottype=='Methodology'",
+      conditionalPanel(condition="input.tabname=='Methodology'",
                        div(helpText("This section details the data collection and analysis process used to generate the results shown in this application."), 
                            display="inline-table", align="center")),
       
       # Other Tabs
       conditionalPanel(
-        condition="input.plottype!='Methodology' & 
-                     input.plottype!='Overview' & 
-                     input.plottype!='Phenotype Data'",
+        condition="input.tabname!='Methodology' & 
+                     input.tabname!='Overview' & 
+                     input.tabname!='Phenotype Data'",
         # Reset (and Download) Buttons
         column(3,
                conditionalPanel(
-                 condition="input.plottype!='CNV List' & 
-                              input.plottype!='Search CNVs by Location'",
+                 condition="input.tabname!='CNV List' & 
+                              input.tabname!='Search CNVs by Location'",
                  tagList(
                    tags$table(width='100%',
                               tags$tr(
@@ -65,8 +73,8 @@ header <- {
                  )
                ),
                conditionalPanel(
-                 condition="!(input.plottype!='CNV List' & 
-                                input.plottype!='Search CNVs by Location')",
+                 condition="!(input.tabname!='CNV List' & 
+                                input.tabname!='Search CNVs by Location')",
                  tagList(
                    tags$table(width='100%',
                               tags$tr(
@@ -74,12 +82,12 @@ header <- {
                                         actionButton("resetButton", "Clear Selections")),
                                 tags$td(style="text-align:right;",
                                         conditionalPanel(
-                                          condition="input.plottype=='CNV List'",
+                                          condition="input.tabname=='CNV List'",
                                           downloadButton("DataFrameDownload", 
                                                          label="Download", class=NULL)
                                         ),
                                         conditionalPanel(
-                                          condition="input.plottype=='Search CNVs by Location'",
+                                          condition="input.tabname=='Search CNVs by Location'",
                                           downloadButton("DataFrameDownload2", 
                                                          label="Download", class=NULL)
                                         )
@@ -93,8 +101,8 @@ header <- {
         # Chromosome (ish) Information
         column(3,
                # Chromosome Checkboxes
-               conditionalPanel(condition="input.plottype!='Search CNVs by Location' & 
-                                             input.plottype!='Genealogy'", 
+               conditionalPanel(condition="input.tabname!='Search CNVs by Location' & 
+                                             input.tabname!='Genealogy'", 
                                 helpText("Type the chromosome number or click on the 
                                             text box for options"),
                                 div(
@@ -103,7 +111,7 @@ header <- {
                                   display="inline-table", align="center")
                ),
                # Chromosome Radio Buttons
-               conditionalPanel(condition="input.plottype=='Search CNVs by Location'", 
+               conditionalPanel(condition="input.tabname=='Search CNVs by Location'", 
                                 div(
                                   selectizeInput("locationChrs", "Choose Chromosome", 
                                                  seqnames, NULL, multiple=FALSE), 
@@ -111,7 +119,7 @@ header <- {
                                 )
                ),
                # Generations Slider
-               conditionalPanel(condition="input.plottype=='Genealogy'", 
+               conditionalPanel(condition="input.tabname=='Genealogy'", 
                                 div(
                                   sliderInput("gens", "Number of Generations to Show", 
                                               value=3, min=1, max=10)), 
@@ -120,29 +128,29 @@ header <- {
         # Variety (ish) Information
         column(3, 
                # Variety Help Text
-               conditionalPanel(condition="input.plottype!='Search CNVs by Location'", 
+               conditionalPanel(condition="input.tabname!='Search CNVs by Location'", 
                                 helpText("Type the name of the variety or click on the text box for options")),
                
                # Variety Selectize Input
-               conditionalPanel(condition="input.plottype!='Genealogy' & 
-                                             input.plottype!='Search CNVs by Location'", 
+               conditionalPanel(condition="input.tabname!='Genealogy' & 
+                                             input.tabname!='Search CNVs by Location'", 
                                 div(
                                   selectizeInput("varieties", "Choose Varieties", varieties, NULL, multiple=TRUE), 
                                   display="inline-table", align="center")),
                
                # Variety Selectize Input (Genealogy Tab)
-               conditionalPanel(condition="input.plottype=='Genealogy'",  
+               conditionalPanel(condition="input.tabname=='Genealogy'",  
                                 div(
                                   selectizeInput("genvarieties", "Choose Varieties", varieties, NULL, multiple=TRUE), 
                                   display="inline-table", align="center")),
                
                # Chromosome Slider (Search CNVs by Location Tab)
-               conditionalPanel(condition="input.plottype=='Search CNVs by Location'", 
+               conditionalPanel(condition="input.tabname=='Search CNVs by Location'", 
                                 div(uiOutput("ChrSlider"), 
                                     display="inline-table", align="center"))
         ),
         column(3,
-               conditionalPanel(condition="input.plottype!='Genealogy'",
+               conditionalPanel(condition="input.tabname!='Genealogy'",
                                 helpText("Select the types of CNV regions you would like to display"),
                                 div(
                                   selectizeInput("featuretypes", "Choose Features (optional)", 
@@ -153,7 +161,6 @@ header <- {
     )
   )
 }
-
 
 # Define UI for page that allows selection of genetic lines with corresponding facets
 navbarPage(
@@ -174,14 +181,8 @@ navbarPage(
   tabPanel("Phenotype Data", uiOutput("YieldInfo")),
   tabPanel("Genealogy", plotOutput("FamilyTree", width="100%", height=600)),
   tabPanel("Methodology", includeHTML("Documentation.html")),
-#   tags$head(
-#     tags$link(href="bootstrap/css/bootstrap.min.css", rel="stylesheet"),
-#     tags$link(href="bootstrap/css/themes/cerulean/bootstrap.min.css", rel="stylesheet"),
-#     tags$script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"),
-#     tags$script(src="bootstrap/js/bootstrap.min.js", type="text/javascript")
-#   ,
   header=header,
-  id="plottype", 
+  id="tabname", 
   inverse=T,
   collapsable=F,
   windowTitle="Soybean CNVs"

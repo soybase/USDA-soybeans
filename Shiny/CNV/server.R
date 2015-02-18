@@ -53,7 +53,67 @@ shinyServer(function(input, output, session) {
     sliderInput("chrRange", "Range to search for CNVs", min=min, max=max, value=c(start, end), step=10000, round=FALSE)
   })
   
-  # Reset input lists
+  # Set values based on query string
+  observe({
+    str <- parseQueryString(session$clientData$url_search)
+    fix.vecs <- names(str)[grepl("c\\(.*\\)", str)]
+    for(i in fix.vecs){
+      str[[i]] <- eval(parse(text=str[[i]]))
+    }
+    
+    # Reset each input using the appropriate update* function
+    if("tabname"%in%names(str)){
+      session$sendCustomMessage(type='setTab', str$tabname)
+    }
+    if("varieties"%in%names(str)){
+      updateSelectizeInput(session = session, 
+                           inputId = "varieties", 
+                           label = "Choose Varieties", 
+                           choices = sort(unique(varieties)), 
+                           selected = str$varieties)
+    }
+    if("genvarieties"%in%names(str)){
+      updateSelectizeInput(session = session, 
+                           inputId = "genvarieties", 
+                           label = "Choose Varieties", 
+                           choices = sort(unique(varieties)), 
+                           selected = str$genvarieties)
+    }
+    if("chromosomes"%in%names(str)){
+      updateSelectizeInput(session = session, 
+                           inputId = "chromosomes", 
+                           label = "Choose Chromosomes", 
+                           choices = sort(unique(seqnames)), 
+                           selected = str$chromosomes)
+    }
+    if("featuretypes"%in%names(str)){
+      updateSelectizeInput(session = session, 
+                           inputId = "featuretypes", 
+                           label = "Choose Features (optional)", 
+                           choices = c("gene", "CDS", "mRNA", "exon"), 
+                           selected = str$featuretypes)
+    }
+    if("chrRange"%in%names(str)){
+      updateSliderInput(session = session, 
+                        inputId = "chrRange", 
+                        label = "Range to search for CNVs",
+                        value = str$chrRange)
+    }
+    if("min"%in%names(str) | "max"%in%names(str)){
+      updateSliderInput(session = session, 
+                        inputId = "chrRange", 
+                        label = "Range to search for CNVs",
+                        value = c(max(c(str$min, 0)), min(c(str$max, 60000000))))
+    }
+    if("locationChrs"%in%names(str)){
+      updateRadioButtons(session = session, 
+                         inputId = "locationChrs",
+                         label = "Choose Chromosome of Interest",
+                         choices = str$locationChrs)
+    }
+  })
+  
+  # Reset input lists when reset button is activated
   observe({
     if (input$resetButton == 0)
       return()
@@ -61,20 +121,20 @@ shinyServer(function(input, output, session) {
     isolate({
       # Reset each input using the appropriate update* function
       updateSelectizeInput(session = session, 
-                               inputId = "varieties", 
-                               label = "Choose Varieties", 
-                               choices = sort(unique(varieties)), 
-                               selected = NULL)
+                           inputId = "varieties", 
+                           label = "Choose Varieties", 
+                           choices = sort(unique(varieties)), 
+                           selected = NULL)
       updateSelectizeInput(session = session, 
-                               inputId = "genvarieties", 
-                               label = "Choose Varieties", 
-                               choices = sort(unique(varieties)), 
-                               selected = NULL)
+                           inputId = "genvarieties", 
+                           label = "Choose Varieties", 
+                           choices = sort(unique(varieties)), 
+                           selected = NULL)
       updateSelectizeInput(session = session, 
-                               inputId = "chromosomes", 
-                               label = "Choose Chromosomes", 
-                               choices = sort(unique(seqnames)), 
-                               selected = NULL)
+                           inputId = "chromosomes", 
+                           label = "Choose Chromosomes", 
+                           choices = sort(unique(seqnames)), 
+                           selected = NULL)
       updateSelectizeInput(session = session, 
                            inputId = "featuretypes", 
                            label = "Choose Features (optional)", 
@@ -87,9 +147,7 @@ shinyServer(function(input, output, session) {
       updateRadioButtons(session = session, 
                          inputId = "locationChrs",
                          label = "Choose Chromosome of Interest",
-                         choices = sort(unique(seqnames))
-                         )
-      
+                         choices = sort(unique(seqnames)))
     })
   })
   
@@ -428,7 +486,7 @@ shinyServer(function(input, output, session) {
                   if(!monitor){
                   tmp = document.getElementById('chromosomeplot').parentNode.parentNode.parentNode; 
                   var br = document.createElement('br'); 
-                  document.getElementById('plot').insertBefore(br, tmp);
+                  document.getElementById('OverviewPlot').insertBefore(br, tmp);
                   } else {
                   setTimeout(doMonitor, 500);
                   }
