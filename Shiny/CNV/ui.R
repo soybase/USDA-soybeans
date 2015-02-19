@@ -31,6 +31,14 @@ header <- {
           $(nav_ref).tab(\'show\');
         });'
     ),
+    tags$script(
+      'Shiny.addCustomMessageHandler(
+        \'setTab\',
+        function(data) {
+          var nav_ref = \'td:contains("Glyma")\';
+          #need to do something with these nodes to convert them into links. 
+        });'
+    ),
     fluidRow(
       # Overview Tab
       conditionalPanel(condition="input.tabname=='Overview'",
@@ -146,7 +154,9 @@ header <- {
                
                # Chromosome Slider (Search CNVs by Location Tab)
                conditionalPanel(condition="input.tabname=='Search CNVs by Location'", 
-                                div(uiOutput("ChrSlider"), 
+                                div(sliderInput("chrRange", "Range to search for CNVs", 
+                                                min=0, max=60000000, value=c(0, 600000000), 
+                                                step=10000, round=FALSE), 
                                     display="inline-table", align="center"))
         ),
         column(3,

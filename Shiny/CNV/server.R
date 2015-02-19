@@ -34,13 +34,16 @@ load("ChrPlot.rda")
 load("GlymaIDs.rda")
 load("ShinyStart.rda")
 source("SelectGeneology.R")
-glymacols <- c(11,1:4,17,8)
+names(glymaIDs)[8:9] <- c("ID.old", "ID")
+# glymaIDs$ID <- as.character(sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s'>%s</a>", glymaIDs$IDName, glymaIDs$IDName))
+
+glymacols <- c(11,1:4,17,9)
 
 
 # Define server logic required to generate and plot a subset of varieties with a subset of chromosomes
 shinyServer(function(input, output, session) {
 
-  output$ChrSlider <- renderUI({
+  reactive({
     if(length(input$locationChrs)>0){
       start <- min(floor(subset(chr.summary, seqnames%in%input$locationChrs)$start/10000)*10000)
       end <- max(ceiling(subset(chr.summary, seqnames%in%input$locationChrs)$end/10000)*10000)
@@ -48,9 +51,7 @@ shinyServer(function(input, output, session) {
       start <- 0
       end <- 60000000
     }
-    min <- 0
-    max <- 60000000
-    sliderInput("chrRange", "Range to search for CNVs", min=min, max=max, value=c(start, end), step=10000, round=FALSE)
+    updateSliderInput("chrRange", "Range to search for CNVs", value=c(start, end), step=10000, round=FALSE)
   })
   
   # Set values based on query string
@@ -93,6 +94,12 @@ shinyServer(function(input, output, session) {
                            choices = c("gene", "CDS", "mRNA", "exon"), 
                            selected = str$featuretypes)
     }
+    if("locationChrs"%in%names(str)){
+      updateSelectizeInput(session = session, 
+                           inputId = "locationChrs",
+                           label = "Choose Chromosome of Interest",
+                           selected = str$locationChrs)
+    }
     if("chrRange"%in%names(str)){
       updateSliderInput(session = session, 
                         inputId = "chrRange", 
@@ -104,12 +111,6 @@ shinyServer(function(input, output, session) {
                         inputId = "chrRange", 
                         label = "Range to search for CNVs",
                         value = c(max(c(str$min, 0)), min(c(str$max, 60000000))))
-    }
-    if("locationChrs"%in%names(str)){
-      updateRadioButtons(session = session, 
-                         inputId = "locationChrs",
-                         label = "Choose Chromosome of Interest",
-                         choices = str$locationChrs)
     }
   })
   
@@ -140,14 +141,14 @@ shinyServer(function(input, output, session) {
                            label = "Choose Features (optional)", 
                            choices = c("gene", "CDS", "mRNA", "exon"), 
                            selected = c("gene", "CDS", "mRNA", "exon"))
+      updateSelectizeInput(session = session, 
+                           inputId = "locationChrs",
+                           label = "Choose Chromosome of Interest",
+                           choices = sort(unique(seqnames)))
       updateSliderInput(session = session, 
                         inputId = "chrRange", 
                         label = "Range to search for CNVs",
                         value = c(0, 60000000))
-      updateRadioButtons(session = session, 
-                         inputId = "locationChrs",
-                         label = "Choose Chromosome of Interest",
-                         choices = sort(unique(seqnames)))
     })
   })
   
@@ -377,7 +378,7 @@ shinyServer(function(input, output, session) {
     }else{
       data.frame()
     }
-  })
+  }, searchDelay=1000)
 
   output$DataFrameDownload <- downloadHandler(  
     filename=function(){
