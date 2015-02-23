@@ -31,14 +31,6 @@ header <- {
           $(nav_ref).tab(\'show\');
         });'
     ),
-    tags$script(
-      'Shiny.addCustomMessageHandler(
-        \'setTab\',
-        function(data) {
-          var nav_ref = \'td:contains("Glyma")\';
-          #need to do something with these nodes to convert them into links. 
-        });'
-    ),
     fluidRow(
       # Overview Tab
       conditionalPanel(condition="input.tabname=='Overview'",
@@ -194,6 +186,6 @@ navbarPage(
   header=header,
   id="tabname", 
   inverse=T,
-  collapsable=F,
+  collapsible=F,
   windowTitle="Soybean CNVs"
 )
