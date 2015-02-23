@@ -34,15 +34,18 @@ load("ChrPlot.rda")
 load("GlymaIDs.rda")
 load("ShinyStart.rda")
 source("SelectGeneology.R")
-names(glymaIDs)[8:9] <- c("ID.old", "ID")
-# glymaIDs$ID <- as.character(sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s'>%s</a>", glymaIDs$IDName, glymaIDs$IDName))
+names(glymaIDs)[8:9] <- c("ID.old", "IDName")
+glymaIDs$ID <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s'>%s</a>", glymaIDs$IDName, glymaIDs$IDName)
 
-glymacols <- c(11,1:4,17,9)
+glymacols <- c(11,1:4,17,20)
+glymacols2 <- c(11, 1:4, 17, 9)
 
+tableoptions <- list(columnDefs = list(list(targets = c(3, 4) - 1, searchable = FALSE)), pageLength=10)
 
 # Define server logic required to generate and plot a subset of varieties with a subset of chromosomes
 shinyServer(function(input, output, session) {
 
+  # Update locationChrs input
   reactive({
     if(length(input$locationChrs)>0){
       start <- min(floor(subset(chr.summary, seqnames%in%input$locationChrs)$start/10000)*10000)
@@ -152,11 +155,7 @@ shinyServer(function(input, output, session) {
     })
   })
   
-#   vals <- reactiveValues()
-#   treedims <- reactiveValues()
-  
   output$FamilyTree <- renderPlot({
-
     gen.vars2 <- input$genvarieties
     vals <- list()
     vals$gen.vars <- gen.vars2
@@ -325,18 +324,6 @@ shinyServer(function(input, output, session) {
   })
     
   output$glymaIDs <- renderDataTable({
-
-#     
-#     if(length(input$chromosomes)==0 & length(input$varieties)>0){
-#       temp <- unique(subset(glymaIDs, Variety %in% input$varieties)[,glymacols])
-#     } else if(length(input$chromosomes)>0 & length(input$varieties)==0){
-#       temp <- unique(subset(glymaIDs, Chromosome %in% input$chromosomes)[,glymacols])
-#     } else if(length(input$chromosomes)>0 & length(input$varieties)>0){
-#       temp <- unique(subset(glymaIDs, Chromosome%in%input$chromosomes & Variety%in%input$varieties)[,glymacols])
-#     } else { # neither varieties nor chromosomes selected
-#       temp <- unique(subset(glymaIDs)[,glymacols])
-#     }
-    
     if(length(input$chromosomes)>0){
       temp <- unique(subset(glymaIDs, Chromosome %in% input$chromosomes)[,glymacols])
     } else {
@@ -356,30 +343,30 @@ shinyServer(function(input, output, session) {
     }else{
       data.frame()
     }
-  })
+  }, escape=FALSE, options=tableoptions)
 
   output$glymaIDs2 <- renderDataTable({
     if(length(input$locationChrs)==0 & length(input$chrRange)<=1){
-      temp <- unique(subset(glymaIDs)[,glymacols])
+      temp <- subset(glymaIDs)[,glymacols]
     } else if(length(input$locationChrs)>0 & length(input$chrRange)<=1){
-      temp <- unique(subset(glymaIDs, Chromosome %in% input$locationChrs)[,glymacols])
+      temp <- subset(glymaIDs, Chromosome %in% input$locationChrs)[,glymacols]
     } else if(length(input$locationChrs)>0 & length(input$chrRange)==2){
-      temp <- unique(subset(glymaIDs, Chromosome %in% input$locationChrs & Cnv.Start>=input$chrRange[1] & Cnv.End <= input$chrRange[2])[,glymacols])
+      temp <- subset(glymaIDs, Chromosome %in% input$locationChrs & Cnv.Start>=input$chrRange[1] & Cnv.End <= input$chrRange[2])[,glymacols]
     } else { # neither start/end nor chromosomes selected
-      temp <- unique(subset(glymaIDs)[,glymacols])
+      temp <- subset(glymaIDs)[,glymacols]
     }
     
     if(length(input$featuretypes)>0){
-      temp <- unique(subset(temp, Feature%in%input$featuretypes))
+      temp <- subset(temp, Feature%in%input$featuretypes)
     }
     
     if(nrow(temp)>0){
-      temp
+      unique(temp)
     }else{
-      data.frame()
+      glymaIDs[NULL, glymacols]
     }
-  }, searchDelay=1000)
-
+  }, escape=FALSE, options=tableoptions)
+  
   output$DataFrameDownload <- downloadHandler(  
     filename=function(){
       chrs <- ifelse(length(input$chromosomes)>0, paste0("Chr", paste(gsub("Chr", "-", input$chromosomes), collapse="")), "AllChr")
@@ -387,16 +374,16 @@ shinyServer(function(input, output, session) {
       },
     content=function(con){    
       if(length(input$chromosomes)==0 & length(input$varieties)>0){
-        temp <- unique(subset(glymaIDs, Variety %in% input$varieties)[,glymacols])
+        temp <- subset(glymaIDs, Variety %in% input$varieties)[,glymacols2]
       } else if(length(input$chromosomes)>0 & length(input$varieties)==0){
-        temp <- unique(subset(glymaIDs, Chromosome %in% input$chromosomes)[,glymacols])
+        temp <- subset(glymaIDs, Chromosome %in% input$chromosomes)[,glymacols2]
       } else if(length(input$chromosomes)>0 & length(input$varieties)>0){
-        temp <- unique(subset(glymaIDs, Chromosome%in%input$chromosomes & 
-                                Variety%in%input$varieties)[,glymacols])
+        temp <- subset(glymaIDs, Chromosome%in%input$chromosomes &
+                         Variety%in%input$varieties)[,glymacols2]
       } else { # neither varieties nor chromosomes selected
-        temp <- unique(subset(glymaIDs)[,glymacols])
+        temp <- subset(glymaIDs)[,glymacols2]
       }
-      if(nrow(temp)>0) write.csv(temp, con) else write.csv(data.frame(), con)
+      if(nrow(temp)>0) write.csv(unique(temp), con) else write.csv(glymaIDs[NULL, glymacols2], con)
     }
     )
 
@@ -410,16 +397,16 @@ shinyServer(function(input, output, session) {
     },
     content=function(con){      
       if(length(input$locationChrs)==0 & length(input$chrRange)<=1){
-        temp <- unique(subset(glymaIDs)[,glymacols])
+        temp <- subset(glymaIDs)[,glymacols2]
       } else if(length(input$locationChrs)>0 & length(input$chrRange)<=1){
-        temp <- unique(subset(glymaIDs, Chromosome %in% input$locationChrs)[,glymacols])
+        temp <- subset(glymaIDs, Chromosome %in% input$locationChrs)[,glymacols2]
       } else if(length(input$locationChrs)>0 & length(input$chrRange)==2){
-        temp <- unique(subset(glymaIDs, Chromosome%in%input$locationChrs & Cnv.Start>=input$chrRange[1] & Cnv.End <= input$chrRange[2])[,glymacols])
+        temp <- subset(glymaIDs, Chromosome%in%input$locationChrs & Cnv.Start>=input$chrRange[1] & Cnv.End <= input$chrRange[2])[,glymacols2]
       } else { # neither start/end nor chromosomes selected
-        temp <- unique(subset(glymaIDs)[,glymacols])
+        temp <- subset(glymaIDs)[,glymacols2]
       }
       
-      if(nrow(temp)>0) write.csv(temp, con) else write.csv(data.frame(), con)
+      if(nrow(temp)>0) write.csv(unique(temp), con) else write.csv(glymaIDs[NULL, glymacols], con)
     }
   )
 
