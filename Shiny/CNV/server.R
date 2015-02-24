@@ -62,7 +62,20 @@ shinyServer(function(input, output, session) {
     str <- parseQueryString(session$clientData$url_search)
     fix.vecs <- names(str)[grepl("c\\(.*\\)", str)]
     for(i in fix.vecs){
-      str[[i]] <- eval(parse(text=str[[i]]))
+      # ensure variable names and values are preserved while removing programmatic stuff (injection prevention)
+      values <- gsub(
+        # Remove any character used for executing a function or storing values into variables
+        "[\"\'()<->=\\*\\+/]?", "", 
+        unlist( # Extract only valid R names/strings used in this app
+          str_extract_all(str[[i]], "[\"\']{1}[[:alnum:]\\._ ]{1,}[\"\']{1}")
+        ))
+      if(length(values)>0){
+        str[[i]] <- eval(parse(text=paste0("c(", paste(sprintf("'%s'", values), collapse=",", sep=""), ")")))
+      } else {
+        warning(sprintf("Possible injection attempt detected: Query String = %s", str[[i]]))
+        str[[i]] <- NULL
+        warning("Injection attempt removed from input successfully")
+      }
     }
     
     # Reset each input using the appropriate update* function
