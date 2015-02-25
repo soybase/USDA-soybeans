@@ -147,12 +147,17 @@ save(GlymaIDSNPs, file="./GlymaSNPFullList.rda")
 snpList.VarietySummary <- GlymaIDSNPs %>% group_by(Chromosome, Position, ID) %>% dplyr::summarise(nvars=length(unique(Variety))) 
 names(snpList.VarietySummary)[4] <- "Number.of.Varieties"
 snpList.VarietySummary <- left_join(snpList.VarietySummary, GlymaIDList[,c("ID", "chrnum", "searchstr")])
-snpList.VarietySummary$ID[is.na(snpList.VarietySummary$ID)] <- "No Matching GlymaID"
+snpList.VarietySummary$ID[!is.na(snpList.VarietySummary$ID)] <- gsub("\\.Wm82\\.a2\\.v1", "", snpList.VarietySummary$ID[!is.na(snpList.VarietySummary$ID)])
+snpList.VarietySummary$ID[!is.na(snpList.VarietySummary$ID)] <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s'>%s</a>", snpList.VarietySummary$ID[!is.na(snpList.VarietySummary$ID)], snpList.VarietySummary$ID[!is.na(snpList.VarietySummary$ID)])
+snpList.VarietySummary$ID[is.na(snpList.VarietySummary$ID)] <- "No Match"
 
 # Summarize snps by number of sites assoc. with each glymaID
 snpList.GlymaSummary <- GlymaIDSNPs %>% group_by(Chromosome, ID)%>% select(Variety, Position) %>% dplyr::summarize(Number.of.Varieties=length(unique(Variety)), Number.of.SNP.Sites=length(unique(Position)))
 snpList.GlymaSummary <- left_join(snpList.GlymaSummary, GlymaIDList[,c("ID", "chrnum", "searchstr")])
-snpList.GlymaSummary$ID[is.na(snpList.GlymaSummary$ID)] <- "No Matching GlymaID"
+
+snpList.GlymaSummary$ID[!is.na(snpList.GlymaSummary$ID)] <- gsub("\\.Wm82\\.a2\\.v1", "", snpList.GlymaSummary$ID[!is.na(snpList.GlymaSummary$ID)])
+snpList.GlymaSummary$ID[!is.na(snpList.GlymaSummary$ID)] <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s'>%s</a>", snpList.GlymaSummary$ID[!is.na(snpList.GlymaSummary$ID)], snpList.GlymaSummary$ID[!is.na(snpList.GlymaSummary$ID)])
+snpList.GlymaSummary$ID[is.na(snpList.GlymaSummary$ID)] <- "No Match"
 save(snpList.VarietySummary, snpList.GlymaSummary, file="./GlymaSNPsummary.rda")
 
 rm(snpGlymaFull, uniqueSNPs, GlymaIDSNPs)
