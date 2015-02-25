@@ -32,14 +32,8 @@ if(!"snpList.GlymaSummary"%in%objlist | !"snpList.PositionSummary"%in%objlist){
   snpList.PositionSummary <- snpList.VarietySummary %>% group_by(Chromosome, Position, ID)
   rm(snpList.VarietySummary)
 }
-# 
-# if(!"GlymaIDSNPs"%in%objlist){
-#   load("GlymaSNPFullList.rda")
-#   GlymaIDSNPs <- GlymaIDSNPs %>% group_by(ID, Chromosome, Position, Variety)
-# }
 
 if(!"snp.density"%in%objlist){
-#   snp.density <- tbl(src_sqlite("SNPdb.sqlite"), "snpDensity") %>% group_by(Chromosome, Variety)
   load("SNPDensity.RData")
 }
 
@@ -50,6 +44,83 @@ if(!"snp.density"%in%objlist){
 # Define server logic required to generate and plot a subset of varieties with a subset of chromosomes
 shinyServer(function(input, output, session) {
 
+  observe({
+    str <- parseQueryString(session$clientData$url_search)
+    fix.vecs <- names(str)[grepl("c\\(.*\\)", str)]
+    for(i in fix.vecs){
+      # ensure variable names and values are preserved while removing programmatic stuff (injection prevention)
+      values <- gsub(
+        # Remove any character used for executing a function or storing values into variables
+        "[\"\'()<->=\\*\\+/]?", "", 
+        unlist( # Extract only valid R names/strings used in this app
+          str_extract_all(str[[i]], "[\"\']{1}[[:alnum:]\\._ ]{1,}[\"\']{1}")
+        ))
+      if(length(values)>0){
+        str[[i]] <- eval(parse(text=paste0("c(", paste(sprintf("'%s'", values), collapse=",", sep=""), ")")))
+      } else {
+        warning(sprintf("Possible injection attempt detected: Query String = %s", str[[i]]))
+        str[[i]] <- NULL
+        warning("Injection attempt removed from input successfully")
+      }
+    }
+    
+    # Reset each input using the appropriate update* function
+    if("tabname"%in%names(str)){
+      session$sendCustomMessage(type='setTab', str$tabname)
+    }
+    if("varieties"%in%names(str)){
+      updateSelectizeInput(session = session, 
+                           inputId = "varieties", 
+                           label = "Choose up to 10 Cultivars of Interest", 
+                           choices = sort(unique(varieties)), 
+                           selected = str$varieties)
+      updateSelectizeInput(session = session, 
+                           "densityVars", "Choose Varieties of Interest", 
+                           choices=sort(unique(varieties)), 
+                           selected = str$varieties)
+    }
+    if("chromosomes"%in%names(str)){
+      updateSelectInput(session = session, 
+                        inputId = "locationChrs",
+                        label = "Choose Chromosome of Interest", 
+                        selected = str$chromosomes[1])
+      updateSelectizeInput(session = session, 
+                           "densityChrs", "Choose Chromosome(s) of Interest", 
+                           choices=unique(seqnames), 
+                           selected = str$chromosomes)
+      updateSelectizeInput(session = session, 
+                           "glymaChrs", "Filter GlymaIDs by Chromosome(s)", 
+                           choices=unique(seqnames), 
+                           selected = str$chromosomes)
+    }
+    if("glymaID"%in%names(str)){
+      updateTextInput(session = session, 
+                      "glymaID", 
+                      "Locate Position by Glyma ID",
+                      value=str$glymaID)
+      updateTextInput(session = session, 
+                      "glymaID2", 
+                      "Locate Position by Glyma ID",
+                      value=str$glymaID)
+      updateTextInput(session = session, 
+                      "glymaID3", 
+                      "View SNP sites within a GlymaID",
+                      value=str$glymaID)
+    }
+    if("chrStart"%in%names(str)){ 
+      updateTextInput(session = session, 
+                      "chrStart", 
+                      "Start point", value=str$chrStart)
+    }
+    if("bases"%in%names(str)){
+      if(as.numeric(str$bases)>=5 & as.numeric(str$bases)<=50){
+        updateNumericInput(session = session, 
+                           "bases",
+                           "# downstream SNPs (up to 50)", 
+                           value=as.numeric(str$bases), min=5, max=50, step=5)
+      }
+    }
+  })
   
   # Return SNPs for selected varieties
   varsnps <- reactive({

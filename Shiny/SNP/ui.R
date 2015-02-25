@@ -24,22 +24,22 @@ AggSNPBrowser <- function(){
            fluidRow(
              column(width=3, 
                     wellPanel(
-                      textInput("glymaID", 
+                      textInput("glymaID", #done
                                 "Locate Position by Glyma ID",
                                 value=""
                       ),
                       helpText("Ex: 01g004400 will search Chr 01 for IDs containing 004400"),
                       br(),
-                      numericInput("bases",
+                      numericInput("bases",  # done
                                    "# downstream SNPs (up to 50)", 
                                    value=20, min=5, max=50, step=5
                       )),
                     wellPanel(
                       helpText("Manually choose chromosome and location:"),
-                      selectInput("locationChrs", "Choose Chromosome of Interest", 
+                      selectInput("locationChrs", "Choose Chromosome of Interest",  # done
                                   choices=unique(seqnames), multiple=FALSE, selectize=T),
                       helpText("Enter a numeric start point on the chromosome"),
-                      textInput("chrStart", 
+                      textInput("chrStart",  # done
                                 "Start point", value=0)
                       )
                     ),
@@ -81,12 +81,12 @@ VarSNPBrowser <- function(){
            fluidRow(
              column(width=3, 
                     wellPanel(
-                      textInput("glymaID2", 
+                      textInput("glymaID2",  # done
                                 "Locate Position by Glyma ID",
                                 value=""
                       ),
                       helpText("Ex: 01g004400 will search Chr 01 for IDs containing 004400"),
-                      selectizeInput("varieties", "Choose up to 10 Cultivars of Interest", 
+                      selectizeInput("varieties", "Choose up to 10 Cultivars of Interest", # done
                                          choices=unique(varieties), multiple=TRUE, options=list(maxItems=10))
                       ),
                     h3("Matching Glyma IDs"),
@@ -107,8 +107,11 @@ SNPDensity <- function(){
            fluidRow(
              column(width=2, 
                     wellPanel(
-                      selectizeInput("densityChrs", "Choose Chromosome(s) of Interest", choices=unique(seqnames), multiple=TRUE, options=list(maxItems=5)),
-                      selectizeInput("densityVars", "Choose Varieties of Interest", choices=unique(varieties), multiple=TRUE)
+                      selectizeInput("densityChrs", "Choose Chromosome(s) of Interest", 
+                                     choices=unique(seqnames), multiple=TRUE, 
+                                     options=list(maxItems=5)), # done
+                      selectizeInput("densityVars", "Choose Varieties of Interest", 
+                                     choices=unique(varieties), multiple=TRUE) # done
                       )
                     ),
              column(width=10, 
@@ -125,13 +128,13 @@ SNPSummary <- function(){
              fluidRow(
                column(width=2),
                column(width=3, 
-                      selectizeInput("glymaChrs", "Filter GlymaIDs by Chromosome(s)", 
+                      selectizeInput("glymaChrs", "Filter GlymaIDs by Chromosome(s)", # done
                                      choices=unique(seqnames), multiple=TRUE, options=list(maxItems=5)),
                       helpText("The table below will show GlymaIDs with SNPs")
                       ), 
                column(width=2),
                column(width=3,
-                      textInput("glymaID3", 
+                      textInput("glymaID3", # done
                                 "View SNP sites within a GlymaID",
                                 value=""),
                       helpText("Input a glyma ID such as 01g000200")
@@ -167,6 +170,14 @@ methodology <- function(){
 
 # Define UI for page that allows selection of genetic lines with corresponding facets
 shinyUI(navbarPage(title="Soybean SNPs", 
+                   header=tags$script(
+                     'Shiny.addCustomMessageHandler(
+                      \'setTab\',
+                      function(data) {
+                        var nav_ref = \'li a:contains(\\"\' + data + \'\\")\';
+                        $(nav_ref).tab(\'show\');
+                      });'
+                   ),
                    AggSNPBrowser(),
                    SNPSummary(),
                    VarSNPBrowser(),
