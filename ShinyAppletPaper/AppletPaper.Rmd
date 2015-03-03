@@ -97,7 +97,7 @@ The first set of tabular results enables researchers to search for CNVs by chrom
 
 ![Search CNVs by Location. This tab allows users to search for specific positions along a chromosome and reports a dynamic, searchable table with all CNVs (and all cultivars) in the specified region. The resulting list is downloadable for analysis offline.][cnvlistrange]
 
-Another tab allows researchers to filter by cultivar and chromosome; this separate tab is designed to allow researchers who are only interested in certain cultivars to download a subset of the data more easily. In addition, as there is no required input for this tab, a user could easily download all identified CNVs from this tab. As before, the table is dynamic and can be easily searched, sorted, and filtered by any field shown. 
+Another tab allows researchers to filter by cultivar and chromosome; this separate tab is designed to allow researchers who are only interested in certain cultivars to download a subset of the data more easily. In addition, as there is no required input for this tab, a user could easily download all identified CNVs directly by not providing any filtration. As before, the table is dynamic and can be easily searched, sorted, and filtered by any field shown. GlymaIDs for identified CNVs link to Soybase, integrating the applet into the pre-existing database infrastructure.
 
 ![CNV List Tab. This tab allows users to search for CNVs identified in specific chromosomes and cultivars. The tablular result is again dynamic and searchable, and can be downloaded for offline analysis. ][cnvlistfilter]
 
@@ -142,7 +142,7 @@ The next tab allows researchers to see which IDs have a large number of SNPs (or
 
 ![SNP Counts by Glyma ID. Searching by a specific Glyma ID shows all of the positions along the chromosome (but within the gene) that have identified SNPs, along with the number of varieties having a SNP at each position.][SNPCountsByID1]
 
-In addition to facilitating browsing by position along the genome, SNPs for a specific gene can also be visualized by variety. If no varieties are specified, SNPs will be displayed for the first 10 alphabetical varieties with SNPs identified along the specified gene. This type of plot allows researchers to look at the distribution of SNPs within a population; varieties with a certain genotype can be visually grouped, and could be potentially associated with known phenotypes. 
+In addition to facilitating browsing by position along the genome, SNPs for a specific gene can also be visualized by variety. If no varieties are specified, SNPs will be displayed for the first 10 alphabetical varieties with SNPs identified along the specified gene. This type of plot allows researchers to look at the distribution of SNPs within a population; varieties with a certain genotype can be visually grouped, and could be potentially associated with known phenotypes. As with the CNV applet, SNPs with a corresponding GlymaID link to the relevant Soybase entry for that ID, integrating the applet with existing Soybase infrastructure. 
 
 ![Variety-Level SNP Browser. Searching by a specific Glyma ID shows all of the identified SNPs along a gene, and the identified frequency of the alternate allele (compared to the reference) for up to 10 varieties.][SNPVarietyBrowser]
 
@@ -221,7 +221,9 @@ Even with these modifications, we found that the applet is computationally inten
 
 # Discussion
 ## How does this slot into a different database like soybase?
+The two applets have been constructed to integrate with existing databases; at this time, the applet links users to Soybase, but functionality exists to link to the applets (with specific input specified in the URL), providing the ability to direct users to the applet from other sites as well as providing additional information located in other databases within the Shiny applet. 
 
+> Might be useful to link to GRIN in the genealogy tabs...?
 
 # References
 
