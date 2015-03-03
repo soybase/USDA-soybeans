@@ -187,12 +187,14 @@ Includes several visualizations similar to those included in the CNV app. The vi
     * Integrates with other databases (as we should probably integrate with Soybase)
     * Rather unintuitive. 
     
-## Animint
-@animint
-    * Doesn't require server backend
-    * Data all has to be loaded into browser memory - unwieldly for large or extremely complex datasets
-    * Allows interactivity
-    * Can be used within other applications (shiny bindings, rmarkdown)
+## Animint    
+@animint    
+Not specific to biology, but designed with bioinformatics visualization as a primary application.
+
+  * Doesn't require server backend
+  * Data all has to be loaded into browser memory - unwieldly for large or extremely complex datasets
+  * Allows interactivity
+  * Can be used within other applications (shiny bindings, rmarkdown)
 
 ## Shiny: an extensible, interactive, web-based framework for data visualization
 
