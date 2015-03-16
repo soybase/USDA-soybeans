@@ -35,7 +35,7 @@ load("GlymaIDs.rda")
 load("ShinyStart.rda")
 source("SelectGeneology.R")
 names(glymaIDs)[8:9] <- c("ID.old", "IDName")
-glymaIDs$ID <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s'>%s</a>", glymaIDs$IDName, glymaIDs$IDName)
+glymaIDs$ID <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s' target='_blank'>%s</a>", glymaIDs$IDName, glymaIDs$IDName)
 
 glymacols <- c(11,1:4,17,20)
 glymacols2 <- c(11, 1:4, 17, 9)
