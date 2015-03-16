@@ -167,7 +167,16 @@ header <- {
 # Define UI for page that allows selection of genetic lines with corresponding facets
 navbarPage(
   title="Copy Number Variation", 
-  tabPanel("Overview", uiOutput("overview")),
+  tabPanel("Overview", 
+           fluidRow(
+             column(6, helpText("The top-left plot shows normalized CNV counts for all varieties over all chromosomes. Click on a chromosome region to view more detailed information for that chromosome.")),
+             column(6, helpText("The top right plot shows CNV counts for each variety, sorted from most CNVs to fewest CNVs. Click on one or more varieties to see more detailed information about which regions of the chromosome contain the most CNVs."))
+           ),
+           uiOutput("overview"),
+           fluidRow(
+             column(6, helpText("The bottom left plot shows the overall CNV distribution across all varieties in black, with selected varieties (from the top-right plot) shown in color.")),
+             column(6, helpText("The bottom right plot shows, for each selected variety, which regions of the chromosome contain relatively more CNVs than the average variety, and which regions of the chromosome contain relatively fewer CNVs."))
+           )),
   tabPanel("CNV Location", 
            plotOutput("ChromosomePlot", width="100%"),
            br(), 
