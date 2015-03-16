@@ -92,6 +92,9 @@ header <- {
                                                          label="Download", class=NULL)
                                         )
                                 )
+                              ),
+                              tags$tr(
+                                tags$td(colspan=2, br(), helpText("Use the Search field above the table to filter by Glyma ID."))
                               )
                    )
                  )

@@ -423,16 +423,12 @@ shinyServer(function(input, output, session) {
     }
   )
 
-  output$GlymaTable <- renderUI({
-    tagList(
-      dataTableOutput("glymaIDs"),
-      br(),
-      helpText("Use the Search field (top-right) to filter by Glyma ID.")
-      )
+  output$GlymaTable <- renderUI({ # search by variety
+    fluidRow(column(10, offset=1, dataTableOutput("glymaIDs")))
   })
 
-  output$CNVList <- renderUI({
-    dataTableOutput("glymaIDs2")
+  output$CNVList <- renderUI({ # search by location
+    fluidRow(column(10, offset=1, dataTableOutput("glymaIDs2")))
   })
 
   output$YieldInfo <- renderUI({
