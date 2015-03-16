@@ -60,8 +60,8 @@ header <- {
         # Reset (and Download) Buttons
         column(3,
                conditionalPanel(
-                 condition="input.tabname!='Search CNVs by Variety' & 
-                              input.tabname!='Search CNVs by Location'",
+                 condition="input.tabname!='by Variety' & 
+                              input.tabname!='by Location'",
                  tagList(
                    tags$table(width='100%',
                               tags$tr(
@@ -73,8 +73,8 @@ header <- {
                  )
                ),
                conditionalPanel(
-                 condition="!(input.tabname!='Search CNVs by Variety' & 
-                                input.tabname!='Search CNVs by Location')",
+                 condition="!(input.tabname!='by Variety' & 
+                                input.tabname!='by Location')",
                  tagList(
                    tags$table(width='100%',
                               tags$tr(
@@ -82,12 +82,12 @@ header <- {
                                         actionButton("resetButton", "Clear Selections")),
                                 tags$td(style="text-align:right;",
                                         conditionalPanel(
-                                          condition="input.tabname=='Search CNVs by Variety'",
+                                          condition="input.tabname=='by Variety'",
                                           downloadButton("DataFrameDownload", 
                                                          label="Download", class=NULL)
                                         ),
                                         conditionalPanel(
-                                          condition="input.tabname=='Search CNVs by Location'",
+                                          condition="input.tabname=='by Location'",
                                           downloadButton("DataFrameDownload2", 
                                                          label="Download", class=NULL)
                                         )
@@ -101,7 +101,7 @@ header <- {
         # Chromosome (ish) Information
         column(3,
                # Chromosome Checkboxes
-               conditionalPanel(condition="input.tabname!='Search CNVs by Location' & 
+               conditionalPanel(condition="input.tabname!='by Location' & 
                                              input.tabname!='Genealogy'", 
                                 helpText("Type the chromosome number or click on the 
                                             text box for options"),
@@ -111,7 +111,7 @@ header <- {
                                   display="inline-table", align="center")
                ),
                # Chromosome Radio Buttons
-               conditionalPanel(condition="input.tabname=='Search CNVs by Location'", 
+               conditionalPanel(condition="input.tabname=='by Location'", 
                                 div(
                                   selectizeInput("locationChrs", "Choose Chromosome", 
                                                  seqnames, NULL, multiple=FALSE), 
@@ -128,12 +128,12 @@ header <- {
         # Variety (ish) Information
         column(3, 
                # Variety Help Text
-               conditionalPanel(condition="input.tabname!='Search CNVs by Location'", 
+               conditionalPanel(condition="input.tabname!='by Location'", 
                                 helpText("Type the name of the variety or click on the text box for options")),
                
                # Variety Selectize Input
                conditionalPanel(condition="input.tabname!='Genealogy' & 
-                                             input.tabname!='Search CNVs by Location'", 
+                                             input.tabname!='by Location'", 
                                 div(
                                   selectizeInput("varieties", "Choose Varieties", varieties, NULL, multiple=TRUE), 
                                   display="inline-table", align="center")),
@@ -145,7 +145,7 @@ header <- {
                                   display="inline-table", align="center")),
                
                # Chromosome Slider (Search CNVs by Location Tab)
-               conditionalPanel(condition="input.tabname=='Search CNVs by Location'", 
+               conditionalPanel(condition="input.tabname=='by Location'", 
                                 div(sliderInput("chrRange", "Range to search for CNVs", 
                                                 min=0, max=60000000, value=c(0, 600000000), 
                                                 step=10000, round=FALSE), 
@@ -177,7 +177,7 @@ overview <- function(){
            ))
 }
 copyLocation <- function(){
-  tabPanel("CNV Location", 
+  tabPanel("Location", 
            plotOutput("ChromosomePlot", width="100%"),
            br(), 
            helpText("Green lines indicate a significant CNV at that location"))
@@ -195,10 +195,13 @@ copyNumber <- function(){
 navbarPage(
   title="Copy Number Variation", 
   overview(),
-  copyLocation(), 
-  copyNumber(),
-  tabPanel("Search CNVs by Location", uiOutput("CNVList")),
-  tabPanel("Search CNVs by Variety", uiOutput("GlymaTable")),
+  navbarMenu("Barcode Plots",
+             copyLocation(), 
+             copyNumber()),
+  navbarMenu("Search CNVs",
+    tabPanel("by Location", uiOutput("CNVList")),
+    tabPanel("by Variety", uiOutput("GlymaTable"))
+    ),
   tabPanel("Field Trials", uiOutput("YieldInfo")),
   tabPanel("Genealogy", plotOutput("FamilyTree", width="100%", height=600)),
   tabPanel("Methodology", includeHTML("Documentation.html")),
