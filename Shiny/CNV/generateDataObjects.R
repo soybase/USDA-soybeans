@@ -196,8 +196,9 @@ yield.sum <- ddply(yield, .(Cultivar), summarize,
                    sequenced=sequenced[1])
 
 # Get data frame with parent names and Cultivar name, as well as parent yield values
-parent.data <- tree[,c("child", "parent", "parent.type", "year")]
-parent.data$y <- as.numeric(parent.data$parent.type=="mother")/2
+parent.data <- tree[,c("child", "parent", "year")]
+parent.data <- ddply(parent.data, .(child), transform, parent.type=1:length(parent))
+parent.data$y <- as.numeric(parent.data$parent.type==2)/2
 parent.data$x <- 0
 parent.data <- merge(parent.data, yield.sum, by.x="parent", by.y="Cultivar", 
                      all.x=TRUE, all.y=FALSE)
