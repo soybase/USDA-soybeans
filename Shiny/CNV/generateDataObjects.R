@@ -385,21 +385,44 @@ chr.summary$mid <- (chr.summary$start  + chr.summary$end)/2
 
 segranges.df.sum <- ddply(segranges.df, .(seqnames), transform, 
                           start=start + genome$start[as.numeric(gsub("Chr", "", seqnames))]-1, 
-                          end=end + genome$start[as.numeric(gsub("Chr", "", seqnames))]-1)
+                          end=end + genome$start[as.numeric(gsub("Chr", "", seqnames))]-1,
+                          chrstart=genome$start[as.numeric(gsub("Chr", "", seqnames))], 
+                          chrend=genome$end[as.numeric(gsub("Chr", "", seqnames))])
 segranges.df.sum$midpoint <- (segranges.df.sum$start + segranges.df.sum$end)/2
 
+# Aggregate CNVs != 2
+segranges.df.table <- ddply(segranges.df, .(seqnames, start, end, width, strand, midpoint), summarize, count=sum(CN!=2), CN.variance=var(CN))
+segranges.df.table <- ddply(segranges.df.table, .(seqnames), transform, weight=count/sum(count))
+
+# Aggregate CNVs !=2 at the variety level
+segranges.df.vartable <- ddply(segranges.df, .(seqnames, Variety, start, end, width, strand, midpoint), summarize, count=sum(CN!=2), CN.variance=var(CN))
+segranges.df.vartable <- ddply(segranges.df.vartable, .(seqnames, Variety), transform, weight=count/sum(count))
+
+# Overall density for each chromosome
 overview.dens <- ddply(segranges.df.sum, .(seqnames), function(df) {
-  res <- density(df$midpoint, adjust=.25, cut=T)
-  res2 <- data.frame(seqnames=unique(df$seqnames), x=res$x, y=res$y)
+  res <- density(df$midpoint, from = unique(df$chrstart), to = unique(df$chrend), adjust=.25, cut=T)
+  res2 <- data.frame(seqnames=unique(df$seqnames), x=res$x, y=res$y, yscale=res$y/max(res$y))
   return(res2)
 })
-overview.dens$y <- overview.dens$y/max(overview.dens$y)
+# overview.dens$y <- overview.dens$y/max(overview.dens$y)
 overview.dens$color <- as.numeric(gsub("Chr", "", overview.dens$seqnames))%%2
 
-variety.density <- ddply(segranges.df, .(seqnames, Variety), function(df) {
+
+# Number of points to calculate density at
+ndens <- 500
+
+# Overall density across varieties by chromosome
+chr.dens <- ddply(segranges.df.vartable, .(seqnames), function(df) {
   seq <- unique(df$seqnames)
-  res <- density(df$midpoint, adjust=.25, from=0, to=chr.summary$end[chr.summary$seqnames%in%seq])
-  res2 <- data.frame(seqnames=unique(df$seqnames), x=res$x, y=res$y)
+  res <- density(df$midpoint, weight=df$weight/sum(df$weight), adjust=.25, from=0, to=chr.summary$end[chr.summary$seqnames%in%seq], n=ndens)
+  res2 <- data.frame(seqnames=unique(df$seqnames), x=res$x, y=res$y, chr.y.scale=res$y/max(res$y))
+  return(res2)
+})
+
+variety.density <- ddply(segranges.df.vartable, .(seqnames, Variety), function(df) {
+  seq <- unique(df$seqnames)
+  res <- density(df$midpoint, weights=df$weight, adjust=.25, from=0, to=chr.summary$end[chr.summary$seqnames%in%seq], n=ndens)
+  res2 <- data.frame(seqnames=unique(df$seqnames), x=res$x, y=res$y, yscale=res$y/max(res$y), chr.yscale=subset(chr.dens, seqnames==seq)$chr.y.scale)
   tmp <- as.data.frame(table(df$Variety))
   names(tmp) <- c("Variety", "CNVs")
   tmp$Variety <- as.character(tmp$Variety)
@@ -408,7 +431,9 @@ variety.density <- ddply(segranges.df, .(seqnames, Variety), function(df) {
   res2 <- merge(res2, tmp)
   return(res2)
 })
-variety.density <- ddply(variety.density, .(seqnames), transform, y=y/max(y))
+variety.density$ydiff <- with(variety.density, yscale - chr.yscale)
+
+variety.density <- variety.density[order(variety.density$seqname, variety.density$Variety, variety.density$x),]
 
 coloropts <- colors(distinct=T)
 coloropts <- coloropts[!grepl("(gr[ae]y)|(black)|(white)|(snow)|(yellow)|(cornsilk)|(aliceblue)|(honeydew)|(lavendarblush)|(linen)|(bisque)|(beige)|(blanche)|(gainsboro)|(ivory)|(mintcream)|(mistyrose)|(oldlace)|(papaya)|(seashell)|(khaki)|(gold)|(lemon)|(wheat)|(thistle)|(azure)", coloropts)]
@@ -419,28 +444,16 @@ coloropts <- coloropts[order(coloropts, intensity, decreasing=T)]
 coloropts <- sample(coloropts)
 variety.density$color <- coloropts[as.numeric(factor(variety.density$Variety, levels=varieties[sample(1:length(varieties))]))]
 
-variety.density.labels <- ddply(variety.density, .(seqnames, Variety), summarize, x=x[which.max(y)], y=y[which.max(y)])
+overall.density.labels <- ddply(chr.dens, .(seqnames), summarize, x=x[which.max(x)], y=y[which.max(x)], label="All Varieties")
+variety.density.labels <- ddply(variety.density, .(seqnames, Variety), summarize, x=x[which.max(abs(ydiff))], y=ydiff[which.max(abs(ydiff))])
 
 variety.opts <- ddply(variety.density, .(seqnames), function(df) {
   tmp <- unique(df[,c("Variety", "seqnames", "CNVs", "color")])
   tmp <- tmp[order(tmp$CNVs, decreasing=T),]
   tmp$rank <- 1:nrow(tmp)
+  tmp$offset <- c(3,7,2,4,6,1,5)[tmp$rank%%7+1]
   tmp
 })
-
-chr.dens <- ddply(segranges.df, .(seqnames), function(df) {
-  res <- density(df$midpoint, adjust=.25, cut=T)
-  res2 <- data.frame(seqnames=unique(df$seqnames), x=res$x, y=res$y)
-  return(res2)
-})
-chr.dens$y <- chr.dens$y/max(chr.dens$y)
-# 
-# 
-# genome <- merge(genome, unique(segranges.df[,c("seqnames", "Variety")]))
-# overview.dens <- merge(overview.dens, unique(segranges.df[,c("seqnames", "Variety")]), all.x=T)
-# chr.dens <- merge(chr.dens, unique(segranges.df[,c("seqnames", "Variety")]), all.x=T)
-# chr.summary <- merge(chr.summary, unique(segranges.df[,c("seqnames", "Variety")]))
-
 
 overview <- 
   ggplot() + 
@@ -449,7 +462,7 @@ overview <-
   scale_x_continuous("Chromosome", breaks=genome$mid, labels=gsub("Chr", "", genome$seqnames), minor_breaks=genome$end) + 
   scale_color_manual(guide="none", values=c("0"="grey40", "1"="grey60")) + 
   scale_fill_manual(guide="none", values=c("0"="grey40", "1"="grey60", "transparent" = "transparent")) + 
-  ylab("Scaled Density") + 
+  ylab("Normalized CNV Count") + 
   ggtitle("Whole-Genome CNV Density (all varieties)") + 
   theme_animint(width=800, height=400) 
 
@@ -458,29 +471,35 @@ varietyopts <-
   geom_tallrect(data=variety.opts, aes(xmin=rank-.45, xmax=rank+.45, clickSelects=Variety, showSelected=seqnames), alpha=.25, fill="grey80") + 
   geom_text(data=chr.summary, 
             aes(label=sprintf("Chromosome %s", gsub("Chr0?", "", seqnames)), 
-                x=118/2, y=3600, showSelected=seqnames)) + 
-  geom_segment(data=variety.opts, aes(x=rank, xend=rank, y=CNVs, yend=0, color=factor(color), tooltip=Variety, showSelected=seqnames), size=3) + 
+                x=118/2, y=3000, showSelected=seqnames)) + 
+  geom_segment(data=variety.opts, aes(x=rank, xend=rank, y=CNVs, yend=0, tooltip=Variety, showSelected=seqnames), size=3) +
+  geom_segment(data=variety.opts, aes(x=rank, xend=rank, y=CNVs, yend=0, color=factor(color), tooltip=Variety, showSelected=seqnames, showSelected2=Variety), size=3) + 
+  geom_text(data=variety.opts, aes(x=rank, y=CNVs+offset*30, label=Variety, showSelected=seqnames, showSelected2=Variety, color=factor(color))) + 
   scale_colour_identity(guide="none") + 
-  xlab("Rank by Number of CNVs on the selected chromosome") + 
+  xlab("Varieties ranked by # CNVs on the selected chromosome") + 
   ylab("# CNVs") + 
   ggtitle("Number of CNVs by Variety") + 
   theme_animint(width=800, height=400)
 
 chromosomeplot <- 
   ggplot() + 
-  geom_line(data=chr.dens, aes(x=x, y=y, showSelected=seqnames)) + 
+  geom_line(data=chr.dens, aes(x=x, y=chr.y.scale, showSelected=seqnames, tooltip="Overall Density")) + 
+  geom_line(data=variety.density, 
+            aes(x=x, y=yscale, group=Variety, colour=factor(color), tooltip=Variety, 
+                clickSelects=Variety, showSelected2=seqnames, showSelected=Variety)) + 
   geom_text(data=chr.summary, 
             aes(label=sprintf("Chromosome %s", gsub("Chr0?", "", seqnames)), 
                 x=mid, y=1, showSelected=seqnames)) + 
+  scale_colour_identity(guide="none") + 
   scale_x_continuous("Base Pair (Millions)", limits=c(0, max(chr.summary$end)), breaks=c(0, 1e7,2e7,3e7,4e7,5e7,6e7), labels=as.character(0:6)) + 
   scale_y_continuous("Scaled Density", limits=c(0, 1.05)) + 
-  ggtitle("Density of CNVs (all varieties)") + 
+  ggtitle("Density of CNVs (overall + selected variety)") + 
   theme_animint(width=800, height=400)
 
-varietydensplot <- 
+varietydiffplot <- 
   ggplot() + 
-#   geom_line(data=chr.dens, aes(x=x, y=y, showSelected=seqnames)) + 
-  geom_line(data=variety.density, aes(x=x, y=y, group=Variety, colour=factor(color), tooltip=Variety, 
+  geom_hline(aes(yintercept=0), color="grey") + 
+  geom_line(data=variety.density, aes(x=x, y=ydiff, group=Variety, colour=factor(color), tooltip=Variety, 
                                       clickSelects=Variety, showSelected2=seqnames, showSelected=Variety)) + 
   geom_text(data=variety.density.labels, aes(x=x, y=y, label=Variety, 
                                              clickSelects=Variety, showSelected2=seqnames, showSelected=Variety)) + 
@@ -489,14 +508,15 @@ varietydensplot <-
                 x=mid, y=1, showSelected=seqnames)) + 
   scale_colour_identity(guide="none") + 
   scale_x_continuous("Base Pair (Millions)", limits=c(0, max(chr.summary$end)), breaks=c(0, 1e7,2e7,3e7,4e7,5e7,6e7), labels=as.character(0:6)) + 
-  scale_y_continuous("Scaled Density", limits=c(0, 1.05)) + 
-  ggtitle("Scaled CNV Density for Selected Varieties") +
+  scale_y_continuous("Difference in Normalized CNV Count: Variety - Overall", limits=c(-1, 1)) + 
+  ggtitle("Difference in Normalized CNV Count: Variety - Overall") +
   theme_animint(width=800, height=400)
+
 
 animint2dir(list(overview=overview, 
                  varietyopts=varietyopts, 
                  chromosomeplot=chromosomeplot, 
-                 varietydensplot=varietydensplot,
+                 varietydensplot=varietydiffplot,
                  selector.types=list(Variety="multiple"),
                  first=list(seqnames="Chr01", Variety=c("Dunfield","IA3023"))),
             out.dir="./www/overview", open.browser=FALSE)
