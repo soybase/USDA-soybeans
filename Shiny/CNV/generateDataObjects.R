@@ -369,7 +369,7 @@ animint2dir(plot.list=list(yield=yieldplot,
                           yieldOil=yieldOil, 
                           yieldProtein=yieldProtein, 
                           proteinOil=proteinOil),
-           out.dir="./www/fieldtrials", open.browser=FALSE)
+           out.dir="./www/fieldtrials", open.browser=FALSE, css.file="www/styles.css")
 
 
 load("ChrPlot.rda")
@@ -519,6 +519,6 @@ animint2dir(list(overview=overview,
                  varietydensplot=varietydiffplot,
                  selector.types=list(Variety="multiple"),
                  first=list(seqnames="Chr01", Variety=c("Dunfield","IA3023"))),
-            out.dir="./www/overview", open.browser=FALSE)
+            out.dir="./www/overview", open.browser=FALSE, css.file="www/styles.css")
 
 save.image(file="ShinyData.RData")
