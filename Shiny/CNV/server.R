@@ -36,8 +36,14 @@ load("ShinyStart.rda")
 source("SelectGeneology.R")
 names(glymaIDs)[8:9] <- c("ID.old", "IDName")
 glymaIDs$ID <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s' target='_blank'>%s</a>", glymaIDs$IDName, glymaIDs$IDName)
+fixVarieties <- function(x){
+  y <- gsub("PI ?", "PI ", x)
+  y <- gsub("LG ?", "LG ", y)
+  gsub(".", "", gsub(" ", "%20", y, fixed=T), fixed=T)
+}
 
-glymacols <- c(11,1:4,17,20)
+glymaIDs$`Variety ` <- sprintf("<a href='http://www.ars-grin.gov/cgi-bin/npgs/html/acc_list_post.pl?lopi=&hipi=&lono=&hino=&plantid=%s&pedigree=&taxon=%s&family=&cname=&country=&state=&site=%s&acimpt=%s&uniform=%s&recent=anytime&pyears=1&received=&records=100' target='_blank'>%s</a>", fixVarieties(glymaIDs$Variety), "Glycine%20max", "ALL%20-%20All%20Repositories", "Any%20Status", "Any%20Status", glymaIDs$Variety)
+glymacols <- c(11, 21, 1:4, 17, 20)
 glymacols2 <- c(11, 1:4, 17, 9)
 
 tableoptions <- list(columnDefs = list(list(targets = c(3, 4) - 1, searchable = FALSE)), pageLength=10)
@@ -352,7 +358,7 @@ shinyServer(function(input, output, session) {
     }
     
     if(nrow(temp)>0){
-      temp
+      temp[,-1]
     }else{
       data.frame()
     }
@@ -374,9 +380,9 @@ shinyServer(function(input, output, session) {
     }
     
     if(nrow(temp)>0){
-      unique(temp)
+      unique(temp)[,-1]
     }else{
-      glymaIDs[NULL, glymacols]
+      glymaIDs[NULL, glymacols[,-1]]
     }
   }, escape=FALSE, options=tableoptions)
   
@@ -419,7 +425,7 @@ shinyServer(function(input, output, session) {
         temp <- subset(glymaIDs)[,glymacols2]
       }
       
-      if(nrow(temp)>0) write.csv(unique(temp), con) else write.csv(glymaIDs[NULL, glymacols], con)
+      if(nrow(temp)>0) write.csv(unique(temp), con) else write.csv(glymaIDs[NULL, glymacols2], con)
     }
   )
 
