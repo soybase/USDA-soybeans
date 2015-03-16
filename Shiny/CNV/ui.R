@@ -38,7 +38,7 @@ header <- {
                        display="inline-table", align="center")),
       
       # Phenotype Tab
-      conditionalPanel(condition="input.tabname=='Phenotype Data'",
+      conditionalPanel(condition="input.tabname=='Field Trials'",
                        column(3, helpText("Click on data points in the plot to see field trial data.")),
                        column(3, h6("Yield, Protein, and Oil by Year"), yield.btn),
                        column(3, h6("More Field Trial Data by Year"), 
@@ -56,7 +56,7 @@ header <- {
       conditionalPanel(
         condition="input.tabname!='Methodology' & 
                      input.tabname!='Overview' & 
-                     input.tabname!='Phenotype Data'",
+                     input.tabname!='Field Trials'",
         # Reset (and Download) Buttons
         column(3,
                conditionalPanel(
@@ -199,7 +199,7 @@ navbarPage(
   copyNumber(),
   tabPanel("Search CNVs by Location", uiOutput("CNVList")),
   tabPanel("Search CNVs by Variety", uiOutput("GlymaTable")),
-  tabPanel("Phenotype Data", uiOutput("YieldInfo")),
+  tabPanel("Field Trials", uiOutput("YieldInfo")),
   tabPanel("Genealogy", plotOutput("FamilyTree", width="100%", height=600)),
   tabPanel("Methodology", includeHTML("Documentation.html")),
   header=header,
