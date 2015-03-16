@@ -369,7 +369,7 @@ animint2dir(plot.list=list(yield=yieldplot,
                           yieldOil=yieldOil, 
                           yieldProtein=yieldProtein, 
                           proteinOil=proteinOil),
-           out.dir="./www/", open.browser=FALSE)
+           out.dir="./www/fieldtrials", open.browser=FALSE)
 
 
 load("ChrPlot.rda")
