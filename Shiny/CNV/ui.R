@@ -60,7 +60,7 @@ header <- {
         # Reset (and Download) Buttons
         column(3,
                conditionalPanel(
-                 condition="input.tabname!='CNV List' & 
+                 condition="input.tabname!='Search CNVs by Variety' & 
                               input.tabname!='Search CNVs by Location'",
                  tagList(
                    tags$table(width='100%',
@@ -73,7 +73,7 @@ header <- {
                  )
                ),
                conditionalPanel(
-                 condition="!(input.tabname!='CNV List' & 
+                 condition="!(input.tabname!='Search CNVs by Variety' & 
                                 input.tabname!='Search CNVs by Location')",
                  tagList(
                    tags$table(width='100%',
@@ -82,7 +82,7 @@ header <- {
                                         actionButton("resetButton", "Clear Selections")),
                                 tags$td(style="text-align:right;",
                                         conditionalPanel(
-                                          condition="input.tabname=='CNV List'",
+                                          condition="input.tabname=='Search CNVs by Variety'",
                                           downloadButton("DataFrameDownload", 
                                                          label="Download", class=NULL)
                                         ),
@@ -164,31 +164,41 @@ header <- {
   )
 }
 
-# Define UI for page that allows selection of genetic lines with corresponding facets
-navbarPage(
-  title="Copy Number Variation", 
+overview <- function(){
   tabPanel("Overview", 
            fluidRow(
-             column(6, helpText("The top-left plot shows normalized CNV counts for all varieties over all chromosomes. Click on a chromosome region to view more detailed information for that chromosome.")),
-             column(6, helpText("The top right plot shows CNV counts for each variety, sorted from most CNVs to fewest CNVs. Click on one or more varieties to see more detailed information about which regions of the chromosome contain the most CNVs."))
+             column(5, offset=1, helpText("The top-left plot shows normalized CNV counts for all varieties over all chromosomes. Click on a chromosome region to view more detailed information for that chromosome.")),
+             column(5, helpText("The top right plot shows CNV counts for each variety, sorted from most CNVs to fewest CNVs. Click on one or more varieties to see more detailed information about which regions of the chromosome contain the most CNVs."))
            ),
            uiOutput("overview"),
            fluidRow(
-             column(6, helpText("The bottom left plot shows the overall CNV distribution across all varieties in black, with selected varieties (from the top-right plot) shown in color.")),
-             column(6, helpText("The bottom right plot shows, for each selected variety, which regions of the chromosome contain relatively more CNVs than the average variety, and which regions of the chromosome contain relatively fewer CNVs."))
-           )),
+             column(5, offset=1, helpText("The bottom left plot shows the overall CNV distribution across all varieties in black, with selected varieties (from the top-right plot) shown in color.")),
+             column(5, helpText("The bottom right plot shows, for each selected variety, which regions of the chromosome contain relatively more CNVs than the average variety, and which regions of the chromosome contain relatively fewer CNVs."))
+           ))
+}
+copyLocation <- function(){
   tabPanel("CNV Location", 
            plotOutput("ChromosomePlot", width="100%"),
            br(), 
-           helpText("Green lines indicate a significant CNV at that location")), 
+           helpText("Green lines indicate a significant CNV at that location"))
+}
+copyNumber <- function(){
   tabPanel("Copy Number", 
            plotOutput("CopyNumberPlot", width="100%"), 
            br(),
            helpText("Open circles indicate a significant CNV at that location; 
                        darker blue lines indicate higher copy number, 
-                       lighter lines indicate lower copy number.")),
+                       lighter lines indicate lower copy number."))
+}
+
+# Define UI for page that allows selection of genetic lines with corresponding facets
+navbarPage(
+  title="Copy Number Variation", 
+  overview(),
+  copyLocation(), 
+  copyNumber(),
   tabPanel("Search CNVs by Location", uiOutput("CNVList")),
-  tabPanel("CNV List", uiOutput("GlymaTable")),
+  tabPanel("Search CNVs by Variety", uiOutput("GlymaTable")),
   tabPanel("Phenotype Data", uiOutput("YieldInfo")),
   tabPanel("Genealogy", plotOutput("FamilyTree", width="100%", height=600)),
   tabPanel("Methodology", includeHTML("Documentation.html")),
