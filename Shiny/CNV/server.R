@@ -435,7 +435,7 @@ shinyServer(function(input, output, session) {
     tagList(
       singleton(tags$head(tags$script(src = "fieldtrials/animint.js", type='text/javascript'))),
       singleton(tags$head(tags$script(src = "fieldtrials/vendor/d3.v3.js", type='text/javascript'))),
-      singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="fieldtrials/styles.css"))),
+      singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="styles.css"))),
       singleton(tags$body(tags$script("
                       changeHiding = function(id){
                         var plotEl = document.getElementById(id).parentNode.parentNode.parentNode;
@@ -474,7 +474,7 @@ shinyServer(function(input, output, session) {
     tagList(
       singleton(tags$head(tags$script(src = "overview/animint.js", type='text/javascript'))),
       singleton(tags$head(tags$script(src = "overview/vendor/d3.v3.js", type='text/javascript'))),
-      singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="overview/styles.css"))),
+      singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="styles.css"))),
       tags$div(id="OverviewPlot", align="center"),
       tags$script("var plot = new animint('#OverviewPlot','overview/plot.json');"),
       tags$script("var monitor = true; 
