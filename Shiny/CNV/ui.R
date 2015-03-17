@@ -31,9 +31,12 @@ header <- {
           $(nav_ref).tab(\'show\');
         });'
     ),
+    tags$head(
+      tags$style(type="text/css", "a[data-value='Copy Number Variation'] {font-size:18px; line-height:20px; height:50px;}")
+    ),
     fluidRow(
       # Overview Tab
-      conditionalPanel(condition="input.tabname=='Overview'",
+      conditionalPanel(condition="input.tabname=='Copy Number Variation'",
                        div(helpText("Use the first two plots to select a chromosome and one or more varieties."), 
                        display="inline-table", align="center")),
       
@@ -55,7 +58,7 @@ header <- {
       # Other Tabs
       conditionalPanel(
         condition="input.tabname!='Methodology' & 
-                     input.tabname!='Overview' & 
+                     input.tabname!='Copy Number Variation' & 
                      input.tabname!='Field Trials'",
         # Reset (and Download) Buttons
         column(3,
@@ -168,7 +171,7 @@ header <- {
 }
 
 overview <- function(){
-  tabPanel("Overview", 
+  tabPanel("Copy Number Variation", 
            fluidRow(
              column(5, offset=1, helpText("The first plot ('Whole-Genome CNV Density') shows normalized CNV counts for all varieties over all chromosomes. Click on a chromosome region to view more detailed information for that chromosome.")),
              column(5, helpText("The second plot ('Number of CNVs by Variety') shows CNV counts for each variety, sorted from most CNVs to fewest CNVs. Click on one or more varieties to see more detailed information about which regions of the chromosome contain the most CNVs."))
