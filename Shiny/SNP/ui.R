@@ -170,21 +170,16 @@ methodology <- function(){
 }
 
 # Define UI for page that allows selection of genetic lines with corresponding facets
-shinyUI(navbarPage(title="Soybean SNPs", 
-                   header=tags$script(
-                     'Shiny.addCustomMessageHandler(
-                      \'setTab\',
-                      function(data) {
-                        var nav_ref = \'li a:contains(\\"\' + data + \'\\")\';
-                        $(nav_ref).tab(\'show\');
-                      });'
-                   ),
-                   AggSNPBrowser(),
-                   SNPSummary(),
-                   VarSNPBrowser(),
-                   SNPDensity(), 
-                   SNPKinship(),
-                   methodology(),
-                   inverse=TRUE
-                   )
-        )
+shinyUI(
+  navbarPage(
+    title="Soybean SNPs", 
+    header=headerDef(),
+    AggSNPBrowser(),
+    SNPSummary(),
+    VarSNPBrowser(),
+    SNPDensity(), 
+    SNPKinship(),
+    methodology(),
+    inverse=TRUE,
+    id="tabname"
+  )
