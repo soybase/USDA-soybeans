@@ -13,7 +13,8 @@ head.scripts <-
             tags$style(type="text/css", "input#glymaID { height:30pt;}"),
             tags$style(type="text/css", "input#glymaID2 { height:30pt;}"),
             tags$style(type="text/css", "input#glymaID3 { height:30pt;}"),
-            tags$style(type="text/css", "input#chrStart { height:30pt;}"))
+            tags$style(type="text/css", "input#chrStart { height:30pt;}"),
+            tags$style(type="text/css", "div#toc {margin-top:60pt;}"))
 
 load("ShinyStart.rda")
 
