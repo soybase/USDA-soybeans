@@ -18,6 +18,26 @@ head.scripts <-
 
 load("ShinyStart.rda")
 
+headerDef <- function(){
+  tagList(
+    head.scripts,
+    tags$script(
+      'Shiny.addCustomMessageHandler(
+                      \'setTab\',
+                      function(data) {
+                        var nav_ref = \'li a:contains(\\"\' + data + \'\\")\';
+                        $(nav_ref).tab(\'show\');
+                      });'
+    ),
+    conditionalPanel(
+      condition="!(input.tabname=='Methodology' | input.tabname=='Kinship via SNPs')",
+      wellPanel(
+        
+      )
+    )
+  )
+}
+
 AggSNPBrowser <- function(){
   tabPanel("Aggregate SNP Browser", 
            # Sidebar with checkbox inputs for varieties and chromosomes, 
@@ -183,3 +203,4 @@ shinyUI(
     inverse=TRUE,
     id="tabname"
   )
+)
