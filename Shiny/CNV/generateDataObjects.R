@@ -468,7 +468,7 @@ overview <-
 
 varietyopts <- 
   ggplot() + 
-  geom_tallrect(data=variety.opts, aes(xmin=rank-.45, xmax=rank+.45, clickSelects=Variety, showSelected=seqnames), alpha=.25, fill="grey80") + 
+  geom_tallrect(data=variety.opts, aes(xmin=rank-.45, xmax=rank+.45, clickSelects=Variety, showSelected=seqnames), alpha=.1, fill="grey80") + 
   geom_text(data=chr.summary, 
             aes(label=sprintf("Chromosome %s", gsub("Chr0?", "", seqnames)), 
                 x=118/2, y=3000, showSelected=seqnames)) + 
