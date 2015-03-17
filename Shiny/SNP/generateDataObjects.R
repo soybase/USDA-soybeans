@@ -12,10 +12,6 @@ library(grid)
 
 setwd("~/Documents/R Projects/Soybeans/Shiny/SNP")
 
-# library(sqldf)
-# # Create a connection to the sqlite database
-# db <- dbConnect(SQLite(), dbname="SNPdb.sqlite")
-
 # Correct column names
 col.names <- c("Chromosome", "Position", "id", "Reference", "Alternate", 
                "qual", "filter", "Allele.Freq", "AlleleRSquared", "DosageRSquared",
@@ -46,7 +42,6 @@ vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("NCRaleigh"), "Raleigh")
 snpList <- vcfTable[,c(1, 2, 4, 5, 8, 11, 12, 13, 14, 15)] %>% group_by(Chromosome, Variety)
 snpList <- filter(snpList, Alt_Allele_Freq>0)
 save(snpList, file="snpList.rda")
-# dbWriteTable(conn = db, name="snpList", value=as.data.frame(snpList), row.names=FALSE, overwrite=T)
 
 nsnips <- snpList%>% group_by(Chromosome, Position) %>% summarize(n=length(Position))
 nsnips <- nrow(nsnips)
@@ -63,7 +58,6 @@ save(snp.summary, file="snpSummary.rda")
 snp.density <- group_by(snpList, Chromosome, Variety) %>%
   do(as.data.frame(density(.$Position, n=2048*4, adjust=0.1, from=1, to=max(.$Position), weights=(.$Alt_Allele_Count)/sum(.$Alt_Allele_Count))[1:2]))
 save(snp.density, file="SNPDensity.RData")
-# dbWriteTable(conn = db, name="snpDensity", value=as.data.frame(snp.density), row.names=FALSE, overwrite=T)
 
 
 # num.vars <- 10
@@ -90,7 +84,6 @@ library(tidyr)
 snp.counts <- snp %>% gather(Nucleotide, Count, 4:7)
 snp.counts <- filter(snp.counts, Count>0)
 save(snp.counts, file="SNPCounts.RData")
-# dbWriteTable(conn = db, name="SNPCounts", value=as.data.frame(snp.counts), row.names=FALSE, overwrite=T)
 
 rm(chr.summary, snp, snp.counts, snp.density, snpList, vcfTable)
 gc()
@@ -105,18 +98,20 @@ segments <- filter(segments.full, !grepl("scaffold", seqname))
 names(segments)[1] <- "seqnames"
 segments$seqnames <- gsub("Gm", "Chr", segments$seqnames)
 segments$group <- as.character(segments$group)
-segments$ID <- gsub("ID=", "", word(segments$group, sep=";"))
-segments$Name <- gsub("Name=", "", word(segments$group, 2, sep=";"))
-segments$Parent <- str_extract(as.character(segments$group), "Parent=.*;")
+segments$ID <- str_extract(segments$group, "ID=[^;]*;{1,}?") %>% str_replace_all("(ID=)|(;)", "")
+segments$Name <- str_extract(segments$group, "Name=[^;]*;{1,}?") %>% str_replace_all("(Name=)|(;)", "")
+segments$Parent <- str_extract(segments$group, "Parent=[^;]*;{1,}?") %>% str_replace_all("(Parent=)|(;)", "")
 
 GlymaIDList <- filter(segments, feature=="gene")
 GlymaIDList$numid <- gsub("G", "", str_extract(GlymaIDList$ID, "G[[:digit:]]+{6}"))
 GlymaIDList$chrnum <- gsub("Chr", "", GlymaIDList$seqnames)
 GlymaIDList$searchstr <- gsub("[Gg]lyma", "", gsub("[wW]m82a2v1", "", gsub(".", "", tolower(GlymaIDList$ID), fixed=TRUE)))
+GlymaIDList$ID <- gsub("\\.Wm82\\.a2\\.v1", "", GlymaIDList$ID[!is.na(GlymaIDList$ID)])
+GlymaIDList$link <- "No Matching GlymaID"
+GlymaIDList$link[!is.na(GlymaIDList$ID)] <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s' target='_blank'>%s</a>", GlymaIDList$ID[!is.na(GlymaIDList$ID)], GlymaIDList$ID[!is.na(GlymaIDList$ID)])
 
 save(GlymaIDList, file="./GlymaID.rda")
-# dbWriteTable(conn = db, name="GlymaIDList", value=as.data.frame(GlymaIDList), row.names=FALSE, overwrite=T)
-dbDisconnect(db)
+
 
 # get list of unique snp sites
 uniqueSNPs <- snpList %>% 
@@ -125,7 +120,7 @@ uniqueSNPs <- snpList %>%
   unique()
 
 # combine unique snps with glymaIDs if the snp falls within an identified glymaID range
-load("./GlymaIDsnps.rda")
+
 # snpGlymaFull <- uniqueSNPs %>% rowwise() %>%
 #   do(data.frame(., ID = str_replace(paste(filter(GlymaIDList, seqnames%in%.$Chromosome & start <=.$Position & end >=.$Position)$ID, collapse=", "), ", $", ""), stringsAsFactors=F))
 # names(snpGlymaFull)[3] <- "ID"
@@ -138,26 +133,25 @@ load("./GlymaIDsnps.rda")
 # snpGlymaFull <- rbind(snpGlymaFull, tmp2) %>% arrange(Chromosome, Position) %>% unique()
 # save(snpGlymaFull, file="./GlymaIDsnps.rda")
 # rm(tmp, tmp2)
-
+load("./GlymaIDsnps.rda")
 GlymaIDSNPs <- filter(snpGlymaFull, ID!="")
 GlymaIDSNPs <- left_join(snpList, GlymaIDSNPs) %>% group_by(Chromosome, Position, ID) %>% select(ID, Chromosome, Position, Variety, Gene_State)
+GlymaIDSNPs$ID <- gsub("\\.Wm82\\.a2\\.v1", "", GlymaIDSNPs$ID)
 save(GlymaIDSNPs, file="./GlymaSNPFullList.rda")
 
+load("./GlymaSNPFullList.rda")
 # Summarize snps by number of Varieties at that position
 snpList.VarietySummary <- GlymaIDSNPs %>% group_by(Chromosome, Position, ID) %>% dplyr::summarise(nvars=length(unique(Variety))) 
 names(snpList.VarietySummary)[4] <- "Number.of.Varieties"
-snpList.VarietySummary <- left_join(snpList.VarietySummary, GlymaIDList[,c("ID", "chrnum", "searchstr")])
-snpList.VarietySummary$ID[!is.na(snpList.VarietySummary$ID)] <- gsub("\\.Wm82\\.a2\\.v1", "", snpList.VarietySummary$ID[!is.na(snpList.VarietySummary$ID)])
-snpList.VarietySummary$ID[!is.na(snpList.VarietySummary$ID)] <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s'>%s</a>", snpList.VarietySummary$ID[!is.na(snpList.VarietySummary$ID)], snpList.VarietySummary$ID[!is.na(snpList.VarietySummary$ID)])
+snpList.VarietySummary <- left_join(snpList.VarietySummary, GlymaIDList[,c("ID", "link", "chrnum", "searchstr")])
 snpList.VarietySummary$ID[is.na(snpList.VarietySummary$ID)] <- "No Match"
+snpList.VarietySummary$link[is.na(snpList.VarietySummary$link)] <- "No Match"
 
 # Summarize snps by number of sites assoc. with each glymaID
 snpList.GlymaSummary <- GlymaIDSNPs %>% group_by(Chromosome, ID)%>% select(Variety, Position) %>% dplyr::summarize(Number.of.Varieties=length(unique(Variety)), Number.of.SNP.Sites=length(unique(Position)))
-snpList.GlymaSummary <- left_join(snpList.GlymaSummary, GlymaIDList[,c("ID", "chrnum", "searchstr")])
-
-snpList.GlymaSummary$ID[!is.na(snpList.GlymaSummary$ID)] <- gsub("\\.Wm82\\.a2\\.v1", "", snpList.GlymaSummary$ID[!is.na(snpList.GlymaSummary$ID)])
-snpList.GlymaSummary$ID[!is.na(snpList.GlymaSummary$ID)] <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s'>%s</a>", snpList.GlymaSummary$ID[!is.na(snpList.GlymaSummary$ID)], snpList.GlymaSummary$ID[!is.na(snpList.GlymaSummary$ID)])
+snpList.GlymaSummary <- left_join(snpList.GlymaSummary, GlymaIDList[,c("ID", "link", "chrnum", "searchstr")])
 snpList.GlymaSummary$ID[is.na(snpList.GlymaSummary$ID)] <- "No Match"
+snpList.GlymaSummary$link[is.na(snpList.GlymaSummary$link)] <- "No Match"
 save(snpList.VarietySummary, snpList.GlymaSummary, file="./GlymaSNPsummary.rda")
 
 rm(snpGlymaFull, uniqueSNPs, GlymaIDSNPs)

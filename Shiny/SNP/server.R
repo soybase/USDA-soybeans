@@ -6,20 +6,44 @@ library(reshape2)
 library(stringr)
 
 load("ShinyStart.rda")
+# Palette for ATGC data
 pal <- brewer.pal(8, "Paired")[c(1, 2, 7, 8)]
+
+# Function to fix variety names for links
+fixVarieties <- function(x){
+  y <- gsub("PI ?", "PI ", x)
+  y <- gsub("LG ?", "LG ", y)
+  gsub(".", "", gsub(" ", "%20", y, fixed=T), fixed=T)
+}
+
 
 objlist <- ls()
 if(!"snp.counts"%in%objlist){
+  # snp.counts is a data frame with the aggregate (population total) 
+  # number of snps at each position with each allele
+  # Columns: Chromosome, Position, Reference, Nucleotide, Count
+  
   load("SNPCounts.RData")
   snp.counts <- snp.counts %>% arrange(Chromosome, Position) %>% group_by(Chromosome) 
 }
 
 if(!"GlymaIDList"%in%objlist){
+  # GlymaIDList is a data table of all GlymaIDs and positions. 
+  # Columns: seqnames, source, feature, gene, start, end, score, strand, frame, 
+  #          group (list of attributes), ID (glymaID, with .Wm82.a2.v1 appended),
+  #          name (glymaID without thet appended text), Parent (for nested IDs), 
+  #          chrnum (raw number), searchstr (lowercase string of the form 00g000000),
+  #          and link (HTML link to soybase)
+  
   load("GlymaID.rda")
-  GlymaIDList <- GlymaIDList %>% group_by(chrnum, numid)
+  GlymaIDList <- GlymaIDList %>% select(one_of(c("seqnames", "feature", "start", "end", "ID", "numid", "chrnum", "searchstr", "link"))) %>% group_by(chrnum, numid) 
 }
 
 if(!"snpList"%in%objlist){
+  # snpList is a data table of all SNPs for each variety
+  # Columns: Chromosome, Position, Reference, Alternate, Allele.Freq, Variety, Alt.Allele.Freq, 
+  #          Genotype_Probability, Gene_State (0|1), Alt_Allele_Count
+  
   load("snpList.rda")
   snpList <- snpList %>% group_by(Chromosome, Variety)
 }
@@ -31,10 +55,18 @@ if(!"snpList.GlymaSummary"%in%objlist | !"snpList.PositionSummary"%in%objlist){
   snpList.GlymaSummary <- snpList.GlymaSummary %>% group_by(Chromosome, ID)
   snpList.PositionSummary <- snpList.VarietySummary %>% group_by(Chromosome, Position, ID)
   rm(snpList.VarietySummary)
+  
+  # snpList.GlymaSummary is a data table which summarizes SNPs by GlymaID
+  # Columns: Chromosome, ID, TotalVarietiesWithSNPs, NumberOfSnps, chrnum, searchstr
+  
+  # snpList.PositionSummary is a data table summarizing SNPs by position and GlymaID
+  # Columns: Chromosome, Position, ID, Number.of.Varieties, chrnum, searchstr
 }
 
 if(!"snp.density"%in%objlist){
   load("SNPDensity.RData")
+  # snp.density is a data table containing the density of SNPs for each chromosome and variety.
+  # Columns: Chromosome, Variety, x, y
 }
 
 
@@ -74,12 +106,8 @@ shinyServer(function(input, output, session) {
     if("varieties"%in%names(str)){
       updateSelectizeInput(session = session, 
                            inputId = "varieties", 
-                           label = "Choose up to 10 Cultivars of Interest", 
+                           label = "Cultivars of Interest (up to 10)", 
                            choices = sort(unique(varieties)), 
-                           selected = str$varieties)
-      updateSelectizeInput(session = session, 
-                           "densityVars", "Choose Varieties of Interest", 
-                           choices=sort(unique(varieties)), 
                            selected = str$varieties)
     }
     if("chromosomes"%in%names(str)){
@@ -87,10 +115,6 @@ shinyServer(function(input, output, session) {
                         inputId = "locationChrs",
                         label = "Choose Chromosome of Interest", 
                         selected = str$chromosomes[1])
-      updateSelectizeInput(session = session, 
-                           "densityChrs", "Choose Chromosome(s) of Interest", 
-                           choices=unique(seqnames), 
-                           selected = str$chromosomes)
       updateSelectizeInput(session = session, 
                            "glymaChrs", "Filter GlymaIDs by Chromosome(s)", 
                            choices=unique(seqnames), 
@@ -152,56 +176,33 @@ shinyServer(function(input, output, session) {
   
   #  filter density data reactively
   snpDensity <- reactive(filter(snp.density, 
-                                Chromosome%in%c(input$densityChrs, "")) %>%
-                         filter(Variety%in%c(input$densityVars, "")))
+                                Chromosome%in%c(input$glymaChrs, "")) %>%
+                         filter(Variety%in%c(input$varieties, "")))
+  
+  match <- function(glymaIDstring){
+    # strip off extra glyma stuff to get 01g000000
+    tmp <- gsub("wm82a2v1", "", gsub("glyma", "", gsub(".", "", tolower(glymaIDstring), fixed=TRUE)))
+    # attempt to match strings nicely
+    chr.str <- word(tmp, sep="[Gg]")
+    pos.str <- word(tmp, sep="[Gg]", start=-1)
+    if(nchar(chr.str)==2 & nchar(pos.str)<=6){
+      possible.match <- with(GlymaIDList, str_detect(chrnum, chr.str) & str_detect(numid, pos.str))
+    } else{
+      possible.match <- with(GlymaIDList, str_detect(searchstr, tmp))
+    }
+    which(possible.match)
+  }
   
   # search for glyma IDs
   id <- reactive({
     if(nchar(input$glymaID)>0){
-      # strip off extra glyma stuff to get 01g000000
-      tmp <- gsub("wm82a2v1", "", gsub("glyma", "", gsub(".", "", tolower(input$glymaID), fixed=TRUE)))
-      # attempt to match strings nicely
-      chr.str <- word(tmp, sep="[Gg]")
-      pos.str <- word(tmp, sep="[Gg]", start=-1)
-      if(nchar(chr.str)==2 & nchar(pos.str)<=6){
-        row.idx <- chr.str==tolower(as.data.frame(select(GlymaIDList, chrnum))$chrnum) & grepl(pos.str, as.data.frame(select(GlymaIDList, numid))$numid)
-        res <- as.data.frame(GlymaIDList)[row.idx,]
-      } else{
-        row.idx <- grepl(tmp, as.data.frame(select(GlymaIDList, searchstr))$searchstr)
-        res <- as.data.frame(GlymaIDList)[row.idx,]
-      }
+      res <- data.frame(GlymaIDList[match(input$glymaID),])
       if(nrow(res)>0){
         res$shown <- FALSE
-        res$shown[unique(res$numid)[1]==res$numid] <- TRUE
+        res$shown[res$numid[1]==res$numid & res$chrnum[1]==res$chrnum] <- TRUE
       }      
     } else {
-      res <- data.frame(shown=NULL)
-    }
-    
-    res
-  })
-  
-  # search for glyma IDs (variety level)
-  id2 <- reactive({
-    if(nchar(input$glymaID)>0){
-      # strip off extra glyma stuff to get 01g000000
-      tmp <- gsub("wm82a2v1", "", gsub("glyma", "", gsub(".", "", tolower(input$glymaID), fixed=TRUE)))
-      # attempt to match strings nicely
-      chr.str <- word(tmp, sep="g")
-      pos.str <- word(tmp, sep="g", start=-1)
-      if(nchar(chr.str)==2 & nchar(pos.str)<=6){
-        row.idx <- chr.str==tolower(as.data.frame(select(GlymaIDList, chrnum))$chrnum) & grepl(pos.str, as.data.frame(select(GlymaIDList, numid))$numid)
-        res <- as.data.frame(GlymaIDList)[row.idx,]
-      } else{
-        row.idx <- grepl(tmp, as.data.frame(select(GlymaIDList, searchstr))$searchstr)
-        res <- as.data.frame(GlymaIDList)[row.idx,]
-      }
-      if(nrow(res)>0){
-        res$shown <- FALSE
-        res$shown[unique(res$numid)[1]==res$numid] <- TRUE
-      }    
-    } else {
-      res <- data.frame(shown=NULL)
+      res <- data.frame(seqnames=NULL, start=NULL, end=NULL, ID=NULL, numid=NULL, chrnum=NULL, searchstr=NULL, link=NULL, shown=NULL)
     }
     res
   })
@@ -209,30 +210,25 @@ shinyServer(function(input, output, session) {
   # search for glyma IDs to filter snpList.GlymaSummary
   id3 <- reactive({
     if(nchar(input$glymaID3)>0){
-      # strip off extra glyma stuff to get 01g000000
-      tmp <- gsub("wm82a2v1", "", gsub("glyma", "", gsub(".", "", tolower(input$glymaID3), fixed=TRUE)))
-      # attempt to match strings nicely
-      chr.str <- word(tmp, sep="[Gg]")
-      pos.str <- word(tmp, sep="[Gg]", start=-1)
-      if(nchar(chr.str)==2 & nchar(pos.str)<=6){
-        row.idx <- chr.str==tolower(as.data.frame(select(GlymaIDList, chrnum))$chrnum) & grepl(pos.str, as.data.frame(select(GlymaIDList, numid))$numid)
-        res <- as.data.frame(GlymaIDList)[row.idx,]
-      } else if(length(input$glymaChrs)>0){
-        row.idx <- grepl(tmp, as.data.frame(select(GlymaIDList, searchstr))$searchstr)
-        res <- as.data.frame(GlymaIDList)[row.idx,] %>% filter(seqnames%in%input$glymaChrs)        
-      } else{
-        row.idx <- grepl(tmp, as.data.frame(select(GlymaIDList, searchstr))$searchstr)
-        res <- as.data.frame(GlymaIDList)[row.idx,] 
-      }
-      
-      if(nrow(res)>0){
-        res$shown <- FALSE
-        res$shown[unique(res$numid)[1]==res$numid] <- TRUE
-      }      
+      res <- data.frame(GlymaIDList[match(input$glymaID3),])
     } else {
-      res <- data.frame(shown=NULL)
+      res <- data.frame(seqnames=NULL, start=NULL, end=NULL, ID=NULL, numid=NULL, chrnum=NULL, searchstr=NULL, link=NULL, shown=NULL)
     }
     
+    if(length(input$glymaChrs)>0){
+      if(nrow(res)>0){
+        res <- res[res$seqnames%in%input$glymaChrs,]
+      } else {
+        res <- GlymaIDList[GlymaIDList$seqnames%in%input$glymaChrs,]
+      }
+    } 
+      
+    if(nrow(res)>0){
+      res$shown <- FALSE
+      res$shown[res$numid[1]==res$numid & res$chrnum[1]==res$chrnum] <- TRUE
+    } else {
+      res <- data.frame(seqnames=NULL, start=NULL, end=NULL, ID=NULL, numid=NULL, chrnum=NULL, searchstr=NULL, link=NULL, shown=NULL)
+    }
     res
   })
   
@@ -253,7 +249,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  glymacols <- c("seqnames", "start", "end", "ID")
+  glymacols <- c("seqnames", "link", "start", "end")
   
   # Output a data table of glyma IDs matching the text box
   output$glymaTable <- renderDataTable({
@@ -262,7 +258,7 @@ shinyServer(function(input, output, session) {
       
       if(nrow(x)>0) {
         y <- x[,glymacols]
-        names(y) <- c("Chromosome", "Start", "End", "GlymaID")
+        names(y) <- c("Chromosome", "GlymaID", "Start", "End")
         y
       } else {
         data.frame(Problem = "Query not found")
@@ -278,9 +274,8 @@ shinyServer(function(input, output, session) {
     if(nchar(input$glymaID)>0){
       x <- id()
       if(nrow(x)>0){
-        y <- x[,glymacols[-c(2:3)]]
+        y <- x[,glymacols[-c(3:4)]]
         names(y) <- c("Chr", "GlymaID")
-        y$GlymaID <- gsub("\\.Wm82\\.a2\\.v1", "", y$GlymaID)
         y
       } else {
         data.frame(Problem = "Query not found")
@@ -288,11 +283,7 @@ shinyServer(function(input, output, session) {
     } else {
       data.frame(Hint = "Enter a glymaID at the top")
     }
-  }, searchDelay=250, 
-  options=list(pageLength=25, 
-               lengthMenu= "[ [10, 25, 50, -1], [10, 25, 50, 'All'] ]", 
-               bsort=FALSE)
-  )
+  }, escape=FALSE, options=tableoptions)
   
   # Output a data table of displayed SNPs + Varieties
   output$snpTable <- renderDataTable({
@@ -300,6 +291,7 @@ shinyServer(function(input, output, session) {
       x <- varsnps()
 
       if(nrow(x)>0) {
+        x$Variety <- sprintf("<a href='http://www.ars-grin.gov/cgi-bin/npgs/html/acc_list_post.pl?lopi=&hipi=&lono=&hino=&plantid=%s&pedigree=&taxon=%s&family=&cname=&country=&state=&site=%s&acimpt=%s&uniform=%s&recent=anytime&pyears=1&received=&records=100' target='_blank'>%s</a>", fixVarieties(x$Variety), "Glycine%20max", "ALL%20-%20All%20Repositories", "Any%20Status", "Any%20Status", x$Variety)
         x
       } else {
         data.frame(Result="No SNPs found for query", query=input$glymaID)
@@ -307,13 +299,9 @@ shinyServer(function(input, output, session) {
     } else {
       data.frame(Hint="Enter a glymaID in the left panel", Problem="No glymaIDs match your query")
     }
-  }, searchDelay=250, 
-  options=list(pageLength=25, 
-               lengthMenu= "[ [10, 25, 50, -1], [10, 25, 50, 'All'] ]", 
-               bsort=FALSE)
-  )
+  }, escape=FALSE, options=tableoptions)
 
-  # Output a data table of tabulated SNPs + Varieties for each glymaID
+  # Output a data table of SNPs tabulated by Chromosome and GlymaID
   output$glymaSummary <- renderDataTable({
     if(length(input$glymaChrs)>0){
       x <- input$glymaChrs
@@ -323,20 +311,21 @@ shinyServer(function(input, output, session) {
     
     if(nchar(input$glymaID3)>0){
       gid <- id3()$ID
-      res <- snpList.GlymaSummary %>% filter(Chromosome%in%x) %>% 
-        filter(str_detect(ID, gid))
-      if(nrow(res)>0){
-        res[,1:4]
-      } else {
-        data.frame(ID="No Matching GlymaIDs found", Chromosome="?")
-      }
+      res <- snpList.GlymaSummary[with(snpList.GlymaSummary, Chromosome%in%x & rowSums(sapply(gid, str_detect, string=ID))>0),]
     } else {
-      filter(snpList.GlymaSummary, Chromosome%in%x)[,1:4]
+      res <- snpList.GlymaSummary[with(snpList.GlymaSummary, Chromosome%in%x),]
     }
     
+    if(nrow(res)>0){
+      res2 <- as.data.frame(res[,c("Chromosome", "link", "TotalVarietiesWithSNPs", "NumberOfSNPs")])
+      names(res2)[2:4] <- c("ID", "Total Varieties with SNPs", "Number of SNP sites")
+      res2
+    } else {
+      data.frame(ID="No Matching GlymaIDs found", Chromosome="?")
+    }
   }, escape=FALSE, options=tableoptions)
   
-  # Output a data table of tabulated SNPs + Varieties for each glymaID
+  # Output a data table of tabulated SNPs and # Varieties for each glymaID
   output$positionSummary <- renderDataTable({
     if(length(input$glymaChrs)>0){
       x <- input$glymaChrs
@@ -346,57 +335,63 @@ shinyServer(function(input, output, session) {
     
     if(nchar(input$glymaID3)>0){
       gid <- id3()$ID
-      res <- snpList.PositionSummary %>% filter(Chromosome%in%x) %>% 
-        filter(str_detect(ID, gid)) %>% arrange(ID, Chromosome, Position)
-      if(nrow(res)>0){
-        res[,1:4]
-      } else {
-        data.frame()
-      }
+      res <- snpList.PositionSummary[with(snpList.PositionSummary, Chromosome%in%x & str_detect(ID, gid[1])),]
     } else {
-      res <- filter(snpList.PositionSummary, Chromosome%in%x)%>% select(1:4) %>% arrange(ID, Chromosome, Position)
-      res[1:min(50000, nrow(res)),]
-    }
-  }, escape=FALSE, options=tableoptions)
-  
-  # Scan up genome
-  observe({
-    # depend on input$up
-    if(input$up==0){
-      return()
+      res <- snpList.PositionSummary[with(snpList.PositionSummary, Chromosome%in%x),]
+      res <- res[1:min(5000, nrow(res)),]
     }
     
-    isolate({
-      tmp <- rev.snps()
-      
-      # If there are more than 2*bases rows, then get the position of the 2*base-th row
-      if(nrow(tmp)>2*input$bases){
-        updateTextInput(session, inputId = "chrStart",
-                        value=tmp$Position[2*input$bases]-1)
-      } else { 
-        # otherwise, find the minimum position
-        updateTextInput(session, inputId = "chrStart",
-                        value=min(tmp$Position))
+    if(nrow(res)>0){
+      res2 <- as.data.frame(res[,c("Chromosome", "Position", "link", "Number.of.Varieties")])
+      names(res2)[3:4] <- c("ID", "Number of Varieties")
+      res2 %>% arrange(Chromosome, Position)
+    } else {
+      data.frame(ID="No Matching GlymaIDs found", Chromosome="?")
+    }
+  }, escape=FALSE, options=tableoptions)
+
+  # Scan up genome
+  observe({
+    if(input$tabname=='Aggregate SNP Browser'){
+      # depend on input$up
+      if(input$up==0){
+        return()
       }
-    })
+      
+      isolate({
+        tmp <- rev.snps()
+        
+        # If there are more than 2*bases rows, then get the position of the 2*base-th row
+        if(nrow(tmp)>2*input$bases){
+          updateTextInput(session, inputId = "chrStart",
+                          value=tmp$Position[2*input$bases]-1)
+        } else { 
+          # otherwise, find the minimum position
+          updateTextInput(session, inputId = "chrStart",
+                          value=min(tmp$Position))
+        }
+      })
+    }
   })
   # Scan down genome
   observe({
-    # depend on input$down
-    if(input$down==0){
-      return()
-    }
-    
-    isolate({
-      tmp <- snps()
-      if(nrow(tmp)<2*input$bases){
-        # if there aren't 2*bases rows, then keep current TextInput value
+    if(input$tabname=='Aggregate SNP Browser'){
+      # depend on input$down
+      if(input$down==0){
         return()
-      } else {
-        # otherwise, move downstream by input$bases snps.
-        updateTextInput(session, inputId = "chrStart", value=tmp$Position[2*input$bases]-1)
       }
-    })
+      
+      isolate({
+        tmp <- snps()
+        if(nrow(tmp)<2*input$bases){
+          # if there aren't 2*bases rows, then keep current TextInput value
+          return()
+        } else {
+          # otherwise, move downstream by input$bases snps.
+          updateTextInput(session, inputId = "chrStart", value=tmp$Position[2*input$bases]-1)
+        }
+      })
+    }
   })
   
   
@@ -527,7 +522,7 @@ shinyServer(function(input, output, session) {
   
   # Expression that generates a plot of snp density along the chromosome
   output$DensityPlot <- renderPlot({
-    if(length(input$densityChrs)>0 & length(input$densityVars)>0){
+    if(length(input$glymaChrs)>0 & length(input$varieties)>0){
       tmp <- snpDensity()
       if(nrow(tmp)>0){
         plot <- ggplot(data=tmp) + 
@@ -540,9 +535,9 @@ shinyServer(function(input, output, session) {
           facet_grid(Variety~Chromosome, scales="free_x")
       } else{
         labeldf <- data.frame(x=0, y=0, label=paste("No SNPs found for \n(", 
-                                                    paste(input$densityVars, collapse=", "),
+                                                    paste(input$varieties, collapse=", "),
                                                     ")\n on \n Chromosomes (", 
-                                                    paste(gsub("Chr", "", input$densityChrs), 
+                                                    paste(gsub("Chr", "", input$glymaChrs), 
                                                           collapse=", "), ").", sep=""))
         plot <- ggplot() + 
           geom_text(data=labeldf, aes(x=x, y=y, label=label)) +         

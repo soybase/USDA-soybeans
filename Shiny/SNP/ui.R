@@ -31,23 +31,111 @@ headerDef <- function(){
     ),
     conditionalPanel(
       condition="!(input.tabname=='Methodology' | input.tabname=='Kinship via SNPs')",
-      wellPanel(
-        fluidRow(
-          column(width=2, offset=2,
-                 conditionalPanel(
-                   condition="input.tabname=='Aggregate SNP Browser' | input.tabname=='Variety-Level SNP Browser'",
-                   textInput("glymaID", #done
-                             "Locate Position by Glyma ID",
-                             value=""
-                   ),
-                   helpText("Ex: 01g004700 will search Chr 01 for IDs containing 004700")
-                 )
-          ),
-          column(width=2, offset=1
-                 
-          ),
-          column(width=2, offset=1
-                 
+      fluidRow(
+        column(
+          width=5, offset=1,
+          wellPanel(
+            fluidRow(
+              conditionalPanel(
+                condition="input.tabname=='Aggregate SNP Browser' | input.tabname=='Variety-Level SNP Browser'",
+                column(
+                  width=4,
+                  h4("GlymaID navigation"),
+                  helpText("Ex: 01g004700 will search Chr 01 for IDs containing 004700")
+                ),
+                column(
+                  width=4,
+                  textInput("glymaID", "Locate Position by Glyma ID", value="")
+                )
+              ),
+              conditionalPanel(
+                condition="input.tabname=='Aggregate SNP Browser'",
+                column(
+                  width=4,
+                  numericInput("bases", "# downstream SNPs (up to 50)", 
+                               value=20, min=5, max=50, step=5)
+                )
+              ),
+              conditionalPanel(
+                condition="input.tabname=='Variety-Level SNP Browser'",
+                column(
+                  width=4,
+                  helpText("The table on the left will show matching GlymaIDs for partial entries.")
+                )
+              ),
+              conditionalPanel(
+                condition="input.tabname=='SNP Counts by GlymaID'",
+                column(
+                  width=6,
+                  helpText("Select one or more chromosomes. The first table will show the number of SNP sites for each glymaID on the chromosome.")
+                )
+              ),
+              conditionalPanel(
+                condition="input.tabname=='SNP Density'",
+                column(width=3,
+                       helpText("Select one or more chromosomes to see the distribution of SNPs."))
+              ),
+              conditionalPanel(
+                condition="input.tabname=='SNP Counts by GlymaID' | input.tabname=='SNP Density'",
+                column(
+                  width=4,
+                  selectizeInput("glymaChrs", "Show Chromosome(s)", 
+                                 choices=unique(seqnames), multiple=TRUE, options=list(maxItems=5))
+                )
+              )
+            )
+          )
+        ),
+        column(
+          width=5,
+          wellPanel(
+            fluidRow(
+              conditionalPanel(
+                condition="input.tabname=='Aggregate SNP Browser'",
+                column(
+                  width=3,
+                  h4("Manual navigation"),
+                  helpText("Choose Chromosome and position")
+                ),
+                column(
+                  width=3,
+                    selectInput("locationChrs", "Choose Chromosome",  
+                                choices=unique(seqnames), multiple=FALSE, selectize=T)
+                ),
+                column(
+                  width=2,
+                  helpText("Enter a numeric start point")
+                ),
+                column(
+                  width=4,
+                  textInput("chrStart", "Start point", value=0)
+                )
+              ),
+              conditionalPanel(
+                condition="input.tabname=='SNP Counts by GlymaID'",
+                column(
+                  width=2,
+                  helpText("Input a glyma ID such as 01g004700")
+                ),
+                column(
+                  width=4,
+                  textInput("glymaID3", "View SNP sites within a GlymaID", value="")
+                ),
+                column(
+                  width=6,
+                  helpText("For a selected glymaID, the second table shows each SNP location, and the number of varieties with SNPs at that position.")
+                )
+              ),
+              conditionalPanel(
+                condition="input.tabname=='Variety-Level SNP Browser' | input.tabname=='SNP Density'",
+                column(
+                  width=4,
+                  offset=4,
+                  selectizeInput("varieties", "Cultivars of Interest (up to 10)", 
+                                 choices=unique(varieties), multiple=TRUE, options=list(maxItems=10))
+                )
+              )
+            )
           )
         )
       )
@@ -62,20 +150,10 @@ AggSNPBrowser <- function(){
            fluidRow(
              column(width=3, 
                     wellPanel(
-                      br(),
-                      numericInput("bases",  # done
-                                   "# downstream SNPs (up to 50)", 
-                                   value=20, min=5, max=50, step=5
-                      )),
-                    wellPanel(
-                      helpText("Manually choose chromosome and location:"),
-                      selectInput("locationChrs", "Choose Chromosome of Interest",  # done
-                                  choices=unique(seqnames), multiple=FALSE, selectize=T),
-                      helpText("Enter a numeric start point on the chromosome"),
-                      textInput("chrStart",  # done
-                                "Start point", value=0)
-                      )
-                    ),
+                      h3("Matching Glyma IDs"),
+                      dataTableOutput("glymaTable")
+                    )
+             ),
              column(width=9, 
                     plotOutput("AggregatePlot", width="100%", height="400px"),
                     tagList(
@@ -90,20 +168,17 @@ AggSNPBrowser <- function(){
                           ),
                           tags$td(rowspan=7, width='75%', display='none', ''),
                           tags$td(align="right",
-                            actionButton("down", 
-                                         "Move downstream", 
-                                         icon=icon('angle-double-right', 
-                                                   class="2x pull-right")
-                                         )
-                            )
+                                  actionButton("down", 
+                                               "Move downstream", 
+                                               icon=icon('angle-double-right', 
+                                                         class="2x pull-right")
+                                  )
                           )
                         )
-                      ),
-                    br(),
-                    h3("Matching Glyma IDs"),
-                    dataTableOutput("glymaTable")
+                      )
                     )
              )
+           )
   )
 }
 
@@ -113,68 +188,28 @@ VarSNPBrowser <- function(){
            # plus a reset button.
            fluidRow(
              column(width=3, 
-                    wellPanel(
-                      textInput("glymaID2",  # done
-                                "Locate Position by Glyma ID",
-                                value=""
-                      ),
-                      helpText("Ex: 01g004400 will search Chr 01 for IDs containing 004400"),
-                      selectizeInput("varieties", "Choose up to 10 Cultivars of Interest", # done
-                                         choices=unique(varieties), multiple=TRUE, options=list(maxItems=10))
-                      ),
                     h3("Matching Glyma IDs"),
                     dataTableOutput("glymaTable2")
-           ),
-           column(width=9, 
-                  plotOutput("VarietySnpPlot", width="100%", height="800px"),
-                  br(),
-                  h3("Matching SNPs"),
-                  dataTableOutput("snpTable")
+             ),
+             column(width=9, 
+                    plotOutput("VarietySnpPlot", width="100%", height="800px"),
+                    br(),
+                    h3("Matching SNPs"),
+                    dataTableOutput("snpTable")
+             )
            )
-           )
-           )
+  )
 }
 
 SNPDensity <- function(){
-  tabPanel("SNP Density", 
-           fluidRow(
-             column(width=2, 
-                    wellPanel(
-                      selectizeInput("densityChrs", "Choose Chromosome(s) of Interest", 
-                                     choices=unique(seqnames), multiple=TRUE, 
-                                     options=list(maxItems=5)), # done
-                      selectizeInput("densityVars", "Choose Varieties of Interest", 
-                                     choices=unique(varieties), multiple=TRUE) # done
-                      )
-                    ),
-             column(width=10, 
-                    plotOutput("DensityPlot", width="100%", height="800px"), 
-                    helpText("Todo: Fill in sections with color key showing QTL category?")
-                    )
-           )
+  tabPanel(
+    "SNP Density", 
+    fluidRow(plotOutput("DensityPlot", width="100%", height="800px"))
   )
 }
 
 SNPSummary <- function(){
   tabPanel("SNP Counts by GlymaID", 
-           wellPanel(
-             fluidRow(
-               column(width=2),
-               column(width=3, 
-                      selectizeInput("glymaChrs", "Filter GlymaIDs by Chromosome(s)", # done
-                                     choices=unique(seqnames), multiple=TRUE, options=list(maxItems=5)),
-                      helpText("The table below will show GlymaIDs with SNPs")
-                      ), 
-               column(width=2),
-               column(width=3,
-                      textInput("glymaID3", # done
-                                "View SNP sites within a GlymaID",
-                                value=""),
-                      helpText("Input a glyma ID such as 01g000200")
-                      ),
-               column(width=2)
-             )
-           ),
            fluidRow(
              column(width=6, wellPanel(
                helpText("Use the table below to see what GlymaIDs have SNPs on a specific chromosome."),
