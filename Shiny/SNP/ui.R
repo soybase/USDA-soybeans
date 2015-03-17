@@ -40,7 +40,7 @@ headerDef <- function(){
                              "Locate Position by Glyma ID",
                              value=""
                    ),
-                   helpText("Ex: 01g004700 will search Chr 01 for IDs containing 004400")
+                   helpText("Ex: 01g004700 will search Chr 01 for IDs containing 004700")
                  )
           ),
           column(width=2, offset=1
