@@ -291,8 +291,7 @@ shinyServer(function(input, output, session) {
   }, searchDelay=250, 
   options=list(pageLength=25, 
                lengthMenu= "[ [10, 25, 50, -1], [10, 25, 50, 'All'] ]", 
-               bsort=FALSE,
-               dom='<"top"i>rt<"bottom"p><"clear">')
+               bsort=FALSE)
   )
   
   # Output a data table of displayed SNPs + Varieties
@@ -311,8 +310,7 @@ shinyServer(function(input, output, session) {
   }, searchDelay=250, 
   options=list(pageLength=25, 
                lengthMenu= "[ [10, 25, 50, -1], [10, 25, 50, 'All'] ]", 
-               bsort=FALSE,
-               sDom='<"top"i>rt<"bottom"p><"clear">')
+               bsort=FALSE)
   )
 
   # Output a data table of tabulated SNPs + Varieties for each glymaID
