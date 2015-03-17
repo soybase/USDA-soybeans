@@ -102,10 +102,6 @@ shinyServer(function(input, output, session) {
                       "Locate Position by Glyma ID",
                       value=str$glymaID)
       updateTextInput(session = session, 
-                      "glymaID2", 
-                      "Locate Position by Glyma ID",
-                      value=str$glymaID)
-      updateTextInput(session = session, 
                       "glymaID3", 
                       "View SNP sites within a GlymaID",
                       value=str$glymaID)
@@ -127,8 +123,8 @@ shinyServer(function(input, output, session) {
   
   # Return SNPs for selected varieties
   varsnps <- reactive({
-    id2.cur <- id2()
-    tmp <- filter(id2.cur, shown)
+    id.cur <- id()
+    tmp <- filter(id.cur, shown)
     
     chr <- paste0("Chr", substr(tmp$ID, 7, 8))
     position.min=min(tmp$start)
@@ -187,9 +183,9 @@ shinyServer(function(input, output, session) {
   
   # search for glyma IDs (variety level)
   id2 <- reactive({
-    if(nchar(input$glymaID2)>0){
+    if(nchar(input$glymaID)>0){
       # strip off extra glyma stuff to get 01g000000
-      tmp <- gsub("wm82a2v1", "", gsub("glyma", "", gsub(".", "", tolower(input$glymaID2), fixed=TRUE)))
+      tmp <- gsub("wm82a2v1", "", gsub("glyma", "", gsub(".", "", tolower(input$glymaID), fixed=TRUE)))
       # attempt to match strings nicely
       chr.str <- word(tmp, sep="g")
       pos.str <- word(tmp, sep="g", start=-1)
@@ -279,8 +275,8 @@ shinyServer(function(input, output, session) {
   
   # Output a data table of glyma IDs matching the text box
   output$glymaTable2 <- renderDataTable({
-    if(nchar(input$glymaID2)>0){
-      x <- id2()
+    if(nchar(input$glymaID)>0){
+      x <- id()
       if(nrow(x)>0){
         y <- x[,glymacols[-c(2:3)]]
         names(y) <- c("Chr", "GlymaID")
@@ -296,18 +292,18 @@ shinyServer(function(input, output, session) {
   options=list(pageLength=25, 
                lengthMenu= "[ [10, 25, 50, -1], [10, 25, 50, 'All'] ]", 
                bsort=FALSE,
-               sDom='<"top"i>rt<"bottom"p><"clear">')
+               dom='<"top"i>rt<"bottom"p><"clear">')
   )
   
   # Output a data table of displayed SNPs + Varieties
   output$snpTable <- renderDataTable({
-    if(length(input$glymaID2)>0 & nrow(id2())>=1){
+    if(length(input$glymaID)>0 & nrow(id())>=1){
       x <- varsnps()
 
       if(nrow(x)>0) {
         x
       } else {
-        data.frame(Result="No SNPs found for query", query=input$glymaID2)
+        data.frame(Result="No SNPs found for query", query=input$glymaID)
       }
     } else {
       data.frame(Hint="Enter a glymaID in the left panel", Problem="No glymaIDs match your query")
@@ -466,11 +462,11 @@ shinyServer(function(input, output, session) {
   # facetted by variety
   output$VarietySnpPlot <- renderPlot({
     
-    if(length(input$glymaID2)>0){
-      id2.cur <- id2()
+    if(length(input$glymaID)>0){
+      id.cur <- id()
 
-      if(nrow(id2.cur)>0){
-        matchingGlymas <- filter(id2.cur, shown)$ID
+      if(nrow(id.cur)>0){
+        matchingGlymas <- filter(id.cur, shown)$ID
                 
         tmp <- varsnps()
         if(nrow(tmp)>0){
@@ -485,7 +481,7 @@ shinyServer(function(input, output, session) {
             }
           }
           
-          plot.title=switch(min(length(matchingGlymas), 2)+1, input$glymaID2, matchingGlymas, paste(matchingGlymas, collapse=", "))
+          plot.title=switch(min(length(matchingGlymas), 2)+1, input$glymaID, matchingGlymas, paste(matchingGlymas, collapse=", "))
           
           plot <- ggplot(data=tmp) + 
             geom_histogram(aes(x=factor(Position), 
@@ -502,7 +498,7 @@ shinyServer(function(input, output, session) {
             theme(axis.text.x=element_text(angle=90)) + 
             scale_y_continuous("Alternate Allele Frequency", breaks=c(0, 1, 2), limits=c(0,2))
         } else{
-          labeldf <- data.frame(x=0, y=0, label=paste0("No SNPs found for glymaID(s) containing\n", input$glymaID2))
+          labeldf <- data.frame(x=0, y=0, label=paste0("No SNPs found for glymaID(s) containing\n", input$glymaID))
           plot <- ggplot() + 
             geom_text(data=labeldf, aes(x=x, y=y, label=label)) +         
             theme_bw() + 

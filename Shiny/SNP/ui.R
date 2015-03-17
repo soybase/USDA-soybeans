@@ -32,7 +32,24 @@ headerDef <- function(){
     conditionalPanel(
       condition="!(input.tabname=='Methodology' | input.tabname=='Kinship via SNPs')",
       wellPanel(
-        
+        fluidRow(
+          column(width=2, offset=2,
+                 conditionalPanel(
+                   condition="input.tabname=='Aggregate SNP Browser' | input.tabname=='Variety-Level SNP Browser'",
+                   textInput("glymaID", #done
+                             "Locate Position by Glyma ID",
+                             value=""
+                   ),
+                   helpText("Ex: 01g004700 will search Chr 01 for IDs containing 004400")
+                 )
+          ),
+          column(width=2, offset=1
+                 
+          ),
+          column(width=2, offset=1
+                 
+          )
+        )
       )
     )
   )
@@ -45,11 +62,6 @@ AggSNPBrowser <- function(){
            fluidRow(
              column(width=3, 
                     wellPanel(
-                      textInput("glymaID", #done
-                                "Locate Position by Glyma ID",
-                                value=""
-                      ),
-                      helpText("Ex: 01g004400 will search Chr 01 for IDs containing 004400"),
                       br(),
                       numericInput("bases",  # done
                                    "# downstream SNPs (up to 50)", 
