@@ -196,7 +196,7 @@ copyNumber <- function(){
 
 # Define UI for page that allows selection of genetic lines with corresponding facets
 navbarPage(
-  title="Copy Number Variation", 
+  title="", 
   overview(),
   navbarMenu("Barcode Plots",
              copyLocation(), 
