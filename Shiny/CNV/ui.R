@@ -170,13 +170,13 @@ header <- {
 overview <- function(){
   tabPanel("Overview", 
            fluidRow(
-             column(5, offset=1, helpText("The top-left plot shows normalized CNV counts for all varieties over all chromosomes. Click on a chromosome region to view more detailed information for that chromosome.")),
-             column(5, helpText("The top right plot shows CNV counts for each variety, sorted from most CNVs to fewest CNVs. Click on one or more varieties to see more detailed information about which regions of the chromosome contain the most CNVs."))
+             column(5, offset=1, helpText("The first plot ('Whole-Genome CNV Density') shows normalized CNV counts for all varieties over all chromosomes. Click on a chromosome region to view more detailed information for that chromosome.")),
+             column(5, helpText("The second plot ('Number of CNVs by Variety') shows CNV counts for each variety, sorted from most CNVs to fewest CNVs. Click on one or more varieties to see more detailed information about which regions of the chromosome contain the most CNVs."))
            ),
            uiOutput("overview"),
            fluidRow(
-             column(5, offset=1, helpText("The bottom left plot shows the overall CNV distribution across all varieties in black, with selected varieties (from the top-right plot) shown in color.")),
-             column(5, helpText("The bottom right plot shows, for each selected variety, which regions of the chromosome contain relatively more CNVs than the average variety, and which regions of the chromosome contain relatively fewer CNVs."))
+             column(5, offset=1, helpText("The third plot ('Density of CNVs') shows the overall CNV distribution across all varieties in black, with selected varieties (from the top-right plot) shown in color.")),
+             column(5, helpText("The last plot ('Difference in Normalized CNV Count') shows, for each selected variety, which regions of the chromosome contain relatively more CNVs than the average variety, and which regions of the chromosome contain relatively fewer CNVs."))
            ))
 }
 copyLocation <- function(){
