@@ -521,4 +521,6 @@ animint2dir(list(overview=overview,
                  first=list(seqnames="Chr01", Variety=c("Dunfield","IA3023"))),
             out.dir="./www/overview", open.browser=FALSE, css.file="www/styles.css")
 
+file.remove("./www/overview/index.html")
+file.remove("./www/fieldtrials/index.html")
 save.image(file="ShinyData.RData")
