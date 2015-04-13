@@ -155,20 +155,25 @@ AggSNPBrowser <- function(){
                     plotOutput("AggregatePlot", width="100%", height="400px"),
                     tagList(
                       tags$table(
+                        style="border:0px solid;background-color:#ffffff;",
                         tags$tr(
+                          style="border:0px solid;background-color:#ffffff;",
                           tags$td(
+                            style="border:0px solid;background-color:#ffffff;",
                             actionButton("up", 
                                          "Move upstream", 
-                                         icon=icon('angle-double-left', 
-                                                   class="2x pull-left")
+                                         icon=icon('backward', class="glyphicon", lib="glyphicon"),
+                                         class="btn-info"
                             )
                           ),
-                          tags$td(rowspan=7, width='75%', display='none', ''),
+                          tags$td(rowspan=7, width='75%', display='none',
+                                  style="border:0px solid;background-color:#ffffff;", ''),
                           tags$td(align="right",
+                                  style="border:0px solid;background-color:#ffffff;",
                                   actionButton("down", 
-                                               "Move downstream", 
-                                               icon=icon('angle-double-right', 
-                                                         class="2x pull-right")
+                                               span("Move downstream", 
+                                               icon('forward', class="glyphicon", lib="glyphicon")),
+                                               class="btn-info"
                                   )
                           )
                         )
