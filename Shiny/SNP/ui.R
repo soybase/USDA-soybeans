@@ -1,20 +1,17 @@
 library(shiny)
 
 head.scripts <- 
-  tags$head(tags$link(href="libs/bootstrap3-3.2.0/css/bootstrap.min.css", rel="stylesheet"),
-            tags$link(href="libs/bootstrap3-3.2.0/css/themes/cerulean/bootstrap.min.css", rel="stylesheet"),
-            tags$link(href="libs/highlightjs-8.2/highlight/idea.css", rel="stylesheet"),
-            tags$script(src="libs/highlightjs-8.2/highlight.pack.js", type="text/javascript"),
-            tags$link(href="libs/MagnificPopup-0.9.9/magnific-popup.css", rel="stylesheet"),
-            tags$script(src="libs/MagnificPopup-0.9.9/magnific-popup.js", type="text/javascript"),
-            tags$link(href="libs/knitrBootstrap-0.0.1/css/knitrBootstrap.css", rel="stylesheet" ),
-            tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"),
-            tags$style(type="text/css", "input#bases { height:30pt;}"),
-            tags$style(type="text/css", "input#glymaID { height:30pt;}"),
-            tags$style(type="text/css", "input#glymaID2 { height:30pt;}"),
-            tags$style(type="text/css", "input#glymaID3 { height:30pt;}"),
-            tags$style(type="text/css", "input#chrStart { height:30pt;}"),
-            tags$style(type="text/css", "div#toc {margin-top:60pt;}"))
+  tags$head(
+    tags$link(href="libs/bootstrap3-3.2.0/css/bootstrap.min.css", rel="stylesheet"),
+    tags$link(href="libs/bootstrap3-3.2.0/css/themes/cerulean/bootstrap.min.css", rel="stylesheet"),
+    tags$link(href="libs/highlightjs-8.2/highlight/idea.css", rel="stylesheet"),
+    tags$script(src="libs/highlightjs-8.2/highlight.pack.js", type="text/javascript"),
+    tags$link(href="libs/MagnificPopup-0.9.9/magnific-popup.css", rel="stylesheet"),
+    tags$script(src="libs/MagnificPopup-0.9.9/magnific-popup.js", type="text/javascript"),
+    tags$link(href="libs/knitrBootstrap-0.0.1/css/knitrBootstrap.css", rel="stylesheet" ),
+    tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"),
+    tags$link(href="shiny.css", rel="stylesheet")
+  )
 
 load("ShinyStart.rda")
 

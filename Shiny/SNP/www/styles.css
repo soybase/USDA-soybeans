@@ -1,0 +1,6 @@
+div#plot button {
+display:none;
+}
+rect#crosshairs {
+  fill-opacity:0;
+}
