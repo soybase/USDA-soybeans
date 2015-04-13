@@ -27,10 +27,14 @@ headerDef <- function(){
                       });'
     ),
     conditionalPanel(
+      # If using reactivity (i.e. not relatedness and SNPs or methodology) include
+      # a header for inputs
       condition="!(input.tabname=='Methodology' | input.tabname=='Relatedness and SNPs')",
       fluidRow(
         column(
           width=5, offset=1,
+          # Left wellpanel: 
+          # Position information (chromosome or GlymaID)
           wellPanel(
             fluidRow(
               conditionalPanel(
@@ -85,6 +89,9 @@ headerDef <- function(){
         ),
         column(
           width=5,
+          # Right wellPanel
+          # Variety information 
+          # or manual navigation for aggregate browser
           wellPanel(
             fluidRow(
               conditionalPanel(
