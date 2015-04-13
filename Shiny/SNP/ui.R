@@ -27,14 +27,14 @@ headerDef <- function(){
                       });'
     ),
     conditionalPanel(
-      condition="!(input.tabname=='Methodology' | input.tabname=='Kinship via SNPs')",
+      condition="!(input.tabname=='Methodology' | input.tabname=='Relatedness and SNPs')",
       fluidRow(
         column(
           width=5, offset=1,
           wellPanel(
             fluidRow(
               conditionalPanel(
-                condition="input.tabname=='Aggregate SNP Browser' | input.tabname=='Variety-Level SNP Browser'",
+                condition="input.tabname=='Aggregated SNPs' | input.tabname=='Cultivar-Level SNPs' | input.tabname=='Inheritance of SNPs'",
                 column(
                   width=4,
                   h4("GlymaID navigation"),
@@ -46,7 +46,7 @@ headerDef <- function(){
                 )
               ),
               conditionalPanel(
-                condition="input.tabname=='Aggregate SNP Browser'",
+                condition="input.tabname=='Aggregated SNPs'",
                 column(
                   width=4,
                   numericInput("bases", "# downstream SNPs (up to 50)", 
@@ -54,26 +54,26 @@ headerDef <- function(){
                 )
               ),
               conditionalPanel(
-                condition="input.tabname=='Variety-Level SNP Browser'",
+                condition="input.tabname=='Cultivar-Level SNPs'",
                 column(
                   width=4,
                   helpText("The table on the left will show matching GlymaIDs for partial entries.")
                 )
               ),
               conditionalPanel(
-                condition="input.tabname=='SNP Counts by GlymaID'",
+                condition="input.tabname=='find a GlymaID'",
                 column(
                   width=6,
                   helpText("Select one or more chromosomes. The first table will show the number of SNP sites for each glymaID on the chromosome.")
                 )
               ),
               conditionalPanel(
-                condition="input.tabname=='SNP Density'",
+                condition="input.tabname=='Overview: SNP Locations'",
                 column(width=3,
                        helpText("Select one or more chromosomes to see the distribution of SNPs."))
               ),
               conditionalPanel(
-                condition="input.tabname=='SNP Counts by GlymaID' | input.tabname=='SNP Density'",
+                condition="input.tabname=='find a GlymaID' | input.tabname=='Overview: SNP Locations'",
                 column(
                   width=4,
                   selectizeInput("glymaChrs", "Show Chromosome(s)", 
@@ -88,7 +88,7 @@ headerDef <- function(){
           wellPanel(
             fluidRow(
               conditionalPanel(
-                condition="input.tabname=='Aggregate SNP Browser'",
+                condition="input.tabname=='Aggregated SNPs'",
                 column(
                   width=3,
                   h4("Manual navigation"),
@@ -109,7 +109,7 @@ headerDef <- function(){
                 )
               ),
               conditionalPanel(
-                condition="input.tabname=='SNP Counts by GlymaID'",
+                condition="input.tabname=='find a GlymaID'",
                 column(
                   width=2,
                   helpText("Input a glyma ID such as 01g004700")
@@ -124,7 +124,7 @@ headerDef <- function(){
                 )
               ),
               conditionalPanel(
-                condition="input.tabname=='Variety-Level SNP Browser' | input.tabname=='SNP Density'",
+                condition="input.tabname=='Cultivar-Level SNPs' | input.tabname=='Overview: SNP Locations'",
                 column(
                   width=4,
                   offset=4,
@@ -141,7 +141,7 @@ headerDef <- function(){
 }
 
 AggSNPBrowser <- function(){
-  tabPanel("Aggregate SNP Browser", 
+  tabPanel("Aggregated SNPs", 
            # Sidebar with checkbox inputs for varieties and chromosomes, 
            # plus a reset button.
            fluidRow(
@@ -180,7 +180,7 @@ AggSNPBrowser <- function(){
 }
 
 VarSNPBrowser <- function(){
-  tabPanel("Variety-Level SNP Browser", 
+  tabPanel("Cultivar-Level SNPs", 
            # Sidebar with checkbox inputs for varieties and chromosomes, 
            # plus a reset button.
            fluidRow(
@@ -200,13 +200,13 @@ VarSNPBrowser <- function(){
 
 SNPDensity <- function(){
   tabPanel(
-    "SNP Density", 
+    "Overview: SNP Locations", 
     fluidRow(plotOutput("DensityPlot", width="100%", height="800px"))
   )
 }
 
 SNPSummary <- function(){
-  tabPanel("SNP Counts by GlymaID", 
+  tabPanel("find a GlymaID", 
            fluidRow(
              column(width=6, wellPanel(
                helpText("Use the table below to see what GlymaIDs have SNPs on a specific chromosome."),
@@ -221,7 +221,7 @@ SNPSummary <- function(){
 }
 
 SNPKinship <- function(){
-  tabPanel("Kinship via SNPs", fluidRow(uiOutput("KinshipSNP")))
+  tabPanel("Relatedness and SNPs", fluidRow(uiOutput("KinshipSNP")))
 }
 
 methodology <- function(){
