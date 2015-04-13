@@ -42,7 +42,7 @@ headerDef <- function(){
                 ),
                 column(
                   width=4,
-                  textInput("glymaID", "Locate Position by Glyma ID", value="")
+                  textInput("glymaID", "Locate Position by Glyma ID", value="01g004700")
                 )
               ),
               conditionalPanel(
@@ -77,7 +77,7 @@ headerDef <- function(){
                 column(
                   width=4,
                   selectizeInput("glymaChrs", "Show Chromosome(s)", 
-                                 choices=unique(seqnames), multiple=TRUE, options=list(maxItems=5))
+                                 choices=unique(seqnames), selected="Chr01", multiple=TRUE, options=list(maxItems=5))
                 )
               )
             )
@@ -97,7 +97,8 @@ headerDef <- function(){
                 column(
                   width=3,
                     selectInput("locationChrs", "Choose Chromosome",  
-                                choices=unique(seqnames), multiple=FALSE, selectize=T)
+                                choices=unique(seqnames), selected="Chr01", 
+                                multiple=FALSE, selectize=T)
                 ),
                 column(
                   width=2,
@@ -116,7 +117,7 @@ headerDef <- function(){
                 ),
                 column(
                   width=4,
-                  textInput("glymaID3", "View SNP sites within a GlymaID", value="")
+                  textInput("glymaID3", "View SNP sites within a GlymaID", value="01g004700")
                 ),
                 column(
                   width=6,
@@ -129,7 +130,8 @@ headerDef <- function(){
                   width=4,
                   offset=4,
                   selectizeInput("varieties", "Cultivars of Interest (up to 10)", 
-                                 choices=unique(varieties), multiple=TRUE, options=list(maxItems=10))
+                                 choices=unique(varieties), multiple=TRUE,
+                                 options=list(maxItems=10))
                 )
               )
             )
