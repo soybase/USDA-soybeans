@@ -4,8 +4,14 @@ library(RColorBrewer)
 library(dplyr)
 library(reshape2)
 library(stringr)
+library(ggenealogy)
 
+# Initial datasets
 load("ShinyStart.rda")
+
+# Genealogy data
+source("plotFamilyTree.R")
+
 # Palette for ATGC data
 pal <- brewer.pal(8, "Paired")[c(1, 2, 7, 8)]
 
@@ -163,6 +169,54 @@ shinyServer(function(input, output, session) {
     tmplist
     })
   
+  getRelatives <- reactive({
+    validate(
+      need(!is.null(input$variety0) & input$variety0 != "", 
+           "Select at least one variety!"),
+      need(input$gens, 
+           "Select the number of generations to search!")
+    )
+    
+    relatives <- data.frame(label=input$variety0, gen=0, stringsAsFactors=F)
+    if(input$ancestors){
+      anc <- try(getAncestors(input$variety0, treeGraph, input$gens), silent=T)
+      if(!is.character(anc)){
+        relatives <- bind_rows(relatives, anc)
+        relatives$gen <- -1*relatives$gen
+      }
+    }
+    if(input$descendants){
+      desc <- try(getDescendants(input$variety0, tree, input$gens), silent=T)
+      if(!is.character(desc)){
+        relatives <- bind_rows(relatives, desc)
+      }
+    }
+    
+    names(relatives) <- c("Variety", "generation")
+    return(relatives %>% arrange(generation) %>% as.data.frame())
+  })
+  
+  # Return SNPs for varieties related to selected variety
+  varsnps.genealogy <- reactive({
+    
+    id.cur <- id()
+    tmp <- filter(id.cur, shown)
+    
+    chr <- paste0("Chr", substr(tmp$ID, 7, 8))
+    position.min=min(tmp$start)
+    position.max=max(tmp$end)
+    tmplist <- as.data.frame(
+      filter(snpList, Chromosome == chr) %>%
+      filter(Position >= position.min & Position <= position.max))
+    
+    if(nrow(tmplist)>0){
+      relatives <- getRelatives()
+      tmplist <- filter(tmplist, Variety%in%relatives$Variety) %>% left_join(relatives)
+    }
+    tmplist
+  })
+  
+  # filter snps by chromosome and input location
   snps <- reactive(filter(snp.counts, 
                           Chromosome%in%c(input$locationChrs, "")) %>%
                    filter(Position>=min(as.numeric(input$chrStart), Inf)) %>% 
@@ -515,10 +569,82 @@ shinyServer(function(input, output, session) {
         theme(axis.text=element_blank(), 
               axis.ticks=element_blank(), 
               axis.title=element_blank())
+  # Expression that generates a plot of snps for a given gene/glymaID and a single
+  # input variety (and its parents or children)
+  output$GenealogySnpPlot <- renderPlot({
+    
+    if(length(input$glymaID)>0){
+      id.cur <- id()
+      
+      if(nrow(id.cur)>0){
+        matchingGlymas <- filter(id.cur, shown)$ID
+        
+        rels <- getRelatives()
+        tmp <- varsnps.genealogy()
+        if(nrow(tmp)>0){
+          tmp$Variety <- factor(tmp$Variety, levels=unique(tmp$Variety[order(tmp$generation, tmp$Variety, decreasing = F)]))
+          
+          title.phrase <- ifelse(
+            input$ancestors, 
+            ifelse(input$descendants, 
+                   'relatives of ', # True, True
+                   'ancestors of '),  # True, False
+            ifelse(input$descendants, 
+                   'descendants of ', # False, True
+                   '') # False, False
+            )
+          
+          plot.title=switch( 
+            min(length(matchingGlymas), 2)+1, 
+            # default value
+            paste0(title.phrase, "cultivar ", input$variety0, " on gene ", input$glymaID), 
+            # if only one glymaID, use that as the title
+            paste0(title.phrase, "cultivar ", input$variety0, " on gene ", matchingGlymas),
+            # Otherwise, paste the ids together
+            paste0(title.phrase, "cultivar ", input$variety0, " on genes ", 
+                  paste(matchingGlymas, collapse=", "))
+          )
+          
+          tmp$Label <- paste("Gen ", tmp$generation, "\n", tmp$Variety, sep="")
+          tmp$Label <- factor(tmp$Label, levels=paste("Gen ", rels$generation, "\n", rels$Variety, sep=""))
+          
+          plot <- ggplot(data=tmp) + 
+            geom_histogram(aes(x=factor(Position), 
+                               fill=factor(Alternate, levels=c("A", "G", "T", "C")), 
+                               weight=Alt_Allele_Freq)) + 
+            scale_fill_manual("Nucleotide", values=c("A"=pal[1], "G"=pal[2], 
+                                                     "T"=pal[3], "C"=pal[4]),
+                              drop=FALSE) + 
+            facet_grid(.~ Label, drop=FALSE) +
+            coord_flip() + 
+            xlab("Position on Chromosome") + 
+            ggtitle(paste0("SNPs for ", plot.title)) +
+            theme_bw() + 
+            theme(axis.text.x=element_text(angle=90)) + 
+            scale_y_continuous("Alternate Allele Frequency", breaks=c(0, 1, 2), limits=c(0,2))
+        } else{
+          labeldf <- data.frame(x=0, y=0, label=paste0("No SNPs found for glymaID(s) containing\n", input$glymaID, "\nwithin ", input$gens, " generations of ", input$variety0))
+          plot <- ggplot() + 
+            geom_text(data=labeldf, aes(x=x, y=y, label=label)) +         
+            theme_bw() + 
+            theme(axis.text=element_blank(), 
+                  axis.ticks=element_blank(), 
+                  axis.title=element_blank())
+        }
+      } else {
+        plot <- invalidGlymaPlot
+      }
+    } else {
+      plot <- emptyGlymaPlot
     }
     
     print(plot)
   })
+  
+  # Expression that generates a family tree of selected varieties
+  output$GenealogyTree <- renderPlot({
+    plotFamilyTree(input$variety0, input$gens, ncol=1) 
+   })
   
   # Expression that generates a plot of snp density along the chromosome
   output$DensityPlot <- renderPlot({

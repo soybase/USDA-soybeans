@@ -140,6 +140,25 @@ headerDef <- function(){
                                  choices=unique(varieties), multiple=TRUE,
                                  options=list(maxItems=10))
                 )
+              ),
+              conditionalPanel(
+                condition="input.tabname=='Inheritance of SNPs'",
+                column(
+                  width=4,
+                  offset=1,
+                  selectizeInput("variety0", "Cultivar of Interest", 
+                                 choices=unique(varieties), multiple=FALSE, 
+                                 selected="A.K.")
+                ),
+                column(
+                  width=3,
+                  checkboxInput("ancestors", "Search Ancestors?", value=TRUE),
+                  checkboxInput("descendants", "Search Descendants?", value=TRUE)
+                ),
+                column(
+                  width=2,
+                  numericInput("gens", "# Generations", value=2, min=1, max=4)
+                )
               )
             )
           )
@@ -212,6 +231,23 @@ VarSNPBrowser <- function(){
   )
 }
 
+GenealogySNPBrowser <- function(){
+  tabPanel("Inheritance of SNPs", 
+           # Sidebar with checkbox inputs for varieties and chromosomes, 
+           # plus a reset button.
+           fluidRow(
+             column(width=3, 
+                    h3("Genealogy"),
+                    plotOutput("GenealogyTree", width="100%", height="600px"),
+                    helpText("SNP data is available for cultivars shown in black.")
+             ),
+             column(width=9, 
+                    plotOutput("GenealogySnpPlot", width="100%", height="800px")
+             )
+           )
+  )
+}
+
 SNPDensity <- function(){
   tabPanel(
     "Overview: SNP Locations", 
@@ -252,10 +288,17 @@ shinyUI(
   navbarPage(
     title="Soybean SNPs", 
     header=headerDef(),
-    AggSNPBrowser(),
-    SNPSummary(),
-    VarSNPBrowser(),
     SNPDensity(), 
+    navbarMenu(
+      "Browse SNPs Visually",
+      AggSNPBrowser(),
+      VarSNPBrowser(),
+      GenealogySNPBrowser()
+    ),
+    navbarMenu(
+      "Locate SNPs",
+      SNPSummary()
+    ),
     SNPKinship(),
     methodology(),
     inverse=TRUE,
