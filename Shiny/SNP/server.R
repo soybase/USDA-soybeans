@@ -75,6 +75,20 @@ if(!"snp.density"%in%objlist){
   # Columns: Chromosome, Variety, x, y
 }
 
+emptyGlymaPlot <- ggplot() + 
+  geom_text(aes(x=0, y=0, label="Please enter a glymaID\n\n Note: It may take a minute to process the input")) +         
+  theme_bw() + 
+  theme(axis.text=element_blank(), 
+        axis.ticks=element_blank(), 
+        axis.title=element_blank())
+
+invalidGlymaPlot <- ggplot() + 
+  geom_text(aes(x=0, y=0, label="Please enter a valid glymaID\n\n Note: It may take a minute to process the input")) +         
+  theme_bw() + 
+  theme(axis.text=element_blank(), 
+        axis.ticks=element_blank(), 
+        axis.title=element_blank())
+
 
 tableoptions <- list(searchDelay=250, pageLength=10)
 
@@ -85,70 +99,78 @@ tableoptions <- list(searchDelay=250, pageLength=10)
 # Define server logic required to generate and plot a subset of varieties with a subset of chromosomes
 shinyServer(function(input, output, session) {
 
+  # Code to deal with query string
   observe({
-    str <- parseQueryString(session$clientData$url_search)
-    fix.vecs <- names(str)[grepl("c\\(.*\\)", str)]
-    for(i in fix.vecs){
-      # ensure variable names and values are preserved while removing programmatic stuff (injection prevention)
-      values <- gsub(
-        # Remove any character used for executing a function or storing values into variables
-        "[\"\'()<->=\\*\\+/]?", "", 
-        unlist( # Extract only valid R names/strings used in this app
-          str_extract_all(str[[i]], "[\"\']{1}[[:alnum:]\\._ ]{1,}[\"\']{1}")
-        ))
-      if(length(values)>0){
-        str[[i]] <- eval(parse(text=paste0("c(", paste(sprintf("'%s'", values), collapse=",", sep=""), ")")))
-      } else {
-        warning(sprintf("Possible injection attempt detected: Query String = %s", str[[i]]))
-        str[[i]] <- NULL
-        warning("Injection attempt removed from input successfully")
+    withProgress(
+      message = "Parsing Query", 
+      min=0, max=1, value=.05,
+      {
+        str <- parseQueryString(session$clientData$url_search)
+        fix.vecs <- names(str)[grepl("c\\(.*\\)", str)]
+        # ensure variable names and values are preserved while removing programmatic stuff (injection prevention)
+        for(i in fix.vecs){
+          
+          values <- gsub(
+            # Remove any character used for executing a function or storing values into variables
+            "[\"\'()<->=\\*\\+/]?", "", 
+            unlist( # Extract only valid R names/strings used in this app
+              str_extract_all(str[[i]], "[\"\']{1}[[:alnum:]\\._ ]{1,}[\"\']{1}")
+            ))
+          if(length(values)>0){
+            str[[i]] <- eval(parse(text=paste0("c(", paste(sprintf("'%s'", values), collapse=",", sep=""), ")")))
+          } else {
+            warning(sprintf("Possible injection attempt detected: Query String = %s", str[[i]]))
+            str[[i]] <- NULL
+            warning("Injection attempt removed from input successfully")
+          }
+        }
+        
+        # Reset each input using the appropriate update* function
+        if("tabname"%in%names(str)){
+          session$sendCustomMessage(type='setTab', str$tabname)
+        }
+        if("varieties"%in%names(str)){
+          updateSelectizeInput(session = session, 
+                               inputId = "varieties", 
+                               label = "Cultivars of Interest (up to 10)", 
+                               choices = sort(unique(varieties)), 
+                               selected = str$varieties)
+        }
+        if("chromosomes"%in%names(str)){
+          updateSelectInput(session = session, 
+                            inputId = "locationChrs",
+                            label = "Choose Chromosome of Interest", 
+                            selected = str$chromosomes[1])
+          updateSelectizeInput(session = session, 
+                               "glymaChrs", "Filter GlymaIDs by Chromosome(s)", 
+                               choices=unique(seqnames), 
+                               selected = str$chromosomes)
+        }
+        if("glymaID"%in%names(str)){
+          updateTextInput(session = session, 
+                          "glymaID", 
+                          "Locate Position by Glyma ID",
+                          value=str$glymaID)
+          updateTextInput(session = session, 
+                          "glymaID3", 
+                          "View SNP sites within a GlymaID",
+                          value=str$glymaID)
+        }
+        if("chrStart"%in%names(str)){ 
+          updateTextInput(session = session, 
+                          "chrStart", 
+                          "Start point", value=str$chrStart)
+        }
+        if("bases"%in%names(str)){
+          if(as.numeric(str$bases)>=5 & as.numeric(str$bases)<=50){
+            updateNumericInput(session = session, 
+                               "bases",
+                               "# downstream SNPs (up to 50)", 
+                               value=as.numeric(str$bases), min=5, max=50, step=5)
+          }
+        }
       }
-    }
-    
-    # Reset each input using the appropriate update* function
-    if("tabname"%in%names(str)){
-      session$sendCustomMessage(type='setTab', str$tabname)
-    }
-    if("varieties"%in%names(str)){
-      updateSelectizeInput(session = session, 
-                           inputId = "varieties", 
-                           label = "Cultivars of Interest (up to 10)", 
-                           choices = sort(unique(varieties)), 
-                           selected = str$varieties)
-    }
-    if("chromosomes"%in%names(str)){
-      updateSelectInput(session = session, 
-                        inputId = "locationChrs",
-                        label = "Choose Chromosome of Interest", 
-                        selected = str$chromosomes[1])
-      updateSelectizeInput(session = session, 
-                           "glymaChrs", "Filter GlymaIDs by Chromosome(s)", 
-                           choices=unique(seqnames), 
-                           selected = str$chromosomes)
-    }
-    if("glymaID"%in%names(str)){
-      updateTextInput(session = session, 
-                      "glymaID", 
-                      "Locate Position by Glyma ID",
-                      value=str$glymaID)
-      updateTextInput(session = session, 
-                      "glymaID3", 
-                      "View SNP sites within a GlymaID",
-                      value=str$glymaID)
-    }
-    if("chrStart"%in%names(str)){ 
-      updateTextInput(session = session, 
-                      "chrStart", 
-                      "Start point", value=str$chrStart)
-    }
-    if("bases"%in%names(str)){
-      if(as.numeric(str$bases)>=5 & as.numeric(str$bases)<=50){
-        updateNumericInput(session = session, 
-                           "bases",
-                           "# downstream SNPs (up to 50)", 
-                           value=as.numeric(str$bases), min=5, max=50, step=5)
-      }
-    }
+    )# End progress message
   })
   
   # Return SNPs for selected varieties
@@ -233,6 +255,7 @@ shinyServer(function(input, output, session) {
                                 Chromosome%in%c(input$glymaChrs, "")) %>%
                          filter(Variety%in%c(input$varieties, "")))
   
+  # Match glyma text to ID
   match <- function(glymaIDstring){
     # strip off extra glyma stuff to get 01g000000
     tmp <- gsub("wm82a2v1", "", gsub("glyma", "", gsub(".", "", tolower(glymaIDstring), fixed=TRUE)))
@@ -249,6 +272,11 @@ shinyServer(function(input, output, session) {
   
   # search for glyma IDs
   id <- reactive({
+    
+    validate(
+      need(!is.null(input$glymaID), "Input part of a glymaID to begin")
+    )
+  
     if(nchar(input$glymaID)>0){
       res <- data.frame(GlymaIDList[match(input$glymaID),])
       if(nrow(res)>0){
@@ -263,6 +291,11 @@ shinyServer(function(input, output, session) {
   
   # search for glyma IDs to filter snpList.GlymaSummary
   id3 <- reactive({
+    
+    validate(
+      need(!is.null(input$glymaID3), "Input part of a glymaID to begin")
+    )
+  
     if(nchar(input$glymaID3)>0){
       res <- data.frame(GlymaIDList[match(input$glymaID3),])
     } else {
@@ -305,38 +338,32 @@ shinyServer(function(input, output, session) {
 
   glymacols <- c("seqnames", "link", "start", "end")
   
+  glymaTableOutput <- reactive({
+    validate(
+      need(nchar(input$glymaID)>0, "Input a glymaID or partial glymaID to start.")
+    )
+    
+    x <- id()
+    
+    validate(
+      need(nrow(x)>0, "Query not found")
+    )
+    
+    idx <- if(input$tabname!="Aggregated SNPs") which(names(x)%in%glymacols[-c(3:4)]) else which(names(x)%in%glymacols)
+    
+    y <- x[,idx]
+    names(y) <- c("Chr", names(x)[2], "Start", "End", names(x)[5:8], "GlymaID")[idx]
+    y
+  })
+  
   # Output a data table of glyma IDs matching the text box
   output$glymaTable <- renderDataTable({
-    if(input$glymaID!=""){
-      x <- id()
-      
-      if(nrow(x)>0) {
-        y <- x[,glymacols]
-        names(y) <- c("Chromosome", "GlymaID", "Start", "End")
-        y
-      } else {
-        data.frame(Problem = "Query not found")
-      }
-
-    } else {
-      data.frame(Hint = "Enter a partial Glyma ID to search")
-    }
+    glymaTableOutput()
   }, escape=FALSE, options=tableoptions)
   
   # Output a data table of glyma IDs matching the text box
   output$glymaTable2 <- renderDataTable({
-    if(nchar(input$glymaID)>0){
-      x <- id()
-      if(nrow(x)>0){
-        y <- x[,glymacols[-c(3:4)]]
-        names(y) <- c("Chr", "GlymaID")
-        y
-      } else {
-        data.frame(Problem = "Query not found")
-      }
-    } else {
-      data.frame(Hint = "Enter a glymaID at the top")
-    }
+    glymaTableOutput()
   }, escape=FALSE, options=tableoptions)
   
   # Output a data table of displayed SNPs + Varieties
@@ -453,46 +480,50 @@ shinyServer(function(input, output, session) {
   # the chosen chromosome. 
   output$AggregatePlot <- renderPlot({
     if(length(input$chrStart)>0 & length(input$locationChrs)>0){
-      if(input$glymaID!=""){
-        matchingGlymas <- filter(id(), shown)$ID
-        plot.title <- switch(min(length(matchingGlymas), 2)+1, input$glymaID, matchingGlymas, paste(matchingGlymas, collapse=", "))
-      } else {
-        plot.title=paste0(input$chrStart, " on ", input$locationChrs)
-      }
-      
-      
-      tmp <- snps()
-      loc.chrs <- input$locationChrs
-      loc.start <- input$chrStart
-      
-      if(nrow(tmp)>0){
-        pos.idx <- unique(tmp$Position)
-        pos.idx <- sort(as.numeric(pos.idx))[1:min(length(pos.idx), input$bases)]
-        snps.sub <- filter(tmp, Position%in%pos.idx)
-        plot <- ggplot(data=snps.sub) + 
-          geom_histogram(aes(x=factor(Position), 
-                             fill=factor(Nucleotide, levels=c("A", "G", "T", "C")), 
-                             weight=Count), 
-                         position="stack") + 
-          scale_fill_manual("Nucleotide", values=c("A"=pal[1], "G"=pal[2], 
-                                                   "T"=pal[3], "C"=pal[4]),
-                            drop=FALSE) + 
-          xlab(paste("Position on ", gsub("Chr", "Chromosome ", loc.chrs))) + 
-          ylab(paste0("Total number of SNPs in ", length(varieties)," lines")) + 
-          theme_bw() + 
-          theme(axis.text.x=element_text(angle=90), legend.position="bottom") + 
-          ggtitle(paste0("SNPs downstream of ", plot.title))
-        
-      } else{
-        plot <- ggplot() + 
-          geom_text(aes(x=0, y=0, label=paste("No SNPs found downstream of ", 
-                                              as.numeric(loc.start), " on ", 
-                                              gsub("Chr", "Chromosome ", loc.chrs)))) +         
-          theme_bw() + 
-          theme(axis.text=element_blank(), 
-                axis.ticks=element_blank(), 
-                axis.title=element_blank())
-      }
+      withProgress(
+        message="Working", value=0, 
+        {
+          if(input$glymaID!=""){
+            matchingGlymas <- filter(id(), shown)$ID
+            plot.title <- switch(min(length(matchingGlymas), 2)+1, input$glymaID, matchingGlymas, paste(matchingGlymas, collapse=", "))
+          } else {
+            plot.title=paste0(input$chrStart, " on ", input$locationChrs)
+          }
+          
+          
+          tmp <- snps()
+          loc.chrs <- input$locationChrs
+          loc.start <- input$chrStart
+          
+          if(nrow(tmp)>0){ # Plot displayed SNPs
+            pos.idx <- unique(tmp$Position)
+            pos.idx <- sort(as.numeric(pos.idx))[1:min(length(pos.idx), input$bases)]
+            snps.sub <- filter(tmp, Position%in%pos.idx)
+            plot <- ggplot(data=snps.sub) + 
+              geom_histogram(aes(x=factor(Position), 
+                                 fill=factor(Nucleotide, levels=c("A", "G", "T", "C")), 
+                                 weight=Count), 
+                             position="stack") + 
+              scale_fill_manual("Nucleotide", values=c("A"=pal[1], "G"=pal[2], 
+                                                       "T"=pal[3], "C"=pal[4]),
+                                drop=FALSE) + 
+              xlab(paste("Position on ", gsub("Chr", "Chromosome ", loc.chrs))) + 
+              ylab(paste0("Total number of SNPs in ", length(varieties)," lines")) + 
+              theme_bw() + 
+              theme(axis.text.x=element_text(angle=90), legend.position="bottom") + 
+              ggtitle(paste0("SNPs downstream of ", plot.title))
+            
+          } else { # End branch for displaying SNPs, start "no SNPs"
+            plot <- ggplot() + 
+              geom_text(aes(x=0, y=0, label=paste("No SNPs found downstream of ", 
+                                                  as.numeric(loc.start), " on ", 
+                                                  gsub("Chr", "Chromosome ", loc.chrs)))) +         
+              theme_bw() + 
+              theme(axis.text=element_blank(), 
+                    axis.ticks=element_blank(), 
+                    axis.title=element_blank())
+          } # End "No SNPs" plot option
+        }) # End progress indicator
     } else {
       plot <- ggplot() + 
         geom_text(aes(x=0, y=0, label="Please select chromosome and an index on that chromosome\n\n Note: It may take a minute to process the input")) +         
@@ -554,21 +585,15 @@ shinyServer(function(input, output, session) {
                   axis.title=element_blank())
         }
       } else {
-        plot <- ggplot() + 
-          geom_text(aes(x=0, y=0, label="Please enter a valid glymaID\n\n 
-                        Note: It may take a minute to process the input")) +         
-          theme_bw() + 
-          theme(axis.text=element_blank(), 
-                axis.ticks=element_blank(), 
-                axis.title=element_blank())
+        plot <- invalidGlymaPlot
       }
     } else {
-      plot <- ggplot() + 
-        geom_text(aes(x=0, y=0, label="Please enter a glymaID\n\n Note: It may take a minute to process the input")) +         
-        theme_bw() + 
-        theme(axis.text=element_blank(), 
-              axis.ticks=element_blank(), 
-              axis.title=element_blank())
+      plot <- emptyGlymaPlot
+    }
+    
+    print(plot)
+  })
+  
   # Expression that generates a plot of snps for a given gene/glymaID and a single
   # input variety (and its parents or children)
   output$GenealogySnpPlot <- renderPlot({
@@ -693,4 +718,6 @@ shinyServer(function(input, output, session) {
       tags$script("var plot = new animint('#plot','animint/plot.json');")
       )
   })
+  
+  
 })
