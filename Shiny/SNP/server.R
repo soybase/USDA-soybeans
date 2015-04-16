@@ -1,15 +1,15 @@
 library(shiny)
 library(ggplot2)
 library(RColorBrewer)
+library(ggenealogy)
 library(dplyr)
 library(reshape2)
 library(stringr)
-library(ggenealogy)
 
 # Initial datasets
 load("ShinyStart.rda")
 
-# Genealogy data
+# Genealogy data and plotting function
 source("plotFamilyTree.R")
 
 # Palette for ATGC data
@@ -21,7 +21,6 @@ fixVarieties <- function(x){
   y <- gsub("LG ?", "LG ", y)
   gsub(".", "", gsub(" ", "%20", y, fixed=T), fixed=T)
 }
-
 
 objlist <- ls()
 if(!"snp.counts"%in%objlist){
@@ -42,7 +41,8 @@ if(!"GlymaIDList"%in%objlist){
   #          and link (HTML link to soybase)
   
   load("GlymaID.rda")
-  GlymaIDList <- GlymaIDList %>% select(one_of(c("seqnames", "feature", "start", "end", "ID", "numid", "chrnum", "searchstr", "link"))) %>% group_by(chrnum, numid) 
+  idx <- names(GlymaIDList) %in% c("seqnames", "feature", "start", "end", "ID", "numid", "chrnum", "searchstr", "link")
+  GlymaIDList <- GlymaIDList[,idx] %>% group_by(chrnum, numid) 
 }
 
 if(!"snpList"%in%objlist){
@@ -75,6 +75,7 @@ if(!"snp.density"%in%objlist){
   # Columns: Chromosome, Variety, x, y
 }
 
+# Plot to show with no GlymaID
 emptyGlymaPlot <- ggplot() + 
   geom_text(aes(x=0, y=0, label="Please enter a glymaID\n\n Note: It may take a minute to process the input")) +         
   theme_bw() + 
@@ -82,6 +83,7 @@ emptyGlymaPlot <- ggplot() +
         axis.ticks=element_blank(), 
         axis.title=element_blank())
 
+# Plot to show with invalid GlymaID
 invalidGlymaPlot <- ggplot() + 
   geom_text(aes(x=0, y=0, label="Please enter a valid glymaID\n\n Note: It may take a minute to process the input")) +         
   theme_bw() + 
@@ -89,7 +91,7 @@ invalidGlymaPlot <- ggplot() +
         axis.ticks=element_blank(), 
         axis.title=element_blank())
 
-
+# Options for DataTables
 tableoptions <- list(searchDelay=250, pageLength=10)
 
 # Data required for this app:
@@ -201,16 +203,16 @@ shinyServer(function(input, output, session) {
     
     relatives <- data.frame(label=input$variety0, gen=0, stringsAsFactors=F)
     if(input$ancestors){
-      anc <- try(getAncestors(input$variety0, treeGraph, input$gens), silent=T)
+      anc <- try(getAncestors(input$variety0, tree, input$gens), silent=T)
       if(!is.character(anc)){
-        relatives <- bind_rows(relatives, anc)
+        relatives <- rbind(relatives, anc)
         relatives$gen <- -1*relatives$gen
       }
     }
     if(input$descendants){
       desc <- try(getDescendants(input$variety0, tree, input$gens), silent=T)
       if(!is.character(desc)){
-        relatives <- bind_rows(relatives, desc)
+        relatives <- rbind(relatives, desc)
       }
     }
     
@@ -232,7 +234,7 @@ shinyServer(function(input, output, session) {
       filter(Position >= position.min & Position <= position.max))
     
     if(nrow(tmplist)>0){
-      relatives <- getRelatives()
+      relatives <- getRelatives() %>% filter(Variety%in%varieties)
       tmplist <- filter(tmplist, Variety%in%relatives$Variety) %>% left_join(relatives)
     }
     tmplist
@@ -606,6 +608,7 @@ shinyServer(function(input, output, session) {
         
         rels <- getRelatives()
         tmp <- varsnps.genealogy()
+        tmp <- filter(tmp, Variety%in%varieties)
         if(nrow(tmp)>0){
           tmp$Variety <- factor(tmp$Variety, levels=unique(tmp$Variety[order(tmp$generation, tmp$Variety, decreasing = F)]))
           
@@ -631,7 +634,9 @@ shinyServer(function(input, output, session) {
           )
           
           tmp$Label <- paste("Gen ", tmp$generation, "\n", tmp$Variety, sep="")
-          tmp$Label <- factor(tmp$Label, levels=paste("Gen ", rels$generation, "\n", rels$Variety, sep=""))
+          # Varieties + generations for which there is data (even if no SNPs identified)
+          data.vars <- paste("Gen ", rels$generation, "\n", rels$Variety, sep="")[rels$Variety%in%varieties]
+          tmp$Label <- factor(tmp$Label, levels=data.vars)
           
           plot <- ggplot(data=tmp) + 
             geom_histogram(aes(x=factor(Position), 

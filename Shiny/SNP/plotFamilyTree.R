@@ -19,7 +19,7 @@ library(ggenealogy)
 load("SubTree.rda")
 load("ShinyStart.rda")
 
-treeGraph <- treeToIG(tree, isDirected=FALSE)
+# treeGraph <- treeToIG(tree, isDirected=FALSE)
 
 plotFamilyTree <- function(variety, gens, ncol=2){
   gen.vars2 <- variety
