@@ -2,29 +2,96 @@ library(shiny)
 
 head.scripts <- 
   tags$head(
-    tags$link(href="libs/bootstrap3-3.2.0/css/bootstrap.min.css", rel="stylesheet"),
-    tags$link(href="libs/bootstrap3-3.2.0/css/themes/cerulean/bootstrap.min.css", rel="stylesheet"),
-    tags$link(href="libs/highlightjs-8.2/highlight/idea.css", rel="stylesheet"),
-    tags$script(src="libs/highlightjs-8.2/highlight.pack.js", type="text/javascript"),
-    tags$link(href="libs/MagnificPopup-0.9.9/magnific-popup.css", rel="stylesheet"),
-    tags$script(src="libs/MagnificPopup-0.9.9/magnific-popup.js", type="text/javascript"),
-    tags$link(href="libs/knitrBootstrap-0.0.1/css/knitrBootstrap.css", rel="stylesheet" ),
-    tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"),
-    tags$link(href="shiny.css", rel="stylesheet")
+    singleton(tags$link(href="shiny.css", rel="stylesheet")),
+    
+    # Needed for display of the methodology section tab
+    singleton(tags$link(href="libs/bootstrap-3.3.4/css/bootstrap.min.css", rel="stylesheet")),
+    singleton(tags$link(href="libs/bootstrap-3.3.4/css/themes/cerulean/bootstrap.min.css", rel="stylesheet")),
+    singleton(tags$script(src="libs/bootstrap-3.3.4/js/bootstrap.min.js", type="text/javascript")),
+    
+    singleton(tags$link(href="libs/highlightjs-8.2/highlight/idea.css", rel="stylesheet")),
+    singleton(tags$script(src="libs/highlightjs-8.2/highlight.pack.js", type="text/javascript")),
+    singleton(tags$link(href="libs/MagnificPopup-0.9.9/magnific-popup.css", rel="stylesheet")),
+    singleton(tags$script(src="libs/MagnificPopup-0.9.9/magnific-popup.js", type="text/javascript")),
+    singleton(tags$link(href="libs/knitrBootstrap-0.0.1/css/knitrBootstrap.css", rel="stylesheet" )),
+    singleton(tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript")),
+    includeHTML("www/bootstrap-script.html")
   )
 
+# Load list of varieties and chromosomes
 load("ShinyStart.rda")
+
+
+# Create variety list popover HTML
+#-------------------------------------------------------------------------------
+library(knitr) # required to create a simple table of output for popover variety list
+library(stringr)
+library(dplyr)
+# HTML for list of varieties, to be placed in the "data-content" position in the popover definition
+ncols <- 4
+blanks <- ceiling(length(varieties)/ncols)*ncols-length(varieties)
+varietyList <- 
+  kable(
+    # Create a matrix of varieties, with 3 varieties to a row, where each column is filled in order
+    # Append blanks to varieties list so that the vector fits into this matrix with no missing values
+    matrix(
+      c(varieties, rep("", blanks)), 
+      ncol=ncols, byrow=F
+    ), 
+    format="html",
+    row.names=F,
+    col.names=rep("", ncols),
+    align="l",
+    padding=2) %>% 
+  # Replace the table header of blank column names with an empty string
+  str_replace(pattern="<thead>.*?</thead>", "") %>%
+  # Replace '"' with '\'' to prevent breaking the string HTML
+  str_replace_all(pattern="\"", replacement="\\\\'")
+varietyListButton <- 
+  # button definition which produces the popover when clicked
+  tagList(
+    tags$div(
+      br(),
+      tags$button(
+        type = "button",
+        class = "btn btn-info btn-small", # this will create a blue button (btn-info) with our css
+        "data-toggle" = "popover",
+        title = "Sequenced Cultivars", # title of popover
+        "data-placement" = "bottom",
+        "data-content" = "insertHTMLhere",
+        "data-trigger" = "click",
+        "data-html" = TRUE,
+        "data-viewport" = list(selector="body > div.container-fluid > div.row", padding=0),
+        "List of Cultivars" # button text
+      ) %>%
+        as.character %>%
+        str_replace("insertHTMLhere", as.character(varietyList)) %>%
+        HTML()
+    )
+  )
+  
+#-------------------------------------------------------------------------------
+
 
 headerDef <- function(){
   tagList(
-    head.scripts,
-    tags$script(
-      'Shiny.addCustomMessageHandler(
+    conditionalPanel(
+      # Load head.scripts after tabs have been loaded to prevent file not found errors
+      condition="!input.tabname==''",
+      head.scripts,    
+      tags$script(
+        'Shiny.addCustomMessageHandler(
                       \'setTab\',
                       function(data) {
                         var nav_ref = \'li a:contains(\\"\' + data + \'\\")\';
                         $(nav_ref).tab(\'show\');
+                      });
+         Shiny.addCustomMessageHandler(
+                      \'javascript\',
+                      function(data) {
+                        eval(data);
                       });'
+      )
     ),
     conditionalPanel(
       # If using reactivity (i.e. not relatedness and SNPs or methodology) include
@@ -135,22 +202,36 @@ headerDef <- function(){
                 condition="input.tabname=='Cultivar-Level SNPs' | input.tabname=='Overview: SNP Locations'",
                 column(
                   width=4,
-                  offset=4,
+                  offset=2,
                   selectizeInput("varieties", "Cultivars of Interest (up to 10)", 
                                  choices=unique(varieties), multiple=TRUE,
                                  options=list(maxItems=10))
                 )
               ),
               conditionalPanel(
+                condition="input.tabname=='Cultivar-Level SNPs' | input.tabname=='Overview: SNP Locations'",
+                column(
+                  width=6,
+                  varietyListButton,
+                  tags$script("$('body button[data-toggle=\"popover\"').popover('toggle').popover('toggle')")
+                )
+              ),
+              conditionalPanel(
                 condition="input.tabname=='Inheritance of SNPs'",
                 column(
-                  width=4,
+                  width=3,
                   offset=1,
                   selectizeInput("variety0", "Cultivar of Interest", 
                                  choices=unique(varieties), multiple=FALSE, 
                                  selected="A.K.")
                 ),
                 column(
+                  width=1,
+                  varietyListButton,
+                  tags$script("$('body button[data-toggle=\"popover\"').popover('toggle').popover('toggle')")
+                ),
+                column(
+                  offset=1,
                   width=3,
                   checkboxInput("ancestors", "Search Ancestors?", value=TRUE),
                   checkboxInput("descendants", "Search Descendants?", value=TRUE)
@@ -275,12 +356,16 @@ SNPKinship <- function(){
 }
 
 methodology <- function(){
+  text <- includeHTML("Documentation.html")
+  header <- str_extract(text, "<head>(.*?)</head>")
+  header <- str_replace_all(header, "</?head>", "") %>%
+    str_replace_all(fixed("libs/bootstrap3-3.2.0"), "libs/bootstrap-3.3.4")
+  
   tabPanel("Methodology", 
            fluidRow(
-             includeHTML("Documentation.html"),
-             tagList(head.scripts)
-             )
+             HTML(text)
            )
+  )
 }
 
 # Define UI for page that allows selection of genetic lines with corresponding facets

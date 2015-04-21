@@ -6,7 +6,6 @@ library(ggenealogy) # required for family tree display
 library(dplyr) # required for table operations throughout the app
 library(reshape2) 
 library(stringr) # required for string operations throughout the app
-library(knitr) # required to create a simple table of output for popover variety list
 
 # End libraries
 #-------------------------------------------------------------------------------
@@ -752,6 +751,5 @@ shinyServer(function(input, output, session) {
       tags$script("var plot = new animint('#plot','animint/plot.json');")
       )
   })
-  
   
 })

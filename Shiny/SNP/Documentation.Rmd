@@ -5,15 +5,30 @@ bibliography: ../Refs.bib
 csl: ../statistics.csl
 output: 
   knitrBootstrap:::bootstrap_document:
-    lib_dir: www/libs
-    toc: true
     theme: cerulean
     highlight: idea
-    theme.chooser: FALSE
-    highlight.chooser: FALSE
     menu: FALSE
     clean_supporting: TRUE
+    custom.header: www/bootstrap-script.html
 ---
+
+```{r setup, echo=FALSE}
+library(knitr)
+library(htmltools)
+# s0 <- knitr::knit_hooks$get('source')
+# knitr::knit_hooks$set(
+#   list(
+#     source=function(x,options){
+#       if(is.null(options$class)) s0(x, options)
+#       else
+#         tags$button(class=c())
+#     }
+#   )
+# )
+# 
+knitr::opts_chunk$set(bootstrap.show.code=FALSE, bootstrap.show.output=FALSE, bootstrap.show.message=FALSE)
+
+```
 
 # Data Collection 
 The data displayed in this applet is derived from 79 lines of soybean next-generation sequencing data. Twenty seeds from each line were acquired from ---. Seeds were planted in the USDA greenhouse at Iowa State University. Once plants reached the trifoliolate stage, leaves from up to 10 plants were pooled and genomic DNA was extracted. DNA was sent to Hudson Alpha Institute for Biotechnology for next-generation sequencing. In addition, replicated field trials were conducted on a subset of lines (30 of the 79 lines, plus ancestral varieties that were not sequenced) to measure protein, oil, yield, and other characteristics under standard growth conditions, to dissociate the effect of on-farm improvements from genetic gain [@specht1984contribution],[@fox2013estimating]. 
@@ -310,5 +325,5 @@ save(snp.density, file="SNPDensity.RData")
 ```
 
 # References
-<div class="references"></div>
+<div class="referencesTarget"></div>
 
