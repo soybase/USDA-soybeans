@@ -1,55 +1,69 @@
+# Libraries required for the app
+#-------------------------------------------------------------------------------
 library(shiny)
-library(ggplot2)
-library(RColorBrewer)
-library(ggenealogy)
-library(dplyr)
-library(reshape2)
-library(stringr)
+library(ggplot2) # required for plots throughout the app
+library(ggenealogy) # required for family tree display
+library(dplyr) # required for table operations throughout the app
+library(reshape2) 
+library(stringr) # required for string operations throughout the app
+library(knitr) # required to create a simple table of output for popover variety list
+
+# End libraries
+#-------------------------------------------------------------------------------
+
+# Supplemental libraries required to modify the app
+#-------------------------------------------------------------------------------
+# library(RColorBrewer) # required for color scheme generation 
+
+# End supplemental libraries
+#-------------------------------------------------------------------------------
+
 
 # Initial datasets
+#-------------------------------------------------------------------------------
+# Data required for this app:
+# - initial lists of varieties and chromosomes (varieties, seqnames)
+# - GlymaIDList:
+#     GlymaIDList is a data table of all GlymaIDs and positions. 
+#     Columns: seqnames, source, feature, gene, start, end, score, strand, frame, 
+#              group (list of attributes), ID (glymaID, with .Wm82.a2.v1 appended),
+#              name (glymaID without thet appended text), Parent (for nested IDs), 
+#              chrnum (raw number), searchstr (lowercase string of the form 00g000000),
+#              and link (HTML link to soybase)
+# - snpList:
+#     snpList is a data table of all SNPs for each variety
+#     Columns: Chromosome, Position, Reference, Alternate, Allele.Freq, Variety, Alt.Allele.Freq, 
+#              Genotype_Probability, Gene_State (0|1), Alt_Allele_Count
+# - Several other summary variables are also required but can be pre-computed from previously mentioned variables
+#   - snpList.GlymaSummary:
+#       snpList.GlymaSummary is a data table which summarizes SNPs by GlymaID
+#       Columns: Chromosome, ID, TotalVarietiesWithSNPs, NumberOfSnps, chrnum, searchstr
+#   - snpList.PositionSummary:
+#       snpList.PositionSummary is a data table summarizing SNPs by position and GlymaID
+#       Columns: Chromosome, Position, ID, Number.of.Varieties, chrnum, searchstr
+#   - snp.counts:
+#       snp.counts is a data frame with the aggregate (population total) 
+#       number of snps at each position with each allele
+#       Columns: Chromosome, Position, Reference, Nucleotide, Count
+#   - snp.density:
+#       snp.density is a data table containing the density of SNPs for each chromosome and variety.
+#       Columns: Chromosome, Variety, x, y
+
 load("ShinyStart.rda")
-
-# Genealogy data and plotting function
-source("plotFamilyTree.R")
-
-# Palette for ATGC data
-pal <- brewer.pal(8, "Paired")[c(1, 2, 7, 8)]
-
-# Function to fix variety names for links
-fixVarieties <- function(x){
-  y <- gsub("PI ?", "PI ", x)
-  y <- gsub("LG ?", "LG ", y)
-  gsub(".", "", gsub(" ", "%20", y, fixed=T), fixed=T)
-}
 
 objlist <- ls()
 if(!"snp.counts"%in%objlist){
-  # snp.counts is a data frame with the aggregate (population total) 
-  # number of snps at each position with each allele
-  # Columns: Chromosome, Position, Reference, Nucleotide, Count
-  
   load("SNPCounts.RData")
   snp.counts <- snp.counts %>% arrange(Chromosome, Position) %>% group_by(Chromosome) 
 }
 
 if(!"GlymaIDList"%in%objlist){
-  # GlymaIDList is a data table of all GlymaIDs and positions. 
-  # Columns: seqnames, source, feature, gene, start, end, score, strand, frame, 
-  #          group (list of attributes), ID (glymaID, with .Wm82.a2.v1 appended),
-  #          name (glymaID without thet appended text), Parent (for nested IDs), 
-  #          chrnum (raw number), searchstr (lowercase string of the form 00g000000),
-  #          and link (HTML link to soybase)
-  
   load("GlymaID.rda")
   idx <- names(GlymaIDList) %in% c("seqnames", "feature", "start", "end", "ID", "numid", "chrnum", "searchstr", "link")
   GlymaIDList <- GlymaIDList[,idx] %>% group_by(chrnum, numid) 
 }
 
 if(!"snpList"%in%objlist){
-  # snpList is a data table of all SNPs for each variety
-  # Columns: Chromosome, Position, Reference, Alternate, Allele.Freq, Variety, Alt.Allele.Freq, 
-  #          Genotype_Probability, Gene_State (0|1), Alt_Allele_Count
-  
   load("snpList.rda")
   snpList <- snpList %>% group_by(Chromosome, Variety)
 }
@@ -61,20 +75,39 @@ if(!"snpList.GlymaSummary"%in%objlist | !"snpList.PositionSummary"%in%objlist){
   snpList.GlymaSummary <- snpList.GlymaSummary %>% group_by(Chromosome, ID)
   snpList.PositionSummary <- snpList.VarietySummary %>% group_by(Chromosome, Position, ID)
   rm(snpList.VarietySummary)
-  
-  # snpList.GlymaSummary is a data table which summarizes SNPs by GlymaID
-  # Columns: Chromosome, ID, TotalVarietiesWithSNPs, NumberOfSnps, chrnum, searchstr
-  
-  # snpList.PositionSummary is a data table summarizing SNPs by position and GlymaID
-  # Columns: Chromosome, Position, ID, Number.of.Varieties, chrnum, searchstr
 }
 
 if(!"snp.density"%in%objlist){
   load("SNPDensity.RData")
-  # snp.density is a data table containing the density of SNPs for each chromosome and variety.
-  # Columns: Chromosome, Variety, x, y
 }
 
+# End of dataset initialization
+#-------------------------------------------------------------------------------
+
+# Initial variables and functions
+#-------------------------------------------------------------------------------
+# Genealogy data and plotting function
+source("plotFamilyTree.R")
+
+# Options for DataTables
+tableoptions <- list(searchDelay=250, pageLength=10)
+
+# Palette for ATGC data
+# pal <- brewer.pal(8, "Paired")[c(1, 2, 7, 8)]
+pal <- c("#A6CEE3", "#1F78B4", "#FDBF6F", "#FF7F00") # output from brewer.pal line
+
+# Function to fix variety names for links
+fixVarieties <- function(x){
+  y <- gsub("PI ?", "PI ", x)
+  y <- gsub("LG ?", "LG ", y)
+  gsub(".", "", gsub(" ", "%20", y, fixed=T), fixed=T)
+}
+
+# End initial variable/function defs
+#-------------------------------------------------------------------------------
+
+# Empty plots with relevant messages
+#-------------------------------------------------------------------------------
 # Plot to show with no GlymaID
 emptyGlymaPlot <- ggplot() + 
   geom_text(aes(x=0, y=0, label="Please enter a glymaID\n\n Note: It may take a minute to process the input")) +         
@@ -91,12 +124,8 @@ invalidGlymaPlot <- ggplot() +
         axis.ticks=element_blank(), 
         axis.title=element_blank())
 
-# Options for DataTables
-tableoptions <- list(searchDelay=250, pageLength=10)
-
-# Data required for this app:
-## snp.df - data frame containing information from the info() and geno() commands applied
-##          to the VCF file. 
+# End empty plots
+#-------------------------------------------------------------------------------
 
 # Define server logic required to generate and plot a subset of varieties with a subset of chromosomes
 shinyServer(function(input, output, session) {
