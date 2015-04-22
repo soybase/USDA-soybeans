@@ -1,21 +1,27 @@
 library(shiny)
+library(knitr) # required to create a simple table of output for popover variety list
+library(stringr)
+library(dplyr)
 
 head.scripts <- 
   tags$head(
     singleton(tags$link(href="shiny.css", rel="stylesheet")),
+    singleton(tags$link(href="libs/bootstrap-3.3.4/css/themes/cerulean/bootstrap.min.css", rel="stylesheet")),
+    # singleton(tags$link(href="libs/bootstrap-3.3.4/css/bootstrap.min.css", rel="stylesheet")),
+    # singleton(tags$script(src="libs/bootstrap-3.3.4/js/bootstrap.min.js", type="text/javascript")),
     
     # Needed for display of the methodology section tab
-    singleton(tags$link(href="libs/bootstrap-3.3.4/css/bootstrap.min.css", rel="stylesheet")),
-    singleton(tags$link(href="libs/bootstrap-3.3.4/css/themes/cerulean/bootstrap.min.css", rel="stylesheet")),
-    singleton(tags$script(src="libs/bootstrap-3.3.4/js/bootstrap.min.js", type="text/javascript")),
+    # singleton(includeHTML("www/knitrBootstrapIncludes.html")),
+    # singleton(tags$script(src="libs/toc.js", type="text/javascript")),
+    singleton(tags$script(src="libs/refs.js", type="text/javascript")),
+    singleton(tags$link(href="libs/knitrBootstrap.css", type="text/javascript")),
     
     singleton(tags$link(href="libs/highlightjs-8.2/highlight/idea.css", rel="stylesheet")),
     singleton(tags$script(src="libs/highlightjs-8.2/highlight.pack.js", type="text/javascript")),
     singleton(tags$link(href="libs/MagnificPopup-0.9.9/magnific-popup.css", rel="stylesheet")),
     singleton(tags$script(src="libs/MagnificPopup-0.9.9/magnific-popup.js", type="text/javascript")),
     singleton(tags$link(href="libs/knitrBootstrap-0.0.1/css/knitrBootstrap.css", rel="stylesheet" )),
-    singleton(tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript")),
-    includeHTML("www/bootstrap-script.html")
+    singleton(tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"))
   )
 
 # Load list of varieties and chromosomes
@@ -24,9 +30,6 @@ load("ShinyStart.rda")
 
 # Create variety list popover HTML
 #-------------------------------------------------------------------------------
-library(knitr) # required to create a simple table of output for popover variety list
-library(stringr)
-library(dplyr)
 # HTML for list of varieties, to be placed in the "data-content" position in the popover definition
 ncols <- 4
 blanks <- ceiling(length(varieties)/ncols)*ncols-length(varieties)
@@ -360,6 +363,7 @@ methodology <- function(){
   header <- str_extract(text, "<head>(.*?)</head>")
   header <- str_replace_all(header, "</?head>", "") %>%
     str_replace_all(fixed("libs/bootstrap3-3.2.0"), "libs/bootstrap-3.3.4")
+  text <- str_replace(text, "<head>(.*?)</head>", "")
   
   tabPanel("Methodology", 
            fluidRow(
