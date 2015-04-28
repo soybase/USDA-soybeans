@@ -463,7 +463,8 @@ shinyServer(function(input, output, session) {
     
     if(nchar(input$glymaID3)>0){
       gid <- id3()$ID
-      res <- snpList.PositionSummary[with(snpList.PositionSummary, Chromosome%in%x & str_detect(ID, gid[1])),]
+      # Bypass chromosome if glymaID is fully specified
+      res <- snpList.PositionSummary[with(snpList.PositionSummary, Chromosome%in%seqnames & str_detect(ID, gid[1])),]
     } else {
       res <- snpList.PositionSummary[with(snpList.PositionSummary, Chromosome%in%x),]
       res <- res[1:min(5000, nrow(res)),]
