@@ -387,11 +387,13 @@ shinyServer(function(input, output, session) {
           need(nrow(x)>0, "Query not found")
         )
         
-        idx <- if(input$tabname!="Aggregated SNPs") which(names(x)%in%glymacols[-c(3:4)]) else which(names(x)%in%glymacols)
+        idx <- ifelse(input$tabname!="Aggregated SNPs", which(names(x)%in%glymacols[-c(3:4)]), which(names(x)%in%glymacols))
         
         y <- x[,idx]
         names(y) <- c("Chr", names(x)[2], "Start", "End", names(x)[5:8], "GlymaID")[idx]
-        y
+        y <- y  %>% transform(Chr = str_replace(Chr, "Chr0?", ""), 
+                              GlymaID=str_replace(GlymaID, ">\\s?Glyma\\.", ">"))
+        y[,ifelse(input$tabname!="Aggregated SNPs", c("Chr", "GlymaID"), c("GlymaID", "Start", "End"))]
       }, message="Making Glyma Table", value=.5)
   })
   
