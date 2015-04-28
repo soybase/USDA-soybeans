@@ -89,7 +89,7 @@ if(!"snp.density"%in%objlist){
 source("plotFamilyTree.R")
 
 # Options for DataTables
-tableoptions <- list(searchDelay=250, pageLength=10)
+tableoptions <- list(searchDelay=250, pageLength=10, sDom='ltir<br>p')
 
 # Palette for ATGC data
 # pal <- brewer.pal(8, "Paired")[c(1, 2, 7, 8)]
@@ -205,20 +205,22 @@ shinyServer(function(input, output, session) {
   
   # Return SNPs for selected varieties
   varsnps <- reactive({
-    id.cur <- id()
-    tmp <- filter(id.cur, shown)
-    
-    chr <- paste0("Chr", substr(tmp$ID, 7, 8))
-    position.min=min(tmp$start)
-    position.max=max(tmp$end)
-    tmplist <- as.data.frame(
-                 filter(snpList, Chromosome == chr) %>%
-                 filter(Position >= position.min & 
-                        Position <= position.max))
-    if(nrow(tmplist)>0 & length(input$varieties)>0){
-      tmplist <- filter(tmplist, Variety%in%input$varieties)
-    }
-    tmplist
+    withProgress({
+      id.cur <- id()
+      tmp <- filter(id.cur, shown)
+      
+      chr <- paste0("Chr", substr(tmp$ID, 7, 8))
+      position.min=min(tmp$start)
+      position.max=max(tmp$end)
+      tmplist <- as.data.frame(
+        filter(snpList, Chromosome == chr) %>%
+          filter(Position >= position.min & 
+                   Position <= position.max))
+      if(nrow(tmplist)>0 & length(input$varieties)>0){
+        tmplist <- filter(tmplist, Variety%in%input$varieties)
+      }
+      tmplist
+    }, message="Retrieving SNPs", value=0)
     })
   
   getRelatives <- reactive({
@@ -228,44 +230,47 @@ shinyServer(function(input, output, session) {
       need(input$gens, 
            "Select the number of generations to search!")
     )
-    
-    relatives <- data.frame(label=input$variety0, gen=0, stringsAsFactors=F)
-    if(input$ancestors){
-      anc <- try(getAncestors(input$variety0, tree, input$gens), silent=T)
-      if(!is.character(anc)){
-        relatives <- rbind(relatives, anc)
-        relatives$gen <- -1*relatives$gen
+    withProgress({
+      relatives <- data.frame(label=input$variety0, gen=0, stringsAsFactors=F)
+      if(input$ancestors){
+        anc <- try(getAncestors(input$variety0, tree, input$gens), silent=T)
+        if(!is.character(anc)){
+          relatives <- rbind(relatives, anc)
+          relatives$gen <- -1*relatives$gen
+        }
       }
-    }
-    if(input$descendants){
-      desc <- try(getDescendants(input$variety0, tree, input$gens), silent=T)
-      if(!is.character(desc)){
-        relatives <- rbind(relatives, desc)
+      if(input$descendants){
+        desc <- try(getDescendants(input$variety0, tree, input$gens), silent=T)
+        if(!is.character(desc)){
+          relatives <- rbind(relatives, desc)
+        }
       }
-    }
-    
-    names(relatives) <- c("Variety", "generation")
-    return(relatives %>% arrange(generation) %>% as.data.frame())
+      
+      names(relatives) <- c("Variety", "generation")
+      return(relatives %>% arrange(generation) %>% as.data.frame())
+    }, message = "Retrieving Relatives", value=0)
   })
   
   # Return SNPs for varieties related to selected variety
   varsnps.genealogy <- reactive({
-    
-    id.cur <- id()
-    tmp <- filter(id.cur, shown)
-    
-    chr <- paste0("Chr", substr(tmp$ID, 7, 8))
-    position.min=min(tmp$start)
-    position.max=max(tmp$end)
-    tmplist <- as.data.frame(
-      filter(snpList, Chromosome == chr) %>%
-      filter(Position >= position.min & Position <= position.max))
-    
-    if(nrow(tmplist)>0){
-      relatives <- getRelatives() %>% filter(Variety%in%varieties)
-      tmplist <- filter(tmplist, Variety%in%relatives$Variety) %>% left_join(relatives)
-    }
-    tmplist
+    withProgress(
+      {
+        id.cur <- id()
+        tmp <- filter(id.cur, shown)
+        
+        chr <- paste0("Chr", substr(tmp$ID, 7, 8))
+        position.min=min(tmp$start)
+        position.max=max(tmp$end)
+        tmplist <- as.data.frame(
+          filter(snpList, Chromosome == chr) %>%
+            filter(Position >= position.min & Position <= position.max))
+        
+        if(nrow(tmplist)>0){
+          relatives <- getRelatives() %>% filter(Variety%in%varieties)
+          tmplist <- filter(tmplist, Variety%in%relatives$Variety) %>% left_join(relatives)
+        }
+        tmplist
+      }, message="Retrieving SNPs", value=0)
   })
   
   # filter snps by chromosome and input location
@@ -302,51 +307,52 @@ shinyServer(function(input, output, session) {
   
   # search for glyma IDs
   id <- reactive({
-    
-    validate(
-      need(!is.null(input$glymaID), "Input part of a glymaID to begin")
-    )
-  
-    if(nchar(input$glymaID)>0){
-      res <- data.frame(GlymaIDList[match(input$glymaID),])
-      if(nrow(res)>0){
-        res$shown <- FALSE
-        res$shown[res$numid[1]==res$numid & res$chrnum[1]==res$chrnum] <- TRUE
-      }      
-    } else {
-      res <- data.frame(seqnames=NULL, start=NULL, end=NULL, ID=NULL, numid=NULL, chrnum=NULL, searchstr=NULL, link=NULL, shown=NULL)
-    }
-    res
+    withProgress({
+      validate(
+        need(!is.null(input$glymaID), "Input part of a glymaID to begin")
+      )
+      if(nchar(input$glymaID)>0){
+        res <- data.frame(GlymaIDList[match(input$glymaID),])
+        if(nrow(res)>0){
+          res$shown <- FALSE
+          res$shown[res$numid[1]==res$numid & res$chrnum[1]==res$chrnum] <- TRUE
+        }      
+      } else {
+        res <- data.frame(seqnames=NULL, start=NULL, end=NULL, ID=NULL, numid=NULL, chrnum=NULL, searchstr=NULL, link=NULL, shown=NULL)
+      }
+      res
+    }, message="Finding Glyma IDs", value=0)
   })
   
   # search for glyma IDs to filter snpList.GlymaSummary
   id3 <- reactive({
-    
-    validate(
-      need(!is.null(input$glymaID3), "Input part of a glymaID to begin")
-    )
-  
-    if(nchar(input$glymaID3)>0){
-      res <- data.frame(GlymaIDList[match(input$glymaID3),])
-    } else {
-      res <- data.frame(seqnames=NULL, start=NULL, end=NULL, ID=NULL, numid=NULL, chrnum=NULL, searchstr=NULL, link=NULL, shown=NULL)
-    }
-    
-    if(length(input$glymaChrs)>0){
-      if(nrow(res)>0){
-        res <- res[res$seqnames%in%input$glymaChrs,]
-      } else {
-        res <- GlymaIDList[GlymaIDList$seqnames%in%input$glymaChrs,]
-      }
-    } 
+    withProgress({
+      validate(
+        need(!is.null(input$glymaID3), "Input part of a glymaID to begin")
+      )
       
-    if(nrow(res)>0){
-      res$shown <- FALSE
-      res$shown[res$numid[1]==res$numid & res$chrnum[1]==res$chrnum] <- TRUE
-    } else {
-      res <- data.frame(seqnames=NULL, start=NULL, end=NULL, ID=NULL, numid=NULL, chrnum=NULL, searchstr=NULL, link=NULL, shown=NULL)
-    }
-    res
+      if(nchar(input$glymaID3)>0){
+        res <- data.frame(GlymaIDList[match(input$glymaID3),])
+      } else {
+        res <- data.frame(seqnames=NULL, start=NULL, end=NULL, ID=NULL, numid=NULL, chrnum=NULL, searchstr=NULL, link=NULL, shown=NULL)
+      }
+      
+      if(length(input$glymaChrs)>0){
+        if(nrow(res)>0){
+          res <- res[res$seqnames%in%input$glymaChrs,]
+        } else {
+          res <- GlymaIDList[GlymaIDList$seqnames%in%input$glymaChrs,]
+        }
+      } 
+      
+      if(nrow(res)>0){
+        res$shown <- FALSE
+        res$shown[res$numid[1]==res$numid & res$chrnum[1]==res$chrnum] <- TRUE
+      } else {
+        res <- data.frame(seqnames=NULL, start=NULL, end=NULL, ID=NULL, numid=NULL, chrnum=NULL, searchstr=NULL, link=NULL, shown=NULL)
+      }
+      res
+    }, message="Finding GlymaIDs", value=0)
   })
   
   
@@ -369,21 +375,24 @@ shinyServer(function(input, output, session) {
   glymacols <- c("seqnames", "link", "start", "end")
   
   glymaTableOutput <- reactive({
-    validate(
-      need(nchar(input$glymaID)>0, "Input a glymaID or partial glymaID to start.")
-    )
-    
-    x <- id()
-    
-    validate(
-      need(nrow(x)>0, "Query not found")
-    )
-    
-    idx <- if(input$tabname!="Aggregated SNPs") which(names(x)%in%glymacols[-c(3:4)]) else which(names(x)%in%glymacols)
-    
-    y <- x[,idx]
-    names(y) <- c("Chr", names(x)[2], "Start", "End", names(x)[5:8], "GlymaID")[idx]
-    y
+    withProgress(
+      {
+        validate(
+          need(nchar(input$glymaID)>0, "Input a glymaID or partial glymaID to start.")
+        )
+        
+        x <- id()
+        
+        validate(
+          need(nrow(x)>0, "Query not found")
+        )
+        
+        idx <- if(input$tabname!="Aggregated SNPs") which(names(x)%in%glymacols[-c(3:4)]) else which(names(x)%in%glymacols)
+        
+        y <- x[,idx]
+        names(y) <- c("Chr", names(x)[2], "Start", "End", names(x)[5:8], "GlymaID")[idx]
+        y
+      }, message="Making Glyma Table", value=.5)
   })
   
   # Output a data table of glyma IDs matching the text box
@@ -403,6 +412,9 @@ shinyServer(function(input, output, session) {
 
       if(nrow(x)>0) {
         x$Variety <- sprintf("<a href='http://www.ars-grin.gov/cgi-bin/npgs/html/acc_list_post.pl?lopi=&hipi=&lono=&hino=&plantid=%s&pedigree=&taxon=%s&family=&cname=&country=&state=&site=%s&acimpt=%s&uniform=%s&recent=anytime&pyears=1&received=&records=100' target='_blank'>%s</a>", fixVarieties(x$Variety), "Glycine%20max", "ALL%20-%20All%20Repositories", "Any%20Status", "Any%20Status", x$Variety)
+        x <- x[,c("Chromosome", "Position", "Reference", "Alternate", "Variety", "Alt_Allele_Count", "Alt_Allele_Freq")]
+        names(x)[3:4] <- c("Ref", "Alt")
+        names(x)[6:7] <- c("Alt Allele Count", "Alt Allele Freq")
         x
       } else {
         data.frame(Result="No SNPs found for query", query=input$glymaID)

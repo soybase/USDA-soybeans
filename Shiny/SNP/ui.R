@@ -340,7 +340,7 @@ SNPDensity <- function(){
 }
 
 SNPSummary <- function(){
-  tabPanel("find a GlymaID", 
+  tabPanel("Find a GlymaID", 
            fluidRow(
              column(width=6, wellPanel(
                helpText("Use the table below to see what GlymaIDs have SNPs on a specific chromosome."),
@@ -378,15 +378,12 @@ shinyUI(
     title="Soybean SNPs", 
     header=headerDef(),
     SNPDensity(), 
+    SNPSummary(),
     navbarMenu(
       "Browse SNPs Visually",
       AggSNPBrowser(),
       VarSNPBrowser(),
       GenealogySNPBrowser()
-    ),
-    navbarMenu(
-      "Locate SNPs",
-      SNPSummary()
     ),
     SNPKinship(),
     methodology(),
