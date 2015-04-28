@@ -89,7 +89,7 @@ if(!"snp.density"%in%objlist){
 source("plotFamilyTree.R")
 
 # Options for DataTables
-tableoptions <- list(searchDelay=250, pageLength=10, sDom='ltir<br>p')
+tableoptions <- list(searchDelay=250, pageLength=10, sDom='lti<br>rp')
 
 # Palette for ATGC data
 # pal <- brewer.pal(8, "Paired")[c(1, 2, 7, 8)]
