@@ -438,7 +438,8 @@ shinyServer(function(input, output, session) {
     
     if(nchar(input$glymaID3)>0){
       gid <- id3()$ID
-      res <- snpList.GlymaSummary[with(snpList.GlymaSummary, Chromosome%in%x & rowSums(sapply(gid, str_detect, string=ID))>0),]
+      matches <- rowSums(sapply(gid, str_detect, string=snpList.GlymaSummary$ID))>0
+      res <- unique(bind_rows(snpList.GlymaSummary[matches,],snpList.GlymaSummary[snpList.GlymaSummary$Chromosome%in%x,] ))
     } else {
       res <- snpList.GlymaSummary[with(snpList.GlymaSummary, Chromosome%in%x),]
     }
