@@ -7,21 +7,21 @@ head.scripts <-
   tags$head(
     singleton(tags$link(href="shiny.css", rel="stylesheet")),
     singleton(tags$link(href="libs/bootstrap-3.3.4/css/themes/cerulean/bootstrap.min.css", rel="stylesheet")),
-    # singleton(tags$link(href="libs/bootstrap-3.3.4/css/bootstrap.min.css", rel="stylesheet")),
-    # singleton(tags$script(src="libs/bootstrap-3.3.4/js/bootstrap.min.js", type="text/javascript")),
+    singleton(tags$link(href="libs/bootstrap-3.3.4/css/bootstrap.min.css", rel="stylesheet")),
+    singleton(tags$script(src="libs/bootstrap-3.3.4/js/bootstrap.min.js", type="text/javascript"))#,
     
     # Needed for display of the methodology section tab
-    # singleton(includeHTML("www/knitrBootstrapIncludes.html")),
+    # singleton(includeHTML("www/knitrBootstrapIncludes.html"))#,
     # singleton(tags$script(src="libs/toc.js", type="text/javascript")),
-    singleton(tags$script(src="libs/refs.js", type="text/javascript")),
-    singleton(tags$link(href="libs/knitrBootstrap.css", type="text/javascript")),
+    # singleton(tags$script(src="libs/refs.js", type="text/javascript"))#,
+    # singleton(tags$link(href="libs/knitrBootstrap.css", type="text/javascript")),
     
-    singleton(tags$link(href="libs/highlightjs-8.2/highlight/idea.css", rel="stylesheet")),
-    singleton(tags$script(src="libs/highlightjs-8.2/highlight.pack.js", type="text/javascript")),
-    singleton(tags$link(href="libs/MagnificPopup-0.9.9/magnific-popup.css", rel="stylesheet")),
-    singleton(tags$script(src="libs/MagnificPopup-0.9.9/magnific-popup.js", type="text/javascript")),
-    singleton(tags$link(href="libs/knitrBootstrap-0.0.1/css/knitrBootstrap.css", rel="stylesheet" )),
-    singleton(tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"))
+    # singleton(tags$link(href="libs/highlightjs-8.2/highlight/idea.css", rel="stylesheet")),
+    # singleton(tags$script(src="libs/highlightjs-8.2/highlight.pack.js", type="text/javascript")),
+    # singleton(tags$link(href="libs/MagnificPopup-0.9.9/magnific-popup.css", rel="stylesheet")),
+    # singleton(tags$script(src="libs/MagnificPopup-0.9.9/magnific-popup.js", type="text/javascript")),
+    # singleton(tags$link(href="libs/knitrBootstrap-0.0.1/css/knitrBootstrap.css", rel="stylesheet" )),
+    # singleton(tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"))
   )
 
 # Load list of varieties and chromosomes
