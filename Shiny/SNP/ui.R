@@ -3,6 +3,16 @@ library(knitr) # required to create a simple table of output for popover variety
 library(stringr)
 library(dplyr)
 
+# Shiny unexported function
+`%AND%` <- function (x, y) {
+  if (!is.null(x) && !is.na(x)) 
+    if (!is.null(y) && !is.na(y)) 
+      return(y)
+  return(NULL)
+}
+
+#------- Head Scripts ------
+
 head.scripts <- 
   tags$head(
     singleton(tags$link(href="shiny.css", rel="stylesheet")),
@@ -24,9 +34,11 @@ head.scripts <-
     # singleton(tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"))
   )
 
+#--------- Load Data ------
+
 # Load list of varieties and chromosomes
 load("ShinyStart.rda")
-
+#-----
 
 # Create variety list popover HTML
 #-------------------------------------------------------------------------------
@@ -72,16 +84,36 @@ varietyListButton <-
         HTML()
     )
   )
-  
+
+helpButton <- function(label="?", popTitle = "Title", text="Help text", style=""){
+  # button definition which produces a help popover when clicked
+  tagList(
+    tags$button(
+      type = "button",
+      class = "btn btn-xs", # this will create a button 
+      "data-toggle" = "popover",
+      title = popTitle, # title of popover
+      "data-placement" = "right",
+      "data-content" = text,
+      "data-trigger" = "click",
+      "data-html" = TRUE,
+      "data-viewport" = list(selector="body .container-fluid .row .well", padding=0),
+      style = style,
+      label # button text
+    ) 
+  )
+}
+
 #-------------------------------------------------------------------------------
 
 
 headerDef <- function(){
   tagList(
+#-------
     conditionalPanel(
       # Load head.scripts after tabs have been loaded to prevent file not found errors
       condition="!input.tabname==''",
-      head.scripts,    
+      head.scripts,   
       tags$script(
         'Shiny.addCustomMessageHandler(
                       \'setTab\',
@@ -94,48 +126,60 @@ headerDef <- function(){
                       function(data) {
                         eval(data);
                       });'
-      )
-    ),
+      ) # End custom message handler
+    ), # End conditional panel for script loading
+#-------
     conditionalPanel(
       # If using reactivity (i.e. not relatedness and SNPs or methodology) include
       # a header for inputs
       condition="!(input.tabname=='Methodology' | input.tabname=='Relatedness and SNPs')",
       fluidRow(
+        style="margin-left:0px;margin-right:0px",
         column(
-          width=5, offset=1,
+          #-------
+          width=6, 
           # Left wellpanel: 
           # Position information (chromosome or GlymaID)
           wellPanel(
             fluidRow(
+              style="margin-left:0px;margin-right:0px",
               conditionalPanel(
                 condition="input.tabname=='Aggregated SNPs' | input.tabname=='Cultivar-Level SNPs' | input.tabname=='Inheritance of SNPs'",
                 column(
                   width=4,
+                  style="padding:0px;",
                   h4("GlymaID navigation"),
-                  helpText("Ex: 01g004700 will search Chr 01 for IDs containing 004700")
+                  helpText("Ex: 01g004700 searches Chr 01 for ID 004700")
                 ),
                 column(
                   width=4,
-                  textInput("glymaID", "Locate Position by Glyma ID", value="01g004700")
+                  div(class = "form-group shiny-input-container", 
+                      "Navigate by GlymaID" %AND% 
+                        tags$label("Navigate by GlymaID", `for` = "glymaID"), 
+                      helpButton(
+                        label = "?", 
+                        popTitle = "Navigate by GlymaID", 
+                        text = "<p>Enter a GlymaID to navigate to that region of a specific chromosome. </p> The table on the left will show matching GlymaIDs for partial entries.",
+                        style="float:right"),
+                      div(
+                        tags$input(
+                          id = "glymaID", type = "text", 
+                          class = "form-control", value = "01g004700", style="width:100%;"),
+                        style="padding-right:.5em;overflow:hidden;"
+                      )
+                  )
                 )
               ),
               conditionalPanel(
                 condition="input.tabname=='Aggregated SNPs'",
                 column(
-                  width=4,
-                  numericInput("bases", "# downstream SNPs (up to 50)", 
+                  width=3,
+                  numericInput("bases", "# SNPs shown", 
                                value=20, min=5, max=50, step=5)
                 )
               ),
               conditionalPanel(
-                condition="input.tabname=='Cultivar-Level SNPs'",
-                column(
-                  width=4,
-                  helpText("The table on the left will show matching GlymaIDs for partial entries.")
-                )
-              ),
-              conditionalPanel(
-                condition="input.tabname=='find a GlymaID'",
+                condition="input.tabname=='Find a GlymaID'",
                 column(
                   width=6,
                   helpText("Select one or more chromosomes. The first table will show the number of SNP sites for each glymaID on the chromosome.")
@@ -143,58 +187,74 @@ headerDef <- function(){
               ),
               conditionalPanel(
                 condition="input.tabname=='Overview: SNP Locations'",
-                column(width=3,
+                column(width=6,
                        helpText("Select one or more chromosomes to see the distribution of SNPs."))
               ),
               conditionalPanel(
-                condition="input.tabname=='find a GlymaID' | input.tabname=='Overview: SNP Locations'",
+                condition="input.tabname=='Find a GlymaID' | input.tabname=='Overview: SNP Locations'",
                 column(
-                  width=4,
+                  width=6,
                   selectizeInput("glymaChrs", "Show Chromosome(s)", 
                                  choices=unique(seqnames), selected="Chr01", multiple=TRUE, options=list(maxItems=5))
                 )
               )
             )
           )
-        ),
+        ), # End first column definition
         column(
-          width=5,
+          width=6,
           # Right wellPanel
           # Variety information 
           # or manual navigation for aggregate browser
           wellPanel(
             fluidRow(
+              style="margin-left:0px;margin-right:0px",
               conditionalPanel(
                 condition="input.tabname=='Aggregated SNPs'",
                 column(
-                  width=3,
+                  width=4,
+                  style="padding:0px;",
                   h4("Manual navigation"),
-                  helpText("Choose Chromosome and position")
+                  helpText("Choose chromosome and position")
                 ),
                 column(
-                  width=3,
+                  width=4,
                     selectInput("locationChrs", "Choose Chromosome",  
                                 choices=unique(seqnames), selected="Chr01", 
                                 multiple=FALSE, selectize=T)
                 ),
                 column(
-                  width=2,
-                  helpText("Enter a numeric start point")
-                ),
-                column(
                   width=4,
-                  textInput("chrStart", "Start point", value=0)
+                  div(class = "form-group shiny-input-container", 
+                      "Start point" %AND% 
+                        span(
+                          tags$label("Start point", `for` = "chrStart"), 
+                          helpButton(
+                            label="?", 
+                            popTitle = "Chromosome Start Point", 
+                            text="Enter a numeric start point on the Chromosome")
+                        ),
+                        tags$input(id = "chrStart", type = "text", 
+                                   class = "form-control", value = 0)
+                  )
                 )
               ),
               conditionalPanel(
-                condition="input.tabname=='find a GlymaID'",
+                condition="input.tabname=='Find a GlymaID'",
                 column(
-                  width=2,
-                  helpText("Input a glyma ID such as 01g004700")
-                ),
-                column(
-                  width=4,
-                  textInput("glymaID3", "View SNP sites within a GlymaID", value="01g004700")
+                  width=6,
+                  div(class = "form-group shiny-input-container", 
+                      "View SNPs within a GlymaID" %AND% 
+                        span(
+                          tags$label("View SNPs within a GlymaID", `for` = "glymaID3"), 
+                          helpButton(
+                            label = "?", 
+                            popTitle = "Help", 
+                            text = "Input a glyma ID such as 01g004700")
+                        ),
+                      tags$input(id = "glymaID3", type = "text", 
+                                 class = "form-control", value = "01g004700")
+                  )
                 ),
                 column(
                   width=6,
@@ -204,8 +264,7 @@ headerDef <- function(){
               conditionalPanel(
                 condition="input.tabname=='Cultivar-Level SNPs' | input.tabname=='Overview: SNP Locations'",
                 column(
-                  width=4,
-                  offset=2,
+                  width=8,
                   selectizeInput("varieties", "Cultivars of Interest (up to 10)", 
                                  choices=unique(varieties), multiple=TRUE,
                                  options=list(maxItems=10))
@@ -214,7 +273,7 @@ headerDef <- function(){
               conditionalPanel(
                 condition="input.tabname=='Cultivar-Level SNPs' | input.tabname=='Overview: SNP Locations'",
                 column(
-                  width=6,
+                  width=4,
                   varietyListButton,
                   tags$script("$('body button[data-toggle=\"popover\"').popover('toggle').popover('toggle')")
                 )
@@ -223,25 +282,23 @@ headerDef <- function(){
                 condition="input.tabname=='Inheritance of SNPs'",
                 column(
                   width=3,
-                  offset=1,
-                  selectizeInput("variety0", "Cultivar of Interest", 
+                  selectizeInput("variety0", "Show Cultivar", 
                                  choices=unique(varieties), multiple=FALSE, 
-                                 selected="A.K.")
+                                 selected="A3127")
                 ),
                 column(
-                  width=1,
+                  width=3,
                   varietyListButton,
                   tags$script("$('body button[data-toggle=\"popover\"').popover('toggle').popover('toggle')")
                 ),
                 column(
-                  offset=1,
-                  width=3,
-                  checkboxInput("ancestors", "Search Ancestors?", value=TRUE),
-                  checkboxInput("descendants", "Search Descendants?", value=TRUE)
+                  width=4,
+                  checkboxInput("ancestors", "Show Ancestors", value=TRUE),
+                  checkboxInput("descendants", "Show Descendants", value=TRUE)
                 ),
                 column(
                   width=2,
-                  numericInput("gens", "# Generations", value=2, min=1, max=4)
+                  numericInput("gens", "Generations", value=2, min=1, max=4)
                 )
               )
             )
@@ -264,7 +321,7 @@ AggSNPBrowser <- function(){
                     )
              ),
              column(width=9, 
-                    plotOutput("AggregatePlot", width="100%", height="400px"),
+                    plotOutput("AggregatePlot", width="100%", height="500px"),
                     tagList(
                       tags$table(
                         style="border:0px solid;background-color:#ffffff;",
@@ -306,7 +363,7 @@ VarSNPBrowser <- function(){
                     dataTableOutput("glymaTable2")
              ),
              column(width=9, 
-                    plotOutput("VarietySnpPlot", width="95%", height="400px"),
+                    plotOutput("VarietySnpPlot", height="500px"),
                     br(),
                     h3("Matching SNPs"),
                     dataTableOutput("snpTable")
@@ -323,7 +380,7 @@ GenealogySNPBrowser <- function(){
              column(width=3, 
                     h3("Genealogy"),
                     plotOutput("GenealogyTree", width="100%", height="450px"),
-                    helpText("SNP data is available for cultivars shown in black.")
+                    helpText("Data is available for cultivars shown in black.")
              ),
              column(width=9, 
                     plotOutput("GenealogySnpPlot", width="100%", height="550px")
@@ -377,7 +434,7 @@ shinyUI(
   navbarPage(
     title="Soybean SNPs", 
     header=headerDef(),
-    SNPDensity(), 
+    SNPDensity(),
     SNPSummary(),
     navbarMenu(
       "Browse SNPs Visually",
