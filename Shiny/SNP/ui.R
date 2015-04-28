@@ -306,7 +306,7 @@ VarSNPBrowser <- function(){
                     dataTableOutput("glymaTable2")
              ),
              column(width=9, 
-                    plotOutput("VarietySnpPlot", width="100%", height="800px"),
+                    plotOutput("VarietySnpPlot", width="95%", height="400px"),
                     br(),
                     h3("Matching SNPs"),
                     dataTableOutput("snpTable")
@@ -322,11 +322,11 @@ GenealogySNPBrowser <- function(){
            fluidRow(
              column(width=3, 
                     h3("Genealogy"),
-                    plotOutput("GenealogyTree", width="100%", height="600px"),
+                    plotOutput("GenealogyTree", width="100%", height="450px"),
                     helpText("SNP data is available for cultivars shown in black.")
              ),
              column(width=9, 
-                    plotOutput("GenealogySnpPlot", width="100%", height="800px")
+                    plotOutput("GenealogySnpPlot", width="100%", height="550px")
              )
            )
   )
@@ -335,7 +335,7 @@ GenealogySNPBrowser <- function(){
 SNPDensity <- function(){
   tabPanel(
     "Overview: SNP Locations", 
-    fluidRow(plotOutput("DensityPlot", width="100%", height="800px"))
+    fluidRow(plotOutput("DensityPlot", width="100%", height="550px"))
   )
 }
 
