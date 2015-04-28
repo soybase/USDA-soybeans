@@ -170,7 +170,7 @@ In the plot above, Harosoy and Corsoy are obviously related (Corsoy is Harosoy's
 The first plot shown above provides the genealogical link between any two related varieties; the shortest path was calculated using the phyViz package. The second plot shows the relationship between generational distance and SNP distance; as the number of generations increases, the SNP distance increases (the maximum SNP distance is 2). The third plot shows the SNP distance between the two varieties as a function of SNP Distance; lower SNP distance is associated with a lower yield difference, but higher SNP distance does not necessarily indicate a large difference in yield. Clicking on any point in the two scatterplots will highlight the associated varieties on the linked heatmaps, and the shortest path between the two varieties will also be displayed. 
 
 # Materials and Methods
-
+<!--- 
 ## Other Visualization Software 
  * SegAnnDB - Visualizing Breakpoints for CNV modeling - http://bioinformatics.oxfordjournals.org/content/30/11/1539 - Toby Hocking's pet project - interactive visualization of breakpoints. 
  * Nature Methods Overview of Genomic Data Visualization    
@@ -186,7 +186,8 @@ Includes several visualizations similar to those included in the CNV app. The vi
     * Doesn't intuitively display the entire chromosome
     * Integrates with other databases (as we should probably integrate with Soybase)
     * Rather unintuitive. 
-    
+
+ 
 ## Animint    
 @animint    
 Not specific to biology, but designed with bioinformatics visualization as a primary application.
@@ -195,14 +196,11 @@ Not specific to biology, but designed with bioinformatics visualization as a pri
   * Data all has to be loaded into browser memory - unwieldly for large or extremely complex datasets
   * Allows interactivity
   * Can be used within other applications (shiny bindings, rmarkdown)
-
+ --->
 ## Shiny: an extensible, interactive, web-based framework for data visualization
-
-Explain interactivity, server backend, advantage of serving up data over the web. 
-
 Displaying large data sets over the web using Shiny applets and interactive javascript plots requires that we carefully consider the computational and bandwidth requirements of each section and feature of the applet. This section describes the problems we encountered during the applet construction process, and the solutions we found to be most helpful in resolving the issue. 
 
-One issue common to both applets was the difference between data shared between sessions and data loaded within each session. When multiple users are connected to the same applet, if data is shared between the users, the second user to connect has a nearly-instantaneous applet loading time (compared to a several-second period as the data is loaded if each user must re-load the data). Sharing data between sessions does require that no session modify the data (so all operations on the data set must be stored in temporary variables and computed on the fly). 
+One issue common to both applets was the difference between data shared between sessions and data loaded within each session. When multiple users are connected to the same applet, if data is shared between the users, the second user to connect has a nearly-instantaneous applet loading time (compared to a several-second period as the data is loaded if each user must re-load the data). Sharing data between sessions does require that no session modify the data (so all operations on the data set must be stored in temporary variables and computed on the fly). This adds some additional computational burden, but reduces loading time for additional users who connect to the applet. 
 
 ## CNV Applet
 
@@ -250,8 +248,8 @@ McKenna, A. et al., 2010. The Genome Analysis Toolkit: A MapReduce framework for
 [GenealogyTab]:GenealogyTab.png
 [SNPdiagram]:SNPdiagram.png
 [SNPAggregateBrowser]:SNPAggregateBrowser.png
-[SNPCountsByID]:SNPCountsByID.png
-[SNPCountsByID1]:SNPCountsByID1.png
+[SNPCountsByID]:SNPCountsByID1.png
+[SNPCountsByID1]:SNPCountsByID.png
 [SNPVarietyBrowser]:SNPVarietyBrowser.png
 [SNPVarietyBrowser1]:SNPVarietyBrowser1.png
 [SNPDensity]:SNPDensity.png
