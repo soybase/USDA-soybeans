@@ -230,7 +230,7 @@ matrixLong.snp$ymax <- as.numeric(matrixLong.snp$variety2)+.5
 
 p1 <- ggplot() +
   theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.x=element_blank(), axis.line=element_blank()) + 
-  theme_animint(width=750, height=750) + 
+  theme_animint(width=500, height=500) + 
   geom_tile(data=matrixLong.snp, aes(x=as.numeric(variety1), y=as.numeric(variety2), fill=value, color=value, clickSelects=Varieties)) + 
   geom_segment(aes(xend=xmin, x=xmin, 
                    y=.5, yend=max(as.numeric(variety2))+.5, showSelected=Varieties), data=matrixLong.snp, chunk_vars=character()) + 
@@ -290,7 +290,7 @@ segmentPaths <- ddply(kevinbaconPaths, .(Varieties,variety1), function(df){
 })
 
 p3 <- ggplot() + 
-  theme_animint(width=750, height=400) +
+  theme_animint(width=400, height=400) +
   geom_segment(aes(x=x, y=y, xend=xend, yend=yend, 
                    showSelected=Varieties), 
                chunk_vars=character(), data=segmentPaths, fill="grey", colour="grey") + 
@@ -348,7 +348,7 @@ matrixLong$ymax <- as.numeric(matrixLong$variety2)+.5
 
 p2 <- ggplot() +
   theme(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.x=element_blank(), axis.line=element_blank()) + 
-  theme_animint(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.x=element_blank(), width=750, height=750) + 
+  theme_animint(axis.text.x=element_blank(), axis.ticks.x=element_blank(), axis.title.x=element_blank(), width=500, height=500) + 
   geom_tile(data=matrixLong, aes(x=as.numeric(variety1), y=as.numeric(variety2), fill=value, color=value, clickSelects=Varieties)) + 
   geom_segment(aes(xend=xmin, x=xmin, 
                    y=.5, yend=max(as.numeric(variety2))+.5, showSelected=Varieties), data=matrixLong, chunk_vars=character()) + 
