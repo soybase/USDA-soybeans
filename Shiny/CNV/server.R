@@ -2,6 +2,7 @@ library(shiny)
 library(ggplot2)
 library(RColorBrewer)
 library(plyr)
+library(dplyr)
 library(reshape2)
 
 # Data required for this app:
@@ -35,7 +36,13 @@ load("GlymaIDs.rda")
 load("ShinyStart.rda")
 source("SelectGeneology.R")
 names(glymaIDs)[8:9] <- c("ID.old", "IDName")
-glymaIDs$ID <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s' target='_blank'>%s</a>", glymaIDs$IDName, glymaIDs$IDName)
+
+fixGlymaID <- function(x){
+  x %>% gsub(pattern="Parent=", replacement="") %>%
+    gsub(pattern=".\\d.Wm82.a2.v1", replacement="")
+}
+glymaIDs$ID <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s' target='_blank'>%s</a>", 
+                       fixGlymaID(glymaIDs$IDName), fixGlymaID(glymaIDs$IDName))
 fixVarieties <- function(x){
   y <- gsub("PI ?", "PI ", x)
   y <- gsub("LG ?", "LG ", y)
