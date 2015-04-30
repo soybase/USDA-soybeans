@@ -1,4 +1,9 @@
 library(shiny)
+library(dplyr)
+library(magrittr)
+library(stringr)
+library(knitr)
+
 # Load Chromosome names and varieties
 load("ShinyStart.rda")
 # Sort varieties and chromosomes
@@ -9,30 +14,118 @@ cnvtypes <- c("gene", "CDS", "mRNA", "exon")
 
 yield.btn <- tags$button(
   onClick="changeAll([\'yield\', \'protein\', \'oil\']);", 
-  class="btn btn-info", 'Show/Hide')
+  class="btn btn-info btn-xs", 'Show/Hide')
 
 seedinfo.btn <- tags$button(
   onClick="changeAll([\'maturity\', \'lodging\', \'seedsize\', 
                       \'seedquality\', \'plcount\']);", 
-  class="btn btn-info", 'Show/Hide')
+  class="btn btn-info btn-xs", 'Show/Hide')
 
 pairwise.btn <- tags$button(
   onClick="changeAll([\'yieldOil\', \'yieldProtein\', \'proteinOil\']);", 
-  class="btn btn-info", 'Show/Hide')
+  class="btn btn-info btn-xs", 'Show/Hide')
+
+#------- Head Scripts ------
+head.scripts <- 
+  tags$head(
+    singleton(tags$style(type="text/css", "a[data-value='Copy Number Variation'] {font-size:18px; line-height:20px; height:50px;}")),
+    singleton(tags$link(href="shiny.css", rel="stylesheet")),
+    singleton(tags$link(href="libs/bootstrap-3.3.4/css/themes/cerulean/bootstrap.min.css", rel="stylesheet")),
+    singleton(tags$link(href="libs/bootstrap-3.3.4/css/bootstrap.min.css", rel="stylesheet")),
+    singleton(tags$script(src="libs/bootstrap-3.3.4/js/bootstrap.min.js", type="text/javascript")),
+    singleton(tags$script(type="text/javascript", charset="utf8", src="//cdn.datatables.net/1.10.3/js/jquery.dataTables.js")),
+    singleton(tags$link(rel="stylesheet", type="text/css", href="//cdn.datatables.net/1.10.3/css/jquery.dataTables.css"))
+  )
+#--------------------------------------------------------------------------------
+
+# Create variety list popover HTML
+#-------------------------------------------------------------------------------
+# HTML for list of varieties, to be placed in the "data-content" position in the popover definition
+ncols <- 4
+blanks <- ceiling(length(varieties)/ncols)*ncols-length(varieties)
+varietyList <- 
+  kable(
+    # Create a matrix of varieties, with 4 varieties to a row, where each column is filled in order
+    # Append blanks to varieties list so that the vector fits into this matrix with no missing values
+    matrix(
+      c(varieties, rep("", blanks)), 
+      ncol=ncols, byrow=F
+    ), 
+    format="html",
+    row.names=F,
+    col.names=rep("", ncols),
+    align="l",
+    padding=2) %>% 
+  # Replace the table header of blank column names with an empty string
+  gsub(pattern="<thead>.*?</thead>", replacement = "") %>%
+  # Replace '"' with '\'' to prevent breaking the string HTML
+  str_replace_all(pattern="\"", replacement="\\\\'")
+varietyListButton <- 
+  # button definition which produces the popover when clicked
+  tagList(
+    tags$div(
+      br(),
+      tags$button(
+        type = "button",
+        class = "btn btn-info btn-xs", # this will create a blue button (btn-info) with our css
+        "data-toggle" = "popover",
+        container = ".well",
+        style="width:100%",
+        title = "Sequenced Varieties", # title of popover
+        "data-placement" = "bottom",
+        "data-content" = "insertHTMLhere",
+        "data-trigger" = "click",
+        "data-html" = TRUE,
+        "data-viewport" = list(selector="body > div.container-fluid > div.row", padding=0),
+        "Variety List" # button text
+      ) %>%
+        as.character %>%
+        str_replace("insertHTMLhere", as.character(varietyList)) %>%
+        HTML()
+    )
+  )
+#--------------------------------------------------------------------------------
+
+helpButton <- function(label="?", popTitle = "Title", text="Help text", style=""){
+  # button definition which produces a help popover when clicked
+  tagList(
+    tags$button(
+      type = "button",
+      class = "btn btn-xs", # this will create a button 
+      "data-toggle" = "popover",
+      title = popTitle, # title of popover
+      "data-placement" = "right",
+      "data-content" = text,
+      "data-trigger" = "click",
+      "data-html" = TRUE,
+      "data-viewport" = list(selector="body .container-fluid .row .well", padding=0),
+      style = style,
+      label # button text
+    ) 
+  )
+}
+#--------------------------------------------------------------------------------
 
 header <- {
   wellPanel(
     class="well-sm",
-    tags$script(
-      'Shiny.addCustomMessageHandler(
-        \'setTab\',
-        function(data) {
-          var nav_ref = \'li a:contains(\\"\' + data + \'\\")\';
-          $(nav_ref).tab(\'show\');
-        });'
-    ),
-    tags$head(
-      tags$style(type="text/css", "a[data-value='Copy Number Variation'] {font-size:18px; line-height:20px; height:50px;}")
+    conditionalPanel(
+      # Load head.scripts after tabs have been loaded to prevent file not found errors
+      condition="!input.tabname==''",
+      head.scripts,   
+      tags$script(
+        'Shiny.addCustomMessageHandler(
+                      \'setTab\',
+                      function(data) {
+                        var nav_ref = \'li a:contains(\\"\' + data + \'\\")\';
+                        $(nav_ref).tab(\'show\');
+                      });
+         Shiny.addCustomMessageHandler(
+                      \'javascript\',
+                      function(data) {
+                        eval(data);
+                      });'
+      ) # End custom message handler
     ),
     fluidRow(
       # Overview Tab
@@ -43,11 +136,11 @@ header <- {
       # Phenotype Tab
       conditionalPanel(condition="input.tabname=='Field Trials'",
                        column(3, helpText("Click on data points in the plot to see field trial data.")),
-                       column(3, h6("Yield, Protein, and Oil by Year"), yield.btn),
-                       column(3, h6("More Field Trial Data by Year"), 
+                       column(3, h5("Yield, Protein, and Oil by Year"), yield.btn),
+                       column(3, h5("More Field Trial Data by Year"), 
                               tags$small('Maturity, Lodging, Seeds'), 
                               seedinfo.btn),
-                       column(3, h6("Yield, Protein, Oil Pairwise Plots"), pairwise.btn)                     
+                       column(3, h5("Yield, Protein, Oil Pairwise Plots"), pairwise.btn)                     
       ),
       
       # Methodology Tab
@@ -67,8 +160,10 @@ header <- {
                               input.tabname!='by Location'",
                  tagList(
                    tags$table(width='100%',
+                              style="border:0px solid;",
                               tags$tr(
-                                tags$td(style="text-align:center;",
+                                style="border:0px solid;",
+                                tags$td(style="text-align:center;border:0px solid;",
                                         actionButton("resetButton", "Clear Selections")
                                 )
                               )
@@ -80,10 +175,12 @@ header <- {
                                 input.tabname!='by Location')",
                  tagList(
                    tags$table(width='100%',
+                              style="border:0px solid;",
                               tags$tr(
-                                tags$td(style="text-align:left;",
+                                style="border:0px solid;",
+                                tags$td(style="text-align:left;border:0px solid;",
                                         actionButton("resetButton", "Clear Selections")),
-                                tags$td(style="text-align:right;",
+                                tags$td(style="text-align:right;border:0px solid;",
                                         conditionalPanel(
                                           condition="input.tabname=='by Variety'",
                                           downloadButton("DataFrameDownload", 
@@ -97,7 +194,11 @@ header <- {
                                 )
                               ),
                               tags$tr(
-                                tags$td(colspan=2, br(), helpText("Use the Search field above the table to filter by Glyma ID."))
+                                style="border:0px solid;",
+                                tags$td(
+                                  style="border:0px solid;",
+                                  colspan=2, br(), 
+                                  helpText("Use the Search field above the table to filter by Glyma ID."))
                               )
                    )
                  )
@@ -137,18 +238,39 @@ header <- {
                conditionalPanel(condition="input.tabname!='by Location'", 
                                 helpText("Type the name of the variety or click on the text box for options")),
                
+              
                # Variety Selectize Input
                conditionalPanel(condition="input.tabname!='Genealogy' & 
                                              input.tabname!='by Location'", 
-                                div(
-                                  selectizeInput("varieties", "Choose Varieties", varieties, NULL, multiple=TRUE), 
-                                  display="inline-table", align="center")),
+                                fluidRow(
+                                  column(
+                                    8, 
+                                    div(
+                                      selectizeInput("varieties", 
+                                                     "Choose Varieties", 
+                                                     varieties, NULL, multiple=TRUE), 
+                                      display="inline-table", align="center")
+                                  ), 
+                                  column(
+                                    4,
+                                    varietyListButton,
+                                    tags$script("$('body button[data-toggle=\"popover\"').popover('toggle').popover('toggle')"))
+                                )),
                
                # Variety Selectize Input (Genealogy Tab)
-               conditionalPanel(condition="input.tabname=='Genealogy'",  
-                                div(
-                                  selectizeInput("genvarieties", "Choose Varieties", varieties, NULL, multiple=TRUE), 
-                                  display="inline-table", align="center")),
+               conditionalPanel(condition="input.tabname=='Genealogy'",
+                                fluidRow(
+                                  column(
+                                    8, 
+                                    div(
+                                      selectizeInput("genvarieties", "Choose Varieties", varieties, NULL, multiple=TRUE), 
+                                      display="inline-table", align="center")
+                                  ), 
+                                  column(
+                                    4,
+                                    varietyListButton,
+                                    tags$script("$('body button[data-toggle=\"popover\"').popover('toggle').popover('toggle')"))
+                                )), 
                
                # Chromosome Slider (Search CNVs by Location Tab)
                conditionalPanel(condition="input.tabname=='by Location'", 
@@ -197,6 +319,20 @@ copyNumber <- function(){
                        lighter lines indicate lower copy number."))
 }
 
+methodology <- function(){
+  text <- includeHTML("Documentation.html")
+  header <- str_extract(text, "<head>(.*?)</head>")
+  header <- str_replace_all(header, "</?head>", "") %>%
+    str_replace_all(fixed("libs/bootstrap3-3.2.0"), "libs/bootstrap-3.3.4")
+  text <- str_replace(text, "<head>(.*?)</head>", "")
+  
+  tabPanel("Methodology", 
+           fluidRow(
+             HTML(text)
+           )
+  )
+}
+
 # Define UI for page that allows selection of genetic lines with corresponding facets
 navbarPage(
   title="", 
@@ -210,7 +346,7 @@ navbarPage(
     ),
   tabPanel("Field Trials", uiOutput("YieldInfo")),
   tabPanel("Genealogy", plotOutput("FamilyTree", width="100%", height=600)),
-  tabPanel("Methodology", includeHTML("Documentation.html")),
+  methodology(),
   header=header,
   id="tabname", 
   inverse=T,
