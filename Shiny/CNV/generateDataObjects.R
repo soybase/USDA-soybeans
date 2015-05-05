@@ -1,12 +1,13 @@
+#---- Packages ------------------------------------------------------------------
 # library(BiocInstaller)
 # library(cn.mops)
-
 
 # to generate animint plots:
 # --------------------------
 # library(devtools)
 # install_github("tdhock/ggplot2") # required for theme_animint
 # install_github("tdhock/animint") 
+
 library(ggplot2)
 library(animint)
 
@@ -16,9 +17,15 @@ library(plyr)
 
 library(doMC)
 registerDoMC(8)
+#--------------------------------------------------------------------------------
 
+#---- Setup--- ------------------------------------------------------------------
 
 setwd("~/Programming/Rprojects/USDAsoybeans/Shiny/CNV")
+
+#--------------------------------------------------------------------------------
+
+#---- CNV Data Objects-----------------------------------------------------------
 
 # cn.mops data files now compiled on server. All we have to do is load them.
 # To get cn.mops run on the server, use 
@@ -141,7 +148,10 @@ save(varieties, seqnames, file="ShinyStart.rda")
 save(glymaIDs, segranges.df, segranges.df2, chr.summary, file="ChrPlot.rda")
 save(glymaIDs, file="GlymaIDs.rda")
 
-########################## Geneological information ############################
+#--------------------------------------------------------------------------------
+
+#---- Genealogy Data Objects-----------------------------------------------------
+
 tree <- read.csv("soybeanGenealogy.csv", stringsAsFactors=FALSE)
 # tree <- melt(tree2, id.vars=c(1, 4:7), measure.vars=2:3, variable.name="parent.type", value.name="parent")
 # load("tree.rda")
@@ -175,8 +185,9 @@ rm(tmp)
 
 save(tree, file="tree.rda")
 # rm("tree2")
+#--------------------------------------------------------------------------------
 
-############################# Yield information ################################
+#---- Field Trials: Animint Plots -----------------------------------------------
 yield <- read.csv("CombinedFieldTrialsData.csv", stringsAsFactors=FALSE)
 yield$Cultivar <- gsub("AK", "A.K.", yield$Cultivar)
 load("tree.rda")
@@ -384,6 +395,11 @@ animint2dir(plot.list=list(yield=yieldplot,
                           proteinOil=proteinOil),
            out.dir="./www/fieldtrials", open.browser=FALSE, css.file="www/styles.css")
 
+# Remove index.html file since it causes issues with webdav
+file.remove("./www/fieldtrials/index.html")
+#--------------------------------------------------------------------------------
+
+#---- Overview Animint Plots-----------------------------------------------------
 
 load("ChrPlot.rda")
 load("GlymaIDs.rda")
@@ -535,6 +551,8 @@ animint2dir(list(overview=overview,
                  first=list(seqnames="Chr01", Variety=c("Dunfield","IA3023"))),
             out.dir="./www/overview", open.browser=FALSE, css.file="www/styles.css")
 
+# Remove index.html file since it causes issues with webdav
 file.remove("./www/overview/index.html")
-file.remove("./www/fieldtrials/index.html")
+#--------------------------------------------------------------------------------
+
 save.image(file="ShinyData.RData")

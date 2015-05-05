@@ -1,17 +1,28 @@
+#---- Packages-------------------------------------------------------------------
 library(stringr)
 library(reshape2)
-library(animint)
-library(ggplot2)
-library(doMC)
-registerDoMC()
+library(tidyr)
 library(plyr)
 library(dplyr)
+
+# to generate animint plots:
+# --------------------------
+# library(devtools)
+# install_github("tdhock/ggplot2") # required for theme_animint
+# install_github("tdhock/animint") 
+library(animint)
+library(ggplot2)
 library(grid)
 
+library(doMC)
+registerDoMC()
+#--------------------------------------------------------------------------------
 
+#---- Setup----------------------------------------------------------------------
+setwd("~/Programming/Rprojects/USDAsoybeans/Shiny/SNP")
+#--------------------------------------------------------------------------------
 
-setwd("~/Documents/R Projects/Soybeans/Shiny/SNP")
-
+#---- SNP Data Formatting--------------------------------------------------------
 # Correct column names
 col.names <- c("Chromosome", "Position", "id", "Reference", "Alternate", 
                "qual", "filter", "Allele.Freq", "AlleleRSquared", "DosageRSquared",
@@ -75,20 +86,15 @@ snp <- snpList %>% ungroup %>% group_by(Chromosome, Position, Reference) %>%
          T = T + (Reference=="T")*(2*n-total)) 
 snp <- snp[,1:7]
 
-
-# library(reshape2)
-# snp2 <- as.data.frame(snp)
-# snp.counts <- melt(snp2, id.vars=1:4, value.name="Count", variable.name="Nucleotide") %>% arrange(Chromosome, Position)
-
-library(tidyr)
 snp.counts <- snp %>% gather(Nucleotide, Count, 4:7)
 snp.counts <- filter(snp.counts, Count>0)
 save(snp.counts, file="SNPCounts.RData")
 
 rm(chr.summary, snp, snp.counts, snp.density, snpList, vcfTable)
 gc()
+#--------------------------------------------------------------------------------
 
-
+#---- GlymaID Data Formatting----------------------------------------------------
 ## Gmax Annotation
 segments.full <- read.table(file="./Gmax_275_Wm82.a2.v1.gene_exons.gff3", sep="\t")
 names(segments.full) <- c("seqname", "source", "feature", "start", "end", "score", "strand", "frame", "group")
@@ -119,46 +125,55 @@ uniqueSNPs <- snpList %>%
   select(Chromosome, Position) %>% 
   unique()
 
-# combine unique snps with glymaIDs if the snp falls within an identified glymaID range
+### combine unique snps with glymaIDs if the snp falls within an identified glymaID range
+### Uncomment to re-run, otherwise load the data below
+#   snpGlymaFull <- uniqueSNPs %>% rowwise() %>%
+#     do(data.frame(., ID = str_replace(paste(filter(GlymaIDList, seqnames%in%.$Chromosome & start <=.$Position & end >=.$Position)$ID, collapse=", "), ", $", ""), stringsAsFactors=F))
+#   names(snpGlymaFull)[3] <- "ID"
+#   tmp <- subset(snpGlymaFull, str_detect(snpGlymaFull$ID, ", "))
+#   tmp2 <- tidyr::extract(tmp, ID, into=c("ID.1", "ID.2", "ID.3"), regex="(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1), (Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1, )?(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1)")
+#   tmp2$ID.2 <- gsub(", ", "", tmp2$ID.2)
+#   tmp2 <- melt(tmp2, id.vars=1:2, value.name = "ID", variable.name = "var")
+#   tmp2 <- tmp2[nchar(tmp2$ID)>0,c("Chromosome", "Position", "ID")]
+#   snpGlymaFull <- filter(snpGlymaFull, !str_detect(snpGlymaFull$ID, ", "))
+#   snpGlymaFull <- rbind(snpGlymaFull, tmp2) %>% arrange(Chromosome, Position) %>% unique()
+#   save(snpGlymaFull, file="./GlymaIDsnps.rda")
+#   rm(tmp, tmp2)
 
-# snpGlymaFull <- uniqueSNPs %>% rowwise() %>%
-#   do(data.frame(., ID = str_replace(paste(filter(GlymaIDList, seqnames%in%.$Chromosome & start <=.$Position & end >=.$Position)$ID, collapse=", "), ", $", ""), stringsAsFactors=F))
-# names(snpGlymaFull)[3] <- "ID"
-# tmp <- subset(snpGlymaFull, str_detect(snpGlymaFull$ID, ", "))
-# tmp2 <- tidyr::extract(tmp, ID, into=c("ID.1", "ID.2", "ID.3"), regex="(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1), (Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1, )?(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1)")
-# tmp2$ID.2 <- gsub(", ", "", tmp2$ID.2)
-# tmp2 <- melt(tmp2, id.vars=1:2, value.name = "ID", variable.name = "var")
-# tmp2 <- tmp2[nchar(tmp2$ID)>0,c("Chromosome", "Position", "ID")]
-# snpGlymaFull <- filter(snpGlymaFull, !str_detect(snpGlymaFull$ID, ", "))
-# snpGlymaFull <- rbind(snpGlymaFull, tmp2) %>% arrange(Chromosome, Position) %>% unique()
-# save(snpGlymaFull, file="./GlymaIDsnps.rda")
-# rm(tmp, tmp2)
 load("./GlymaIDsnps.rda")
-GlymaIDSNPs <- filter(snpGlymaFull, ID!="")
-GlymaIDSNPs <- left_join(snpList, GlymaIDSNPs) %>% group_by(Chromosome, Position, ID) %>% select(ID, Chromosome, Position, Variety, Gene_State)
-GlymaIDSNPs$ID <- gsub("\\.Wm82\\.a2\\.v1", "", GlymaIDSNPs$ID)
-save(GlymaIDSNPs, file="./GlymaSNPFullList.rda")
+
+### Merge with GlymaIDs
+### Uncomment to re-run, otherwise load the data below
+# GlymaIDSNPs <- filter(snpGlymaFull, ID!="")
+# GlymaIDSNPs <- left_join(snpList, GlymaIDSNPs) %>% group_by(Chromosome, Position, ID) %>% select(ID, Chromosome, Position, Variety, Gene_State)
+# GlymaIDSNPs$ID <- gsub("\\.Wm82\\.a2\\.v1", "", GlymaIDSNPs$ID)
+# save(GlymaIDSNPs, file="./GlymaSNPFullList.rda")
 
 load("./GlymaSNPFullList.rda")
-# Summarize snps by number of Varieties at that position
+
+### Summarize snps by number of Varieties at that position
 snpList.VarietySummary <- GlymaIDSNPs %>% group_by(Chromosome, Position, ID) %>% dplyr::summarise(nvars=length(unique(Variety))) 
 names(snpList.VarietySummary)[4] <- "Number.of.Varieties"
 snpList.VarietySummary <- left_join(snpList.VarietySummary, GlymaIDList[,c("ID", "link", "chrnum", "searchstr")])
 snpList.VarietySummary$ID[is.na(snpList.VarietySummary$ID)] <- "No Match"
 snpList.VarietySummary$link[is.na(snpList.VarietySummary$link)] <- "No Match"
 
-# Summarize snps by number of sites assoc. with each glymaID
+### Summarize snps by number of sites assoc. with each glymaID
 snpList.GlymaSummary <- GlymaIDSNPs %>% group_by(Chromosome, ID)%>% select(Variety, Position) %>% dplyr::summarize(Number.of.Varieties=length(unique(Variety)), Number.of.SNP.Sites=length(unique(Position)))
 snpList.GlymaSummary <- left_join(snpList.GlymaSummary, GlymaIDList[,c("ID", "link", "chrnum", "searchstr")])
 snpList.GlymaSummary$ID[is.na(snpList.GlymaSummary$ID)] <- "No Match"
 snpList.GlymaSummary$link[is.na(snpList.GlymaSummary$link)] <- "No Match"
 save(snpList.VarietySummary, snpList.GlymaSummary, file="./GlymaSNPsummary.rda")
 
+# Clean up
 rm(snpGlymaFull, uniqueSNPs, GlymaIDSNPs)
 rm(GlymaIDList, segments.full, segments)
 gc()
+
 # 
-# ########################## Geneological information ############################
+#--------------------------------------------------------------------------------
+
+#---- Geneological information---------------------------------------------------
 tree2 <- read.csv("soybean_ped.csv", stringsAsFactors=FALSE)
 tree <- melt(tree2, id.vars=c(1, 4:7), measure.vars=2:3, variable.name="parent.type", value.name="parent")
 tree$year[tree$child=="IA 3023"] <- 2003
@@ -174,8 +189,11 @@ tree$year[tree$child=="IA 3023"] <- 2003
 
 save(tree, file="tree.rda")
 rm("tree2")
+#--------------------------------------------------------------------------------
 
-# ############################## Kinship By SNPs ###############################
+#---- Kinship Animint Plots------------------------------------------------------
+
+### Kinship By SNPs ###
 tmp <- read.csv("kinshipMatrix.txt", sep="\t", skip=1, head=F, stringsAsFactors=F)
 names(tmp) <- c("Variety", tmp[,1])
 
@@ -252,7 +270,7 @@ p1 <- ggplot() +
   geom_segment(data=ggdendro::segment(ddata_x), aes(x=y*dendro.multiplier+80, y=x, xend=yend*dendro.multiplier+80, yend=xend), inherit.aes=F) + 
   geom_text(data=matrixLong.snp, aes(x=40, y=-3, label=paste0(Varieties, " = ", round(value, 3)), showSelected=Varieties), size=14, chunk_vars=character())
 
-# ########################### Kinship By Family Tree ############################
+### Kinship By Family Tree ###
 load("./tree-large.rda")
 tree.large <- tree
 load("tree.rda")
@@ -268,7 +286,7 @@ names(kevinbacon) <- c("variety1", "variety2", "degree")
 names(kevinbaconPaths) <- c("variety1", "variety2", "vertex", "year", "order", "degree")
 
 
-# ############################## Plot shortest path ##############################
+### Plot shortest path ###
 
 # fix missing years
 kevinbaconPaths$year[kevinbaconPaths$vertex=="PI 88.788"] <- 1930
@@ -305,7 +323,7 @@ p3 <- ggplot() +
   ggtitle("Shortest Path between Varieties")
 
 
-# ########################### Plot Heatmap of Gen Dist ###########################
+### Plot Heatmap of Generational Dist ###
 
 # Create matrix of values for similarity matrix
 meanMatrix <- acast(kevinbacon, variety1 ~ variety2, value.var="degree")
@@ -369,7 +387,7 @@ p2 <- ggplot() +
   geom_segment(data=ggdendro::segment(ddata_x2), aes(x=y*dendro.multiplier2+length(row.ord2)+1, y=x, xend=yend*dendro.multiplier2+length(row.ord2)+1, yend=xend), inherit.aes=F) + 
   geom_text(data=matrixLong, aes(x=40, y=-3, label=paste0(Varieties, " = ", value, " generations apart"), showSelected=Varieties), size=14, chunk_vars=character())
 
-# ############ Association between Different Relatedness Measures ##############
+### Association between Different Relatedness Measures ###
 
 AllVars <- merge(kevinbacon, matrixLong.snp[,c("variety1", "variety2", "value", "Varieties")])
 AllVars$degree.jit <- jitter(AllVars$degree, amount=.4)  
@@ -395,7 +413,7 @@ p4 <- ggplot() +
   ggtitle("Generations and SNP Distance")
 
 
-# ########################## SNPs By Field Trial Data ###########################
+### SNPs By Field Trial Data ###
 
 fieldtrials <- read.csv("CombinedFieldTrialsData.csv", header=T, stringsAsFactors=FALSE)
 fieldtrials$Cultivar <- str_replace(fieldtrials$Cultivar, "IA 3023", "IA3023")
@@ -437,6 +455,6 @@ plotSet <- list(heatmap=p1, kinshipHeatmap=p2, kinship=p3, rel=p4, yield=p5)
 save(plotSet, p1, p2, p3, p4, p5, AllVars, fieldtrialsmatrix, matrixLong, matrixLong.snp, col.ord, col.ord2, dd.col, dd.col2, dd.row, dd.row2, ddata_x, ddata_x2, ddata_y, ddata_y2, rownames, row.ord, row.ord2, segmentPaths, kevinbaconPaths, dendro.multiplier, dendro.multiplier2, file="animintData.rda")
 
 animint2dir(plotSet, out.dir="www/animint", open.browser = F)
+#--------------------------------------------------------------------------------
 
-
-#save.image(file="ShinyData.RData")
+save.image(file="ShinyData.RData")
