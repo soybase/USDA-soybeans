@@ -15,10 +15,15 @@ library(dplyr)
 
 head.scripts <- 
   tags$head(
-    singleton(tags$link(href="shiny.css", rel="stylesheet")),
-    singleton(tags$link(href="libs/bootstrap-3.3.4/css/themes/cerulean/bootstrap.min.css", rel="stylesheet")),
-    singleton(tags$link(href="libs/bootstrap-3.3.4/css/bootstrap.min.css", rel="stylesheet")),
-    singleton(tags$script(src="libs/bootstrap-3.3.4/js/bootstrap.min.js", type="text/javascript"))#,
+#     singleton(tags$script(type="text/javascript", charset="utf8", src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js")),
+#     singleton(tags$script(type="text/javascript", charset="utf8", src="http://cdn.datatables.net/1.10.3/js/jquery.dataTables.js")),
+#     singleton(tags$link(rel="stylesheet", type="text/css", href="http://cdn.datatables.net/1.10.3/css/jquery.dataTables.css")),
+#     singleton(tags$link(href="libs/bootstrap-3.3.4/css/themes/cerulean/bootstrap.min.css", rel="stylesheet")),
+#     singleton(tags$link(href="libs/bootstrap-3.3.4/css/bootstrap.min.css", rel="stylesheet")),
+    singleton(tags$script("$('.dropdown-toggle').dropdown()", type="text/javascript")),
+    singleton(tags$script(src="libs/bootstrap-3.3.4/js/bootstrap.min.js", type="text/javascript")),
+    
+    singleton(tags$link(href="shiny.css", rel="stylesheet"))
     
     # Needed for display of the methodology section tab
     # singleton(includeHTML("www/knitrBootstrapIncludes.html"))#,
@@ -275,7 +280,7 @@ headerDef <- function(){
                 column(
                   width=4,
                   varietyListButton,
-                  tags$script("$('body button[data-toggle=\"popover\"').popover('toggle').popover('toggle')")
+                  tags$script("$('body button[data-toggle=\"popover\"]').popover('toggle').popover('toggle');")
                 )
               ),
               conditionalPanel(
@@ -289,7 +294,7 @@ headerDef <- function(){
                 column(
                   width=3,
                   varietyListButton,
-                  tags$script("$('body button[data-toggle=\"popover\"').popover('toggle').popover('toggle')")
+                  tags$script("$('body button[data-toggle=\"popover\"]').popover('toggle').popover('toggle');")
                 ),
                 column(
                   width=4,
@@ -444,6 +449,7 @@ shinyUI(
     ),
     SNPKinship(),
     methodology(),
+    singleton(tags$script("$('.dropdown-toggle').dropdown()", type="text/javascript")),
     inverse=TRUE,
     id="tabname"
   )
