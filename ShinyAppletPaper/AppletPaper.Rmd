@@ -230,6 +230,9 @@ The two applets have been constructed to integrate with existing databases; at t
 
 > Might be useful to link to GRIN in the genealogy tabs...?
 
+*** Fig numbering
+*** How references are included
+
 # References
 McKenna, A. et al., 2010. The Genome Analysis Toolkit: A MapReduce framework for analyzing next-generation DNA sequencing data. Genome research, 20(9), pp.1297–1303.
 <!--- Picture References --->
