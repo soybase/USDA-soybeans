@@ -4,6 +4,7 @@ library(reshape2)
 library(tidyr)
 library(plyr)
 library(dplyr)
+library(readr)
 
 # to generate animint plots:
 # --------------------------
@@ -24,35 +25,74 @@ setwd("~/Programming/Rprojects/USDAsoybeans/Shiny/SNP")
 
 #---- SNP Data Formatting--------------------------------------------------------
 # Correct column names
-col.names <- c("Chromosome", "Position", "id", "Reference", "Alternate", 
-               "qual", "filter", "Allele.Freq", "AlleleRSquared", "DosageRSquared",
-               "Variety", "Alt_Allele_Freq", "Genotype_Probability", "Gene_State")
+# col.names <- c("Chromosome", "Position", "id", "Reference", "Alternate", 
+#                "qual", "filter", "Allele.Freq", "AlleleRSquared", "DosageRSquared",
+#                "Variety", "Alt_Allele_Freq", "Genotype_Probability", "Gene_State")
+col.names <- c(CHROM="Chromosome", POS="Position", REF="Reference", ALT="Alternate", 
+               AF="Allele.Freq", SAMPLE="Variety", DS="Gene_State", GP="Genotype_Probability", GT="Alt_Allele_Freq")
+# col.names <- c("Chromosome", "Position", "id", "Reference", "Alternate", 
+#                "qual", "Allele.Freq", "Variety", "Alt_Allele_Freq", "Genotype_Probability", "Gene_State")
 # Read in the data from the TSV
-vcfTable <- read.table("MeanPlus0p150SDimputed.tsv", sep="\t", stringsAsFactors=FALSE, header=TRUE)
-names(vcfTable) <- col.names
-
-
-vcfTable$Alt_Allele_Count <- round(vcfTable$Alt_Allele_Freq)
-
-varieties <- as.character(unique(vcfTable$Variety))
-seqnames <- unique(vcfTable$Chromosome[grepl("Chr", vcfTable$Chromosome)])
-
-
-# remove scaffolds for now to make display easier
-vcfTable <- filter(vcfTable, grepl("Chr", Chromosome))
-
-# Change names according to Jim's suggestions.
-vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("901-G04_RS_5601T"), "5601T")
-vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("901-G06_RS_Bonus"), "Bonus")
-vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("RS_"), "")
-vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("AK_004"), "A.K.")
-vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("Clark_NuGEN"), "Clark")
-vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("NCRaleigh"), "Raleigh")
-
-
-snpList <- vcfTable[,c(1, 2, 4, 5, 8, 11, 12, 13, 14, 15)] %>% group_by(Chromosome, Variety)
+# vcfTable <- read.table("MeanPlus0p150SDimputed.tsv", sep="\t", stringsAsFactors=FALSE, header=TRUE)
+# 
+# filename <- "combined_variants_r2_sorted_filtered_SNPs.HetFiltered.h.nodups.phasedandimputed1000.recode.vanderplas.frmt"
+# nlines <- 46350961 # system(paste0("wc -l ", filename))
+# idx <- floor(seq(2, nlines, length.out=21))
+# 
+# nmax.d <- diff(idx)
+# nmax.d[length(nmax.d)] <- -1
+# 
+# vcfTable <- data.frame()
+# for(i in 1:length(nmax.d)){
+#   tmp <- read_tsv(filename, col_types="ci_cc__c__cccd", col_names=col.names, skip=idx[i]-1, n_max=nmax.d[i], progress=F) %>% 
+#     filter(nchar(Gene_State)<6)
+#   vcfTable <- bind_rows(vcfTable, tmp)
+#   rm(tmp)
+#   gc()
+#   message(paste0(round(i*100/length(nmax.d)), "% finished"))
+# }
+# # vcfTable <- read_tsv("combined_variants_r2_sorted_filtered_SNPs.HetFiltered.h.nodups.phasedandimputed.tsv", col_types="cicccddcccc", col_names=col.names, skip=1:1.5e8)
+# 
+# vcfTable$Allele.Freq <- as.numeric(vcfTable$Allele.Freq)
+# # vcfTable$Alt_Allele_Count <- round(vcfTable$Alt_Allele_Freq)
+# vcfTable$Alt_Allele_Count <- round(vcfTable$Alt_Allele_Freq)
+# 
+# # remove scaffolds for now to make display easier
+# vcfTable <- filter(vcfTable, grepl("Chr", Chromosome))
+# 
+# # Change names according to Jim's suggestions.
+# vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("901-G04_RS_5601T"), "5601T")
+# vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("901-G06_RS_Bonus"), "Bonus")
+# vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("RS_"), "")
+# vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("AK_004"), "A.K.")
+# vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("AK-004-I04"), "A.K.")
+# vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("Clark_NuGEN"), "Clark")
+# vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("mguisler.Clark"), "Clark (NAM)")
+# vcfTable$Variety <- str_replace(vcfTable$Variety, fixed("NCRaleigh"), "Raleigh")
+# 
+# varieties <- as.character(unique(vcfTable$Variety))
+# seqnames <- unique(vcfTable$Chromosome[grepl("Chr", vcfTable$Chromosome)])
+# 
+# 
+# snpList <- vcfTable[,c(1, 2, 4, 5, 8, 11, 12, 13, 14, 15)] %>% group_by(Chromosome, Variety)
+snpList <- vcfTable %>% group_by(Chromosome, Variety)
 snpList <- filter(snpList, Alt_Allele_Freq>0)
 save(snpList, file="snpList.rda")
+
+# Clean up
+rm(col.names, i, idx, nmax.d, vcfTable)
+load("snpList.rda")
+
+fixVarieties <- function(x){
+  x %>% str_replace(fixed("901-G04_RS_5601T"), "5601T") %>% 
+    str_replace(fixed("901-G06_RS_Bonus"), "Bonus") %>% 
+    str_replace(fixed("RS_"), "") %>% 
+    str_replace(fixed("AK_004"), "A.K.") %>% 
+    str_replace(fixed("AK-004-I04"), "A.K.") %>% 
+    str_replace(fixed("Clark_NuGEN"), "Clark") %>% 
+    str_replace(fixed("mguisler.Clark"), "Clark (NAM)") %>% 
+    str_replace(fixed("NCRaleigh"), "Raleigh")
+}
 
 nsnips <- snpList%>% group_by(Chromosome, Position) %>% summarize(n=length(Position))
 nsnips <- nrow(nsnips)
@@ -96,27 +136,28 @@ gc()
 
 #---- GlymaID Data Formatting----------------------------------------------------
 ## Gmax Annotation
-segments.full <- read.table(file="./Gmax_275_Wm82.a2.v1.gene_exons.gff3", sep="\t")
-names(segments.full) <- c("seqname", "source", "feature", "start", "end", "score", "strand", "frame", "group")
-segments <- segments.full
-# keep non-scaffold segments
-segments <- filter(segments.full, !grepl("scaffold", seqname))
-names(segments)[1] <- "seqnames"
-segments$seqnames <- gsub("Gm", "Chr", segments$seqnames)
-segments$group <- as.character(segments$group)
-segments$ID <- str_extract(segments$group, "ID=[^;]*;{1,}?") %>% str_replace_all("(ID=)|(;)", "")
-segments$Name <- str_extract(segments$group, "Name=[^;]*;{1,}?") %>% str_replace_all("(Name=)|(;)", "")
-segments$Parent <- str_extract(segments$group, "Parent=[^;]*;{1,}?") %>% str_replace_all("(Parent=)|(;)", "")
-
-GlymaIDList <- filter(segments, feature=="gene")
-GlymaIDList$numid <- gsub("G", "", str_extract(GlymaIDList$ID, "G[[:digit:]]+{6}"))
-GlymaIDList$chrnum <- gsub("Chr", "", GlymaIDList$seqnames)
-GlymaIDList$searchstr <- gsub("[Gg]lyma", "", gsub("[wW]m82a2v1", "", gsub(".", "", tolower(GlymaIDList$ID), fixed=TRUE)))
-GlymaIDList$ID <- gsub("\\.Wm82\\.a2\\.v1", "", GlymaIDList$ID[!is.na(GlymaIDList$ID)])
-GlymaIDList$link <- "No Matching GlymaID"
-GlymaIDList$link[!is.na(GlymaIDList$ID)] <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s' target='_blank'>%s</a>", GlymaIDList$ID[!is.na(GlymaIDList$ID)], GlymaIDList$ID[!is.na(GlymaIDList$ID)])
-
-save(GlymaIDList, file="./GlymaID.rda")
+# segments.full <- read.table(file="./Gmax_275_Wm82.a2.v1.gene_exons.gff3", sep="\t")
+# names(segments.full) <- c("seqname", "source", "feature", "start", "end", "score", "strand", "frame", "group")
+# segments <- segments.full
+# # keep non-scaffold segments
+# segments <- filter(segments.full, !grepl("scaffold", seqname))
+# names(segments)[1] <- "seqnames"
+# segments$seqnames <- gsub("Gm", "Chr", segments$seqnames)
+# segments$group <- as.character(segments$group)
+# segments$ID <- str_extract(segments$group, "ID=[^;]*;{1,}?") %>% str_replace_all("(ID=)|(;)", "")
+# segments$Name <- str_extract(segments$group, "Name=[^;]*;{1,}?") %>% str_replace_all("(Name=)|(;)", "")
+# segments$Parent <- str_extract(segments$group, "Parent=[^;]*;{1,}?") %>% str_replace_all("(Parent=)|(;)", "")
+# 
+# GlymaIDList <- filter(segments, feature=="gene")
+# GlymaIDList$numid <- gsub("Glyma", "", str_extract(GlymaIDList$ID, "G[[:digit:]]{6}"))
+# GlymaIDList$chrnum <- gsub("Chr", "", GlymaIDList$seqnames)
+# GlymaIDList$searchstr <- gsub("[Gg]lyma", "", gsub("[wW]m82a2v1", "", gsub(".", "", tolower(GlymaIDList$ID), fixed=TRUE)))
+# GlymaIDList$ID <- gsub("\\.Wm82\\.a2\\.v1", "", GlymaIDList$ID[!is.na(GlymaIDList$ID)])
+# GlymaIDList$link <- "No Matching GlymaID"
+# GlymaIDList$link[!is.na(GlymaIDList$ID)] <- sprintf("<a href='http://www.soybase.org/sbt/search/search_results.php?category=FeatureName&version=Glyma2.0&search_term=%s' target='_blank'>%s</a>", GlymaIDList$ID[!is.na(GlymaIDList$ID)], GlymaIDList$ID[!is.na(GlymaIDList$ID)])
+# 
+# save(GlymaIDList, file="./GlymaID.rda")
+load("GlymaID.rda")
 
 
 # get list of unique snp sites
@@ -131,14 +172,16 @@ uniqueSNPs <- snpList %>%
 #     do(data.frame(., ID = str_replace(paste(filter(GlymaIDList, seqnames%in%.$Chromosome & start <=.$Position & end >=.$Position)$ID, collapse=", "), ", $", ""), stringsAsFactors=F))
 #   names(snpGlymaFull)[3] <- "ID"
 #   tmp <- subset(snpGlymaFull, str_detect(snpGlymaFull$ID, ", "))
-#   tmp2 <- tidyr::extract(tmp, ID, into=c("ID.1", "ID.2", "ID.3"), regex="(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1), (Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1, )?(Glyma\\.\\d{2}G\\d{6}\\.Wm82.a2.v1)")
-#   tmp2$ID.2 <- gsub(", ", "", tmp2$ID.2)
-#   tmp2 <- melt(tmp2, id.vars=1:2, value.name = "ID", variable.name = "var")
-#   tmp2 <- tmp2[nchar(tmp2$ID)>0,c("Chromosome", "Position", "ID")]
-#   snpGlymaFull <- filter(snpGlymaFull, !str_detect(snpGlymaFull$ID, ", "))
-#   snpGlymaFull <- rbind(snpGlymaFull, tmp2) %>% arrange(Chromosome, Position) %>% unique()
-#   save(snpGlymaFull, file="./GlymaIDsnps.rda")
-#   rm(tmp, tmp2)
+#   if(nrow(tmp)>0){
+#     tmp2 <- tidyr::extract(tmp, ID, into=c("ID.1", "ID.2", "ID.3"), regex="(Glyma\\.\\d{2}G\\d{6})(, Glyma\\.\\d{2}G\\d{6})?, (Glyma\\.\\d{2}G\\d{6})")
+#     tmp2$ID.2 <- gsub(", ", "", tmp2$ID.2)
+#     tmp2 <- melt(tmp2, id.vars=1:2, value.name = "ID", variable.name = "var")
+#     tmp2 <- tmp2[nchar(tmp2$ID)>0,c("Chromosome", "Position", "ID")]
+#     snpGlymaFull <- filter(snpGlymaFull, !str_detect(snpGlymaFull$ID, ", "))
+#     snpGlymaFull <- rbind(snpGlymaFull, tmp2) %>% arrange(Chromosome, Position) %>% unique()
+#   }
+# save(snpGlymaFull, file="./GlymaIDsnps.rda")
+# rm(tmp, tmp2)
 
 load("./GlymaIDsnps.rda")
 
@@ -150,6 +193,8 @@ load("./GlymaIDsnps.rda")
 # save(GlymaIDSNPs, file="./GlymaSNPFullList.rda")
 
 load("./GlymaSNPFullList.rda")
+
+GlymaIDSNPs$Variety <- fixVarieties(GlymaIDSNPs$Variety)
 
 ### Summarize snps by number of Varieties at that position
 snpList.VarietySummary <- GlymaIDSNPs %>% group_by(Chromosome, Position, ID) %>% dplyr::summarise(nvars=length(unique(Variety))) 
@@ -455,6 +500,7 @@ plotSet <- list(heatmap=p1, kinshipHeatmap=p2, kinship=p3, rel=p4, yield=p5)
 save(plotSet, p1, p2, p3, p4, p5, AllVars, fieldtrialsmatrix, matrixLong, matrixLong.snp, col.ord, col.ord2, dd.col, dd.col2, dd.row, dd.row2, ddata_x, ddata_x2, ddata_y, ddata_y2, rownames, row.ord, row.ord2, segmentPaths, kevinbaconPaths, dendro.multiplier, dendro.multiplier2, file="animintData.rda")
 
 animint2dir(plotSet, out.dir="www/animint", open.browser = F)
+rm("www/animint/index.html")
 #--------------------------------------------------------------------------------
 
 save.image(file="ShinyData.RData")
