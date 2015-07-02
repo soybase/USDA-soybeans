@@ -33,7 +33,7 @@ DNA sequencing libraries were prepared using TruSeq DNA sample prep and NuGENs u
 The replicated field trials were conducted on 30 of the 79 lines, and another 138 ancestral varieties that were not sequenced, to measure protein, oil, yield, and several other characteristics, under standardized growth conditions, to dissociate the effect of on-farm improvements from genetic gain [@specht1984contribution],[@fox2013estimating]. 
 
 
-Following sequencing, the data for each of the 79 genotypes were aligned to the Glycine max version 2 genome assembly [@schmutz2010genome] [@phytozome10] using GSNAP (version 2013-8-31) [@wu2010fast] with default parameters except for the number of mismatches was set to 10% of the read to allow for read alignments of highly divergent soybean sequences to the Williams 82 line.  samtools[@li2009sequence] was used to convert uniquely mapping reads to the BAM format. Picard-tools (version 1.8.1) was used to add a read group to each line (AddOrReplaceReadGroups).  Optical duplicates were removed using picard-tools (MarkDuplicates). Reads were realigned using the RealignerTargetCreator and IndelRealigner functions in GATK (McKenna et al. 2010).
+Following sequencing, the data for each of the 79 genotypes were aligned to the Glycine max version 2 genome assembly [@schmutz2010genome] [@phytozome10] using GSNAP (version 2013-8-31) [@wu2010fast] with default parameters except for the number of mismatches was set to 10% of the read to allow for read alignments of highly divergent soybean sequences to the Williams 82 line.  samtools[@li2009sequence] was used to convert uniquely mapping reads to the BAM format. Picard-tools (version 1.8.1) was used to add a read group to each line (AddOrReplaceReadGroups).  Optical duplicates were removed using picard-tools (MarkDuplicates). Reads were realigned using the RealignerTargetCreator and IndelRealigner functions in GATK [@mckenna2010genome].
 <!--- Read groups were added for each soybean line and duplicate reads were removed using `AddOrReplaceReadGroups` and `MarkDuplicates` functions in [picard tools](http://picard.sourceforge.net). The resulting alignment BAM files were realigned using `IndelRealigner` function in [GATK](https://www.broadinstitute.org/gatk/) [@mckenna2010genome].  The `ReduceReads` function was used to compress the alignment files by removing non-informative and redundant reads (default parameters except for downsample_coverage=1).  ---> 
 
 cn.mops [@cnmops] was run on sequences from 79 soybean cultivars; due to computational limitations (and to provide some internal verification), cn.mops was performed separately on each genetic feature of interest defined in the genome annotation (CDS, gene, mRNA, and exons). This modification allowed us to detect copy number variation in individual exons, as well as gene duplication events. @stuparStructure found significant CNV activity on several soybean chromosomes using 4 different cultivars; this experiment vastly expands the number of cultivars and thus can detect CNVs with more power and in more cultivars. 
@@ -75,13 +75,13 @@ SNPs can be associated with phenotypic traits using genome-wide association, but
 
 # Basic Usage
 
-There are three apps that have been constructed to address different components of the analysis: CNV, SNP, genealogy. The apps can be accessed from the [soybase web site](http://www.soybase.org). 
+There are three apps that have been constructed to address different components of the analysis: CNV, SNP, genealogy. The apps can be accessed from the [http://www.soybase.org](http://www.soybase.org). 
 
 ## Copy Number Variation
 * Describe different tabs in the applet, explaining the CNV methodology in minimal detail? Discuss the inclusion of genetic data and phenotype information (for reference purposes). 
 * Discuss design considerations to deal with data size: dplyr, preprocessing data, drawing CNV=2 as the default to reduce drawn objects
 
-The CNV Shiny applet ([Applet Link](http://gsoja.agron.iastate.edu:3838/CNV/)) contains several different tabs, which allow users to filter, manipulate, and visualize the data in different ways. Four of these tabs: CNV Location, Copy Number, "Search CNVs by Location", and CNV List, are primarily concerned with exploring the identified copy number variants; the final three tabs (Phenotype Data, Genealogy, and Methodology) provide additional information about the soybean cultivars and the experimental methodology. 
+The CNV Shiny applet ([http://gsoja.agron.iastate.edu:3838/CNV/](http://gsoja.agron.iastate.edu:3838/CNV/)) contains several different tabs, which allow users to filter, manipulate, and visualize the data in different ways. Four of these tabs: CNV Location, Copy Number, "Search CNVs by Location", and CNV List, are primarily concerned with exploring the identified copy number variants; the final three tabs (Phenotype Data, Genealogy, and Methodology) provide additional information about the soybean cultivars and the experimental methodology. 
 
 An initial tab provides an interactive overview of the distribution of identified CNVs by chromosome and variety. The plots shown in this tab are interactive, utilizing mouseovers to identify varieties and chromosomes, and clicks to select chromosomes or varieties to display additional information. This tab is designed to encourage the user to identify areas which may be interesting to investigate using other tabs. 
 
@@ -132,7 +132,7 @@ The genealogy plots are generated on the fly; the number of generations displaye
 ## Single Nucleotide Polymorphisms
 * Include example video of Michelle using the applet
 
-* [Applet Link](http://gsoja.agron.iastate.edu:3838/SNP/)
+* [http://gsoja.agron.iastate.edu:3838/SNP/](http://gsoja.agron.iastate.edu:3838/SNP/)
 
 The SNP Shiny applet aims to provide an interface for biologists to search for SNPs, view SNPs along the genome, and examine the distribution of SNPs along the genome. A preliminary analysis, which heavily filtered SNPs using several criteria, still identified more than one million SNP sites, with nearly 20 million total SNPs in 79 different varieties. This data is much too large to visualize in detail with static plots, as the data must be heavily summarized for the plots to be readable. The applet aims to provide a "zoom and filter" approach to the data; displaying summaries while providing more detail and searchable tabular results. Like the CNV applet, the SNP applet has several tabs which provide data at different levels of detail. 
 
@@ -231,7 +231,6 @@ The two applets have been constructed to integrate with existing databases; at t
 > Might be useful to link to GRIN in the genealogy tabs...?
 
 # References
-McKenna, A. et al., 2010. The Genome Analysis Toolkit: A MapReduce framework for analyzing next-generation DNA sequencing data. Genome research, 20(9), pp.1297–1303.
 <!--- Picture References --->
 
 [cnvoverview]:CNVOverview.png
