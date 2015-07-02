@@ -449,7 +449,6 @@ shinyUI(
     ),
     SNPKinship(),
     methodology(),
-    singleton(tags$script("$('.dropdown-toggle').dropdown()", type="text/javascript")),
     inverse=TRUE,
     id="tabname"
   )

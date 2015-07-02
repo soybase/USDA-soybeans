@@ -1,6 +1,7 @@
 ---
 title: "SNP Documentation"
 author: "Susan VanderPlas, Di Cook, Andrew Severin, Jim Specht, Michelle Graham"
+date: "July 1, 2015"
 bibliography: ../Refs.bib
 csl: ../statistics.csl
 output: 
@@ -54,14 +55,19 @@ options(scipen=10)
 load("snpSummary.rda")
 nsnips <- as.numeric(snp.summary[1])
 ```
-SNPS displayed in this applet are reliable SNPs from `r length(snp.summary)`. `r nsnips` SNPs were identified for further analysis. 
+SNPS displayed in this applet are reliable SNPs from `r length(snp.summary)` lines. `r nsnips` unique SNPs were identified for further analysis. 
 
 > Need to delineate "reliable" criterion. 
 
 The lines included in this analysis are: 
 <div align="center">
 ```{r varietylist, eval=TRUE, echo=FALSE, results='asis'}
-print(xtable(matrix(c(names(snp.summary), ""), ncol=5, byrow=FALSE)), type="html", html.table.attributes="border=1 style='width:90%;'", include.rownames=FALSE, include.colnames=FALSE)
+print(xtable(
+  matrix(
+    c(names(snp.summary), 
+      rep("", length(names(snp.summary)) - floor(length(names(snp.summary))/5)*5)), 
+    ncol=5, byrow=FALSE)
+  ), type="html", html.table.attributes="border=1 style='width:90%;'", include.rownames=FALSE, include.colnames=FALSE)
 ```
 </div>
 
