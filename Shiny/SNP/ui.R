@@ -154,7 +154,7 @@ headerDef <- function(){
                   width=4,
                   style="padding:0px;",
                   h4("GlymaID navigation"),
-                  helpText("Ex: 01g004700 searches Chr 01 for ID 004700")
+                  helpText("Ex: 01g000900 searches Chr 01 for ID 000900")
                 ),
                 column(
                   width=4,
@@ -169,7 +169,7 @@ headerDef <- function(){
                       div(
                         tags$input(
                           id = "glymaID", type = "text", 
-                          class = "form-control", value = "01g004700", style="width:100%;"),
+                          class = "form-control", value = "01g000900", style="width:100%;"),
                         style="padding-right:.5em;overflow:hidden;"
                       )
                   )
@@ -255,10 +255,10 @@ headerDef <- function(){
                           helpButton(
                             label = "?", 
                             popTitle = "Help", 
-                            text = "Input a glyma ID such as 01g004700")
+                            text = "Input a glyma ID such as 01g000900")
                         ),
                       tags$input(id = "glymaID3", type = "text", 
-                                 class = "form-control", value = "01g004700")
+                                 class = "form-control", value = "01g000900")
                   )
                 ),
                 column(
