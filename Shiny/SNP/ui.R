@@ -26,9 +26,9 @@ head.scripts <-
     singleton(tags$link(href="shiny.css", rel="stylesheet"))
     
     # Needed for display of the methodology section tab
-    # singleton(includeHTML("www/knitrBootstrapIncludes.html"))#,
-    # singleton(tags$script(src="libs/toc.js", type="text/javascript")),
-    # singleton(tags$script(src="libs/refs.js", type="text/javascript"))#,
+    singleton(includeHTML("www/knitrBootstrapIncludes.html")),
+    singleton(tags$script(src="libs/toc.js", type="text/javascript")),
+    singleton(tags$script(src="libs/refs.js", type="text/javascript"))#,
     # singleton(tags$link(href="libs/knitrBootstrap.css", type="text/javascript")),
     
     # singleton(tags$link(href="libs/highlightjs-8.2/highlight/idea.css", rel="stylesheet")),
