@@ -15,28 +15,13 @@ library(dplyr)
 
 head.scripts <- 
   tags$head(
-#     singleton(tags$script(type="text/javascript", charset="utf8", src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js")),
-#     singleton(tags$script(type="text/javascript", charset="utf8", src="http://cdn.datatables.net/1.10.3/js/jquery.dataTables.js")),
-#     singleton(tags$link(rel="stylesheet", type="text/css", href="http://cdn.datatables.net/1.10.3/css/jquery.dataTables.css")),
-#     singleton(tags$link(href="libs/bootstrap-3.3.4/css/themes/cerulean/bootstrap.min.css", rel="stylesheet")),
-#     singleton(tags$link(href="libs/bootstrap-3.3.4/css/bootstrap.min.css", rel="stylesheet")),
+    # Make toggles/popovers work correctly
     singleton(tags$script("$('.dropdown-toggle').dropdown()", type="text/javascript")),
-    singleton(tags$script(src="libs/bootstrap-3.3.4/js/bootstrap.min.js", type="text/javascript")),
-    
-    singleton(tags$link(href="shiny.css", rel="stylesheet"))
+    singleton(tags$script("$(\"body button[data-toggle=\'popover\']\").popover();")),
+    singleton(tags$link(href="shiny.css", rel="stylesheet")),
     
     # Needed for display of the methodology section tab
-    singleton(includeHTML("www/knitrBootstrapIncludes.html")),
-    singleton(tags$script(src="libs/toc.js", type="text/javascript")),
     singleton(tags$script(src="libs/refs.js", type="text/javascript"))#,
-    # singleton(tags$link(href="libs/knitrBootstrap.css", type="text/javascript")),
-    
-    # singleton(tags$link(href="libs/highlightjs-8.2/highlight/idea.css", rel="stylesheet")),
-    # singleton(tags$script(src="libs/highlightjs-8.2/highlight.pack.js", type="text/javascript")),
-    # singleton(tags$link(href="libs/MagnificPopup-0.9.9/magnific-popup.css", rel="stylesheet")),
-    # singleton(tags$script(src="libs/MagnificPopup-0.9.9/magnific-popup.js", type="text/javascript")),
-    # singleton(tags$link(href="libs/knitrBootstrap-0.0.1/css/knitrBootstrap.css", rel="stylesheet" )),
-    # singleton(tags$script(src="libs/knitrBootstrap-0.0.1/js/knitrBootstrap.js", type="text/javascript"))
   )
 
 #--------- Load Data ------
@@ -74,8 +59,9 @@ varietyListButton <-
       br(),
       tags$button(
         type = "button",
-        class = "btn btn-info btn-small", # this will create a blue button (btn-info) with our css
+        class = "btn btn-info btn-small btn-popover", # this will create a blue button (btn-info) with our css
         "data-toggle" = "popover",
+        "rel" = "popover",
         title = "Sequenced Cultivars", # title of popover
         "data-placement" = "bottom",
         "data-content" = "insertHTMLhere",
@@ -95,8 +81,9 @@ helpButton <- function(label="?", popTitle = "Title", text="Help text", style=""
   tagList(
     tags$button(
       type = "button",
-      class = "btn btn-xs", # this will create a button 
+      class = "btn btn-xs btn-popover", # this will create a button 
       "data-toggle" = "popover",
+      "rel" = "popover",
       title = popTitle, # title of popover
       "data-placement" = "right",
       "data-content" = text,
@@ -105,7 +92,7 @@ helpButton <- function(label="?", popTitle = "Title", text="Help text", style=""
       "data-viewport" = list(selector="body .container-fluid .row .well", padding=0),
       style = style,
       label # button text
-    ) 
+    )
   )
 }
 
@@ -118,7 +105,7 @@ headerDef <- function(){
     conditionalPanel(
       # Load head.scripts after tabs have been loaded to prevent file not found errors
       condition="!input.tabname==''",
-      head.scripts,   
+      head.scripts, 
       tags$script(
         'Shiny.addCustomMessageHandler(
                       \'setTab\',

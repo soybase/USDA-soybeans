@@ -35,7 +35,7 @@ col.names <- c(CHROM="Chromosome", POS="Position", REF="Reference", ALT="Alterna
 # Read in the data from the TSV
 # vcfTable <- read.table("MeanPlus0p150SDimputed.tsv", sep="\t", stringsAsFactors=FALSE, header=TRUE)
 # 
-# filename <- "combined_variants_r2_sorted_filtered_SNPs.HetFiltered.h.nodups.phasedandimputed1000.recode.vanderplas.frmt"
+# filename <- "CombinedVariantsR2Sampled1000.tsv"
 # nlines <- 46350961 # system(paste0("wc -l ", filename))
 # idx <- floor(seq(2, nlines, length.out=21))
 # 
