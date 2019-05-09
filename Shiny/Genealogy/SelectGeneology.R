@@ -5,8 +5,10 @@ library(ggplot2)
 library(stringr)
 
 
-load("tree.rda")
 # tree is a data frame with columns child, parent, year, year.imputed (not necessary...yet), min.repro.year (not necessary...yet). It describes edges of the tree connecting parent and child nodes.
+
+# NW: need only 1st two columns (child and parent) for Shiny app
+tree <- read.csv("soybeanGenealogy.csv.gz", colClasses=c("character","character", rep(NULL,7)))
 
 # Returns the parents of a particular variety (if they exist)
 getparent <- function(bean){

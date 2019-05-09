@@ -12,8 +12,10 @@ format.selectize <- tags$head(tags$style(type="text/css",
                                             line-height: 14px; 
                                             }"))
 
-
-load("varieties.rda")
+# need only 1st two columns (child and parent)
+tree <- read.csv("soybeanGenealogy.csv.gz", colClasses=c("character","character", rep(NULL,7)))
+varieties <- unique(c(tree$child, tree$parent))
+varieties <- varieties[!grepl(" x ", varieties)]
 
 TreeBrowser <- function(){
   tabPanel("Genealogy Browser", 
