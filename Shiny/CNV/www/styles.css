@@ -1,0 +1,15 @@
+div#plot button {
+display:none;
+}
+
+#show_hide_animation_controls {
+  display:none;
+}
+
+#YieldPlot > button {
+  display:none;
+}
+
+#OverviewPlot > button {
+  display:none;
+}

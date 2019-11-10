@@ -32,7 +32,7 @@ library(reshape2)
 
 load("tree.rda")
 load("ChrPlot.rda")
-load("GlymaIDs.rda")
+# load("GlymaIDs.rda") # 2018-09-04 (weeks): redundant; already in ChrPlot.rda
 load("ShinyStart.rda")
 source("SelectGeneology.R")
 names(glymaIDs)[8:9] <- c("ID.old", "IDName")
@@ -446,8 +446,7 @@ shinyServer(function(input, output, session) {
 
   output$YieldInfo <- renderUI({
     tagList(
-      singleton(tags$head(tags$script(src = "fieldtrials/animint.js", type='text/javascript'))),
-      singleton(tags$head(tags$script(src = "fieldtrials/vendor/d3.v3.js", type='text/javascript'))),
+      singleton(tags$head(tags$script(src = "animint.min.js"))),
       singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="styles.css"))),
       singleton(tags$body(tags$script("
                       changeHiding = function(id){
@@ -485,8 +484,7 @@ shinyServer(function(input, output, session) {
 
   output$overview <- renderUI({
     tagList(
-      singleton(tags$head(tags$script(src = "overview/animint.js", type='text/javascript'))),
-      singleton(tags$head(tags$script(src = "overview/vendor/d3.v3.js", type='text/javascript'))),
+      singleton(tags$head(tags$script(src = "animint.min.js", type='text/javascript'))),
       singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href="styles.css"))),
       tags$div(id="OverviewPlot", align="center"),
       tags$script("var plot = new animint('#OverviewPlot','overview/plot.json');"),

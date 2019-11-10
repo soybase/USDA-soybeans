@@ -1,0 +1,339 @@
+x	y	label	showSelected
+0.496912424938581	0.0454545454545455	Parent - Beeson: Yield = 41.73     Protein = 35.28	69338-51615-71
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	A3127
+0.496912424938581	0.0454545454545455	Parent - Douglas: Yield = 34.87     Protein = 35.29	A4595
+0.496912424938581	0.0454545454545455	Parent - Richland: Yield = 37.55     Protein = 35.09	A50-7445
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	A5424
+0.496912424938581	0.0454545454545455	Parent - Hawkeye: Yield = 40.63     Protein = 35.29	A55-5629-4
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	A72-507
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	A72-512
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	A72-512
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	A75-105021
+0.496912424938581	0.0454545454545455	Parent - Pella: Yield = 46.28     Protein = 34.01	A80-244003
+0.496912424938581	0.0989304812834226	Parent - Century: Yield = 48.84     Protein = 36.02	A81-356022
+0.496912424938581	0.0454545454545455	Parent - Pella: Yield = 46.28     Protein = 34.01	A83-214072-23-8
+0.496912424938581	0.0989304812834226	Parent - Kenwood: Yield = 55.50     Protein = 33.73	A93-552034
+0.496912424938581	0.0454545454545455	Parent - Dunfield: Yield = 36.60     Protein = 33.68	Adams
+0.496912424938581	0.0989304812834226	Parent - Illini: Yield = 37.60     Protein = 35.39	Adams
+0.496912424938581	0.0454545454545455	Parent - Beeson: Yield = 41.73     Protein = 35.28	AgriPro 25
+0.496912424938581	0.0454545454545455	Parent - Amsoy 71: Yield = 41.89     Protein = 33.84	Amcor
+0.496912424938581	0.0989304812834226	Parent - Corsoy: Yield = 48.94     Protein = 34.60	Amcor
+0.496912424938581	0.0454545454545455	Parent - Amcor: Yield = 44.33     Protein = 33.71	Amcor 89
+0.496912424938581	0.0454545454545455	Parent - Adams: Yield = 40.65     Protein = 35.28	Amsoy
+0.496912424938581	0.0989304812834226	Parent - Harosoy: Yield = 43.04     Protein = 35.16	Amsoy
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	Amsoy 71
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	Amsoy x Calland
+0.496912424938581	0.0989304812834226	Parent - Calland: Yield = 42.19     Protein = 34.39	Amsoy x Calland
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	Amsoy x Portage
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Anderson
+0.496912424938581	0.0454545454545455	Parent - Korean: Yield = 40.11     Protein = 36.18	Anoka
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	AP68-1016
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	AP68-1022
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	AX429
+0.496912424938581	0.0454545454545455	Parent - Adams: Yield = 40.65     Protein = 35.28	AX56P64-1
+0.496912424938581	0.0454545454545455	Parent - Beeson: Yield = 41.73     Protein = 35.28	AX901-40-2
+0.496912424938581	0.0454545454545455	Parent - Elgin: Yield = 50.96     Protein = 33.21	AYR
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	B216
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	B216
+0.496912424938581	0.0454545454545455	Parent - Harosoy 63: Yield = 40.94     Protein = 35.27	Baron
+0.496912424938581	0.0454545454545455	Parent - Beeson: Yield = 41.73     Protein = 35.28	Beeson 80
+0.496912424938581	0.0989304812834226	Parent - Beeson: Yield = 41.73     Protein = 35.28	Beeson x AP68-1016
+0.496912424938581	0.0454545454545455	Parent - Beeson: Yield = 41.73     Protein = 35.28	Beeson x L15
+0.496912424938581	0.0454545454545455	Parent - Mukden: Yield = 35.83     Protein = 36.54	Blackhawk
+0.496912424938581	0.0989304812834226	Parent - Richland: Yield = 37.55     Protein = 35.09	Blackhawk
+0.496912424938581	0.0454545454545455	Parent - Conrad: Yield = 51.02     Protein = 34.09	Blackjack 21
+0.496912424938581	0.0989304812834226	Parent - Williams 82: Yield = 44.41     Protein = 35.04	BSR 101 x Williams 82
+0.496912424938581	0.0454545454545455	Parent - Century: Yield = 48.84     Protein = 36.02	Burlison
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	C1069
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	C1070
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	C1079
+0.496912424938581	0.0989304812834226	Parent - Harosoy: Yield = 43.04     Protein = 35.16	C1253
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	C1265
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	C1266
+0.496912424938581	0.0989304812834226	Parent - Harosoy: Yield = 43.04     Protein = 35.16	C1266R
+0.496912424938581	0.0454545454545455	Parent - Adelphia: Yield = 42.35     Protein = 35.52	C1421
+0.496912424938581	0.0454545454545455	Parent - Bonus: Yield = 35.22     Protein = 37.88	C1520
+0.496912424938581	0.0454545454545455	Parent - Calland: Yield = 42.19     Protein = 34.39	C1528
+0.496912424938581	0.0454545454545455	Parent - Century 84: Yield = 48.65     Protein = 36.62	C1732
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	C985
+0.496912424938581	0.0989304812834226	Parent - Calland: Yield = 42.19     Protein = 34.39	Calland x Altona
+0.496912424938581	0.0454545454545455	Parent - A.K. (Harrow): Yield = 39.63     Protein = 35.63	Capital
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	Cartter
+0.496912424938581	0.0454545454545455	Parent - Bonus: Yield = 35.22     Protein = 37.88	Century
+0.496912424938581	0.0989304812834226	Parent - Calland: Yield = 42.19     Protein = 34.39	Century
+0.496912424938581	0.0454545454545455	Parent - Century: Yield = 48.84     Protein = 36.02	Century 84
+0.496912424938581	0.0989304812834226	Parent - Williams 82: Yield = 44.41     Protein = 35.04	Century 84
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Chippewa
+0.496912424938581	0.0989304812834226	Parent - Richland: Yield = 37.55     Protein = 35.09	Chippewa
+0.496912424938581	0.0454545454545455	Parent - Burlison: Yield = 50.34     Protein = 36.96	Cisne
+0.496912424938581	0.0989304812834226	Parent - Dwight: Yield = 52.75     Protein = 34.30	CL0J095-4-6
+0.496912424938581	0.0454545454545455	Parent - Dwight: Yield = 52.75     Protein = 34.30	CL0J173-6-2
+0.496912424938581	0.0454545454545455	Parent - Dwight: Yield = 52.75     Protein = 34.30	CL0J173-6-8
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Clark
+0.496912424938581	0.0989304812834226	Parent - Richland: Yield = 37.55     Protein = 35.09	Clark
+0.496912424938581	0.0989304812834226	Parent - Clark: Yield = 36.51     Protein = 35.65	Clark x Blackhawk
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	Clark x CNS
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	Clark x (Lincoln x CNS)
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	Clark x PI 86.024
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	Clark x T145
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	Clark x T201
+0.496912424938581	0.0454545454545455	Parent - Beeson: Yield = 41.73     Protein = 35.28	CN210
+0.496912424938581	0.0454545454545455	Parent - Beeson: Yield = 41.73     Protein = 35.28	CN290
+0.496912424938581	0.0989304812834226	Parent - Clark: Yield = 36.51     Protein = 35.65	Columbus
+0.496912424938581	0.0454545454545455	Parent - Conrad: Yield = 51.02     Protein = 34.09	Conrad x Elgin 87
+0.496912424938581	0.0989304812834226	Parent - Elgin 87: Yield = 49.20     Protein = 33.54	Conrad x Elgin 87
+0.496912424938581	0.0989304812834226	Parent - Harosoy: Yield = 43.04     Protein = 35.16	Corsoy
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	Corsoy 79
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	Corsoy x Hark
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	Corsoy x Wayne
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	Corsoy x Wayne
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	Crawford
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	Cumberland
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	Cumberland
+0.496912424938581	0.0989304812834226	Parent - Clark: Yield = 36.51     Protein = 35.65	Cutler
+0.496912424938581	0.0454545454545455	Parent - Cutler: Yield = 37.82     Protein = 35.64	Cutler 71
+0.496912424938581	0.0989304812834226	Parent - Savoy: Yield = 54.21     Protein = 36.05	CX1705R-108
+0.496912424938581	0.0454545454545455	Parent - Mukden: Yield = 35.83     Protein = 36.54	CX291-42-1
+0.496912424938581	0.0989304812834226	Parent - Perry: Yield = 35.26     Protein = 35.03	D56-1185
+0.496912424938581	0.0454545454545455	Parent - Cumberland: Yield = 50.29     Protein = 34.33	Delsoy 4500
+0.496912424938581	0.0454545454545455	Parent - Elgin: Yield = 50.96     Protein = 33.21	Dimon
+0.496912424938581	0.0454545454545455	Parent - Dunfield: Yield = 36.60     Protein = 33.68	Dorman
+0.496912424938581	0.0454545454545455	Parent - Calland: Yield = 42.19     Protein = 34.39	Douglas
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	Douglas
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	DSR-304
+0.496912424938581	0.0454545454545455	Parent - Dunfield: Yield = 36.60     Protein = 33.68	Dunfield x Haberlandt
+0.496912424938581	0.0454545454545455	Parent - Jack: Yield = 49.34     Protein = 33.94	Dwight
+0.496912424938581	0.0454545454545455	Parent - Franklin: Yield = 36.92     Protein = 32.02	Egyptian
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	Elf
+0.496912424938581	0.0454545454545455	Parent - Elgin: Yield = 50.96     Protein = 33.21	Elgin 87
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	Evans
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	Fayette
+0.496912424938581	0.0454545454545455	Parent - Harosoy 63: Yield = 40.94     Protein = 35.27	FH22-815
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Ford
+0.496912424938581	0.0989304812834226	Parent - Richland: Yield = 37.55     Protein = 35.09	Ford
+0.496912424938581	0.0454545454545455	Parent - Amsoy 71: Yield = 41.89     Protein = 33.84	Fremont
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	Fremont
+0.496912424938581	0.0454545454545455	Parent - Dunfield: Yield = 36.60     Protein = 33.68	Gibson
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	Gnome
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Grant
+0.496912424938581	0.0454545454545455	Parent - Dunfield: Yield = 36.60     Protein = 33.68	H2
+0.496912424938581	0.0454545454545455	Parent - Dunfield: Yield = 36.60     Protein = 33.68	Haberlandt x Dunfield
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	Harcor
+0.496912424938581	0.0454545454545455	Parent - Harcor: Yield = 46.15     Protein = 34.69	Harcor x (M61-96 x Hobbitt 87)
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	Hardin
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	Hark
+0.496912424938581	0.0989304812834226	Parent - Hawkeye: Yield = 40.63     Protein = 35.29	Hark
+0.496912424938581	0.0454545454545455	Parent - A.K. (Harrow): Yield = 39.63     Protein = 35.63	Harosoy
+0.496912424938581	0.0989304812834226	Parent - Harosoy: Yield = 43.04     Protein = 35.16	Harosoy 63
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	Harosoy x T117
+0.496912424938581	0.0454545454545455	Parent - Harper: Yield = 48.03     Protein = 35.18	Harper 87
+0.496912424938581	0.0454545454545455	Parent - Mukden: Yield = 35.83     Protein = 36.54	Hawkeye
+0.496912424938581	0.0989304812834226	Parent - Richland: Yield = 37.55     Protein = 35.09	Hawkeye
+0.496912424938581	0.0454545454545455	Parent - Hawkeye: Yield = 40.63     Protein = 35.29	Hawkeye 63
+0.496912424938581	0.0454545454545455	Parent - Hawkeye: Yield = 40.63     Protein = 35.29	Hawkeye x Lee
+0.496912424938581	0.0454545454545455	Parent - Amcor: Yield = 44.33     Protein = 33.71	Hayes
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	HC74-634RE
+0.496912424938581	0.0454545454545455	Parent - Richland: Yield = 37.55     Protein = 35.09	Henry
+0.496912424938581	0.0454545454545455	Parent - Zane: Yield = 50.15     Protein = 34.47	HM8632
+0.496912424938581	0.0454545454545455	Parent - Zane: Yield = 50.15     Protein = 34.47	HM8778
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	Hobbit
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	Hodgson
+0.496912424938581	0.0454545454545455	Parent - Harcor: Yield = 46.15     Protein = 34.69	Hoyt
+0.496912424938581	0.0454545454545455	Parent - Woodworth: Yield = 45.19     Protein = 34.30	HW79022
+0.496912424938581	0.0454545454545455	Parent - Cumberland: Yield = 50.29     Protein = 34.33	HW79116
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	HW8400
+0.496912424938581	0.0454545454545455	Parent - Pella 86: Yield = 44.18     Protein = 34.30	IA 2003
+0.496912424938581	0.0454545454545455	Parent - Pella 86: Yield = 44.18     Protein = 34.30	IA 2004
+0.496912424938581	0.0454545454545455	Parent - Elgin 87: Yield = 49.20     Protein = 33.54	IA 2021
+0.496912424938581	0.0454545454545455	Parent - Jack: Yield = 49.34     Protein = 33.94	IA 2036
+0.496912424938581	0.0454545454545455	Parent - Chamberlain: Yield = 47.67     Protein = 35.00	IA 3003
+0.496912424938581	0.0454545454545455	Parent - Jack: Yield = 49.34     Protein = 33.94	Ina
+0.496912424938581	0.0454545454545455	Parent - Jack: Yield = 49.34     Protein = 33.94	INA
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	IVR Ex212
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	IVR Ex4426
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	IVR Ex4428
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	IVR Ex4731
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	J103
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	Jewel
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	K1022
+0.496912424938581	0.0454545454545455	Parent - Calland: Yield = 42.19     Protein = 34.39	K1028
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	K1028
+0.496912424938581	0.0989304812834226	Parent - Richland: Yield = 37.55     Protein = 35.09	Kanrich
+0.496912424938581	0.0454545454545455	Parent - Beeson 80: Yield = 43.78     Protein = 35.64	Keller
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Kent
+0.496912424938581	0.0454545454545455	Parent - Elgin: Yield = 50.96     Protein = 33.21	Kenwood
+0.496912424938581	0.0454545454545455	Parent - Kenwood: Yield = 55.50     Protein = 33.73	Kenwood 94
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	Kino
+0.496912424938581	0.0454545454545455	Parent - Harper: Yield = 48.03     Protein = 35.18	KS3494
+0.496912424938581	0.0454545454545455	Parent - Williams 82: Yield = 44.41     Protein = 35.04	Kunitz
+0.496912424938581	0.0454545454545455	Parent - Clark 63: Yield = 37.63     Protein = 34.98	L12
+0.496912424938581	0.0454545454545455	Parent - Clark 63: Yield = 37.63     Protein = 34.98	L15
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	L15
+0.496912424938581	0.0454545454545455	Parent - Calland: Yield = 42.19     Protein = 34.39	L15 x Calland
+0.496912424938581	0.0454545454545455	Parent - Century: Yield = 48.84     Protein = 36.02	L2-3
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	L24
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	L46-1503
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	L46-1741
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	L46-1743
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	L46-2132
+0.496912424938581	0.0989304812834226	Parent - Richland: Yield = 37.55     Protein = 35.09	L46-2132
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	L46-5679
+0.496912424938581	0.0454545454545455	Parent - Adams: Yield = 40.65     Protein = 35.28	L57-0034
+0.496912424938581	0.0989304812834226	Parent - Clark: Yield = 36.51     Protein = 35.65	L57-0034
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	L59-0034
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	L60-347-1-60-2B
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	L60-347-4-4G-2-B
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	L62-1926
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	L62-535
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	L62-667
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	L63-1397
+0.496912424938581	0.0454545454545455	Parent - Wayne: Yield = 46.30     Protein = 35.85	L65-1342
+0.496912424938581	0.0454545454545455	Parent - Wayne: Yield = 46.30     Protein = 35.85	L66-1359
+0.496912424938581	0.0454545454545455	Parent - Calland: Yield = 42.19     Protein = 34.39	L66L-137
+0.496912424938581	0.0454545454545455	Parent - Wayne: Yield = 46.30     Protein = 35.85	L66L-140
+0.496912424938581	0.0454545454545455	Parent - Wayne: Yield = 46.30     Protein = 35.85	L66L-144
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	L66L-154
+0.496912424938581	0.0454545454545455	Parent - Wayne: Yield = 46.30     Protein = 35.85	L66L-172
+0.496912424938581	0.0454545454545455	Parent - Calland: Yield = 42.19     Protein = 34.39	L69U-37-17-5
+0.496912424938581	0.0454545454545455	Parent - Calland: Yield = 42.19     Protein = 34.39	L69U40-16-4
+0.496912424938581	0.0454545454545455	Parent - Amsoy 71: Yield = 41.89     Protein = 33.84	L707-543G
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	L70T-543G
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	L72U-2567
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	L73-4673
+0.496912424938581	0.0454545454545455	Parent - Beeson: Yield = 41.73     Protein = 35.28	L74-3897
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	L74-3897
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	L74-619
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	L74D-619
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	L75-3632
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	L75-8020
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	L76-0253
+0.496912424938581	0.0454545454545455	Parent - Union: Yield = 41.24     Protein = 36.00	L77-1233
+0.496912424938581	0.0454545454545455	Parent - Union: Yield = 41.24     Protein = 36.00	L77-443
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	L77-906
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	L77-994
+0.496912424938581	0.0454545454545455	Parent - Williams 82: Yield = 44.41     Protein = 35.04	L80-4323
+0.496912424938581	0.0454545454545455	Parent - Williams 82: Yield = 44.41     Protein = 35.04	L82C-1212
+0.496912424938581	0.0454545454545455	Parent - Calland: Yield = 42.19     Protein = 34.39	Lawrence
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	Lawrence
+0.496912424938581	0.0454545454545455	Parent - Dwight: Yield = 52.75     Protein = 34.30	LD00-3309
+0.496912424938581	0.0989304812834226	Parent - Maverick: Yield = 52.00     Protein = 34.09	LD00-3309
+0.496912424938581	0.0454545454545455	Parent - IA 3010: Yield = 56.53     Protein = 32.81	LD01_5907
+0.496912424938581	0.0454545454545455	Parent - IA 3010: Yield = 56.53     Protein = 32.81	LD01-5907
+0.496912424938581	0.0454545454545455	Parent - IA 3010: Yield = 56.53     Protein = 32.81	LD02_4485
+0.496912424938581	0.0454545454545455	Parent - IA 3010: Yield = 56.53     Protein = 32.81	LD02-4485
+0.496912424938581	0.0989304812834226	Parent - LS93-0375: Yield = 47.06     Protein = 35.27	LD02-9050
+0.496912424938581	0.0989304812834226	Parent - LS93-0375: Yield = 47.06     Protein = 35.27	LD02-950
+0.496912424938581	0.0454545454545455	Parent - Lawrence: Yield = 37.96     Protein = 35.97	LG82-8195
+0.496912424938581	0.0454545454545455	Parent - Lawrence: Yield = 37.96     Protein = 35.97	LG82-8224
+0.496912424938581	0.0454545454545455	Parent - Century: Yield = 48.84     Protein = 36.02	LG89-7793
+0.496912424938581	0.0454545454545455	Parent - Lawrence: Yield = 37.96     Protein = 35.97	LG90-4181
+0.496912424938581	0.0454545454545455	Parent - Elgin: Yield = 50.96     Protein = 33.21	LG91-7431
+0.496912424938581	0.0454545454545455	Parent - Flyer: Yield = 45.30     Protein = 36.00	LG94-4667
+0.496912424938581	0.0989304812834226	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Lincoln x CNS
+0.496912424938581	0.0989304812834226	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Lincoln x Flambeau
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Lincoln x Richland
+0.496912424938581	0.0989304812834226	Parent - Richland: Yield = 37.55     Protein = 35.09	Lincoln x Richland
+0.496912424938581	0.0454545454545455	Parent - Korean: Yield = 40.11     Protein = 36.18	(Lincoln x Richland) x Korean
+0.496912424938581	0.0454545454545455	Parent - Lindarin: Yield = 43.78     Protein = 34.88	Lindarin 63
+0.496912424938581	0.0454545454545455	Parent - Williams 82: Yield = 44.41     Protein = 35.04	Linford
+0.496912424938581	0.0454545454545455	Parent - Union: Yield = 41.24     Protein = 36.00	LN78-257
+0.496912424938581	0.0454545454545455	Parent - Jack: Yield = 49.34     Protein = 33.94	LN92-11008
+0.496912424938581	0.0454545454545455	Parent - Burlison: Yield = 50.34     Protein = 36.96	LN92-7369
+0.496912424938581	0.0454545454545455	Parent - Jack: Yield = 49.34     Protein = 33.94	LN97-24270
+0.496912424938581	0.0989304812834226	Parent - Macon: Yield = 52.77     Protein = 34.54	LN97-24270
+0.496912424938581	0.0454545454545455	Parent - Jack: Yield = 49.34     Protein = 33.94	Loda
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	Logan
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	M10
+0.496912424938581	0.0989304812834226	Parent - Richland: Yield = 37.55     Protein = 35.09	M10
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	M319
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	M319W
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	M406
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	M42-37
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	M54-110
+0.496912424938581	0.0454545454545455	Parent - Korean: Yield = 40.11     Protein = 36.18	M54-240
+0.496912424938581	0.0989304812834226	Parent - Harosoy: Yield = 43.04     Protein = 35.16	M60-406
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	M63-217Y
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	M67-141
+0.496912424938581	0.0454545454545455	Parent - Beeson: Yield = 41.73     Protein = 35.28	M68-303
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	M75-89
+0.496912424938581	0.0454545454545455	Parent - Harper: Yield = 48.03     Protein = 35.18	Magellan
+0.496912424938581	0.0454545454545455	Parent - Harosoy 63: Yield = 40.94     Protein = 35.27	Maple Arrow
+0.496912424938581	0.0454545454545455	Parent - Elgin 87: Yield = 49.20     Protein = 33.54	Marcus x Elgin 87
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	Marion
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	Matsoy
+0.496912424938581	0.0989304812834226	Parent - Resnik: Yield = 51.29     Protein = 35.37	Maverick
+0.496912424938581	0.0454545454545455	Parent - Bonus: Yield = 35.22     Protein = 37.88	Mead
+0.496912424938581	0.0989304812834226	Parent - Wells II: Yield = 45.66     Protein = 35.20	Miami
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	Miles
+0.496912424938581	0.0454545454545455	Parent - Amsoy: Yield = 42.93     Protein = 34.15	Mitchell
+0.496912424938581	0.0454545454545455	Parent - Mukden: Yield = 35.83     Protein = 36.54	Monroe
+0.496912424938581	0.0454545454545455	Parent - Union: Yield = 41.24     Protein = 36.00	Morgan
+0.496912424938581	0.0454545454545455	Parent - Hawkeye: Yield = 40.63     Protein = 35.29	Norchief
+0.496912424938581	0.0454545454545455	Parent - Harcor: Yield = 46.15     Protein = 34.69	OAC Thames
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	OX383
+0.496912424938581	0.0989304812834226	Parent - Harosoy 63: Yield = 40.94     Protein = 35.27	OX383
+0.496912424938581	0.0454545454545455	Parent - Harcor: Yield = 46.15     Protein = 34.69	OX611
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	P6122
+0.496912424938581	0.0454545454545455	Parent - Jack: Yield = 49.34     Protein = 33.94	Pana
+0.496912424938581	0.0454545454545455	Parent - Calland: Yield = 42.19     Protein = 34.39	Pella
+0.496912424938581	0.0454545454545455	Parent - Pella: Yield = 46.28     Protein = 34.01	Pella 86
+0.496912424938581	0.0454545454545455	Parent - Cumberland: Yield = 50.29     Protein = 34.33	Pella x Cumberland
+0.496912424938581	0.0989304812834226	Parent - Pella: Yield = 46.28     Protein = 34.01	Pella x Cumberland
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	Pennyrile
+0.496912424938581	0.0454545454545455	Parent - Patoka: Yield = 31.25     Protein = 37.14	Perry
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	Peterson 118-11
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	Pioneer 1677
+0.496912424938581	0.0454545454545455	Parent - Wells: Yield = 49.92     Protein = 36.11	Pioneer 9061
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	Pixie
+0.496912424938581	0.0454545454545455	Parent - Amsoy 71: Yield = 41.89     Protein = 33.84	Platte
+0.496912424938581	0.0454545454545455	Parent - Spencer: Yield = 38.61     Protein = 34.95	Probst
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	Provar
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	PRX54-59
+0.496912424938581	0.0454545454545455	Parent - Franklin: Yield = 36.92     Protein = 32.02	Pyramid
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	Rampage
+0.496912424938581	0.0454545454545455	Parent - Wells II: Yield = 45.66     Protein = 35.20	RCAT Alliance
+0.496912424938581	0.0454545454545455	Parent - Elgin: Yield = 50.96     Protein = 33.21	RCAT Columbus
+0.496912424938581	0.0454545454545455	Parent - Union: Yield = 41.24     Protein = 36.00	Regal
+0.496912424938581	0.0454545454545455	Parent - Jack: Yield = 49.34     Protein = 33.94	Rend
+0.496912424938581	0.0989304812834226	Parent - Resnik: Yield = 51.29     Protein = 35.37	Rend
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Renville
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	Rillito
+0.496912424938581	0.0454545454545455	Parent - Illini: Yield = 37.60     Protein = 35.39	S-100
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	S1474
+0.496912424938581	0.0454545454545455	Parent - Corsoy: Yield = 48.94     Protein = 34.60	S1492
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	S1492
+0.496912424938581	0.0454545454545455	Parent - Pella: Yield = 46.28     Protein = 34.01	S19-90
+0.496912424938581	0.0989304812834226	Parent - Perry: Yield = 35.26     Protein = 35.03	S55-7075
+0.496912424938581	0.0454545454545455	Parent - Conrad: Yield = 51.02     Protein = 34.09	Sandusky
+0.496912424938581	0.0989304812834226	Parent - Burlison: Yield = 50.34     Protein = 36.96	Savoy
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Shelby
+0.496912424938581	0.0989304812834226	Parent - Pella: Yield = 46.28     Protein = 34.01	Sherman
+0.496912424938581	0.0454545454545455	Parent - Wayne: Yield = 46.30     Protein = 35.85	SL9
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	Sparks
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	Sprite
+0.496912424938581	0.0989304812834226	Parent - Williams 82: Yield = 44.41     Protein = 35.04	Sprite 87
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	T260H x Wayne
+0.496912424938581	0.0454545454545455	Parent - Bonus: Yield = 35.22     Protein = 37.88	Tracy x Bonus
+0.496912424938581	0.0454545454545455	Parent - Lincoln: Yield = 38.80     Protein = 34.22	Traverse
+0.496912424938581	0.0454545454545455	Parent - Bonus: Yield = 35.22     Protein = 37.88	U80-70070
+0.496912424938581	0.0454545454545455	Parent - Hawkeye: Yield = 40.63     Protein = 35.29	UD288
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	Union
+0.496912424938581	0.0454545454545455	Parent - Conrad: Yield = 51.02     Protein = 34.09	Vertex
+0.496912424938581	0.0454545454545455	Parent - Dunfield: Yield = 36.60     Protein = 33.68	Wabash
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	Wayne
+0.496912424938581	0.0454545454545455	Parent - Clark 63: Yield = 37.63     Protein = 34.98	Wayne x Clark 63
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	Wayne x Clark 63
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	Wayne x Kanrich
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	Wayne x L11
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	Wayne x L57-0034
+0.496912424938581	0.0454545454545455	Parent - Harosoy: Yield = 43.04     Protein = 35.16	Wilkin
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	Will
+0.496912424938581	0.0989304812834226	Parent - Wayne: Yield = 46.30     Protein = 35.85	Williams
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	Williams 79
+0.496912424938581	0.0989304812834226	Parent - Williams: Yield = 47.11     Protein = 35.01	Williams 82
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	Winchester
+0.496912424938581	0.0454545454545455	Parent - Clark: Yield = 36.51     Protein = 35.65	Wirth
+0.496912424938581	0.0454545454545455	Parent - Wayne: Yield = 46.30     Protein = 35.85	Woodworth
+0.496912424938581	0.0454545454545455	Parent - Williams: Yield = 47.11     Protein = 35.01	X3836
+0.496912424938581	0.0454545454545455	Parent - Cumberland: Yield = 50.29     Protein = 34.33	Zane
+0.496912424938581	0.0989304812834226	Parent - Pella: Yield = 46.28     Protein = 34.01	Zane

@@ -1,0 +1,2873 @@
+{
+ "geoms": {
+ "geom1_point_yield": {
+ "geom": "point",
+"classed": "geom1_point_yield",
+"aes": {
+ "x": "Year",
+"y": "Yield",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "na.rm": false,
+"colour": "black",
+"size":      5,
+"fill": "white",
+"alpha":   0.75,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom2_point_yield" 
+},
+"geom2_point_yield": {
+ "geom": "point",
+"classed": "geom2_point_yield",
+"aes": {
+ "x": "Year",
+"y": "Yield",
+"clickSelects": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      3,
+"guide": "none",
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom3_point_yield" 
+},
+"geom3_point_yield": {
+ "geom": "point",
+"classed": "geom3_point_yield",
+"aes": {
+ "x": "Year",
+"y": "Yield",
+"showSelected": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      5,
+"guide": "none",
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom4_text_yield" 
+},
+"geom4_text_yield": {
+ "geom": "text",
+"classed": "geom4_text_yield",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "label",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom5_text_yield" 
+},
+"geom5_text_yield": {
+ "geom": "text",
+"classed": "geom5_text_yield",
+"aes": {
+ "x": "1965.5 + x",
+"y": "24 + y * 6",
+"label": "sprintf(\"Parent - %s: %.2f\", parent, Yield)",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+},
+"geom6_point_protein": {
+ "geom": "point",
+"classed": "geom6_point_protein",
+"aes": {
+ "x": "Year",
+"y": "Protein",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "na.rm": false,
+"colour": "black",
+"size":      5,
+"fill": "white",
+"alpha":   0.75,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom7_point_protein" 
+},
+"geom7_point_protein": {
+ "geom": "point",
+"classed": "geom7_point_protein",
+"aes": {
+ "x": "Year",
+"y": "Protein",
+"clickSelects": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      3,
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom8_point_protein" 
+},
+"geom8_point_protein": {
+ "geom": "point",
+"classed": "geom8_point_protein",
+"aes": {
+ "x": "Year",
+"y": "Protein",
+"showSelected": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      5,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom9_text_protein" 
+},
+"geom9_text_protein": {
+ "geom": "text",
+"classed": "geom9_text_protein",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "label",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom10_text_protein" 
+},
+"geom10_text_protein": {
+ "geom": "text",
+"classed": "geom10_text_protein",
+"aes": {
+ "x": "1965.5 + x",
+"y": "30 + y * 1.5",
+"label": "sprintf(\"Parent - %s: %.2f\", parent, Protein)",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+},
+"geom11_point_oil": {
+ "geom": "point",
+"classed": "geom11_point_oil",
+"aes": {
+ "x": "Year",
+"y": "Oil",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "na.rm": false,
+"colour": "black",
+"size":      5,
+"fill": "white",
+"alpha":   0.75,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom12_point_oil" 
+},
+"geom12_point_oil": {
+ "geom": "point",
+"classed": "geom12_point_oil",
+"aes": {
+ "x": "Year",
+"y": "Oil",
+"clickSelects": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      3,
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom13_point_oil" 
+},
+"geom13_point_oil": {
+ "geom": "point",
+"classed": "geom13_point_oil",
+"aes": {
+ "x": "Year",
+"y": "Oil",
+"showSelected": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      5,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom14_text_oil" 
+},
+"geom14_text_oil": {
+ "geom": "text",
+"classed": "geom14_text_oil",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "label",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom15_text_oil" 
+},
+"geom15_text_oil": {
+ "geom": "text",
+"classed": "geom15_text_oil",
+"aes": {
+ "x": "1965.5 + x",
+"y": "16 + y/1.5",
+"label": "sprintf(\"Parent - %s: %.2f\", parent, Oil)",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+},
+"geom16_point_maturity": {
+ "geom": "point",
+"classed": "geom16_point_maturity",
+"aes": {
+ "x": "Year",
+"y": "Maturity",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "na.rm": false,
+"colour": "black",
+"size":      5,
+"fill": "white",
+"alpha":   0.75,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom17_point_maturity" 
+},
+"geom17_point_maturity": {
+ "geom": "point",
+"classed": "geom17_point_maturity",
+"aes": {
+ "x": "Year",
+"y": "Maturity",
+"clickSelects": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      3,
+"guide": "none",
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom18_point_maturity" 
+},
+"geom18_point_maturity": {
+ "geom": "point",
+"classed": "geom18_point_maturity",
+"aes": {
+ "x": "Year",
+"y": "Maturity",
+"showSelected": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      5,
+"guide": "none",
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom19_text_maturity" 
+},
+"geom19_text_maturity": {
+ "geom": "text",
+"classed": "geom19_text_maturity",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "label",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom20_text_maturity" 
+},
+"geom20_text_maturity": {
+ "geom": "text",
+"classed": "geom20_text_maturity",
+"aes": {
+ "x": "1965.5 + x",
+"y": "907 + y * 4",
+"label": "sprintf(\"Parent - %s: %.2f\", parent, Maturity)",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+},
+"geom21_point_lodging": {
+ "geom": "point",
+"classed": "geom21_point_lodging",
+"aes": {
+ "x": "Year",
+"y": "Lodging",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "na.rm": false,
+"colour": "black",
+"size":      5,
+"fill": "white",
+"alpha":   0.75,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom22_point_lodging" 
+},
+"geom22_point_lodging": {
+ "geom": "point",
+"classed": "geom22_point_lodging",
+"aes": {
+ "x": "Year",
+"y": "Lodging",
+"clickSelects": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      3,
+"guide": "none",
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom23_point_lodging" 
+},
+"geom23_point_lodging": {
+ "geom": "point",
+"classed": "geom23_point_lodging",
+"aes": {
+ "x": "Year",
+"y": "Lodging",
+"showSelected": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      5,
+"guide": "none",
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom24_text_lodging" 
+},
+"geom24_text_lodging": {
+ "geom": "text",
+"classed": "geom24_text_lodging",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "label",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom25_text_lodging" 
+},
+"geom25_text_lodging": {
+ "geom": "text",
+"classed": "geom25_text_lodging",
+"aes": {
+ "x": "1965.5 + x",
+"y": "1 + y/3",
+"label": "sprintf(\"Parent - %s: %.2f\", parent, Lodging)",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+},
+"geom26_point_seedsize": {
+ "geom": "point",
+"classed": "geom26_point_seedsize",
+"aes": {
+ "x": "Year",
+"y": "SeedSize",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "na.rm": false,
+"colour": "black",
+"size":      5,
+"fill": "white",
+"alpha":   0.75,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom27_point_seedsize" 
+},
+"geom27_point_seedsize": {
+ "geom": "point",
+"classed": "geom27_point_seedsize",
+"aes": {
+ "x": "Year",
+"y": "SeedSize",
+"clickSelects": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      3,
+"guide": "none",
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom28_point_seedsize" 
+},
+"geom28_point_seedsize": {
+ "geom": "point",
+"classed": "geom28_point_seedsize",
+"aes": {
+ "x": "Year",
+"y": "SeedSize",
+"showSelected": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      5,
+"guide": "none",
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom29_text_seedsize" 
+},
+"geom29_text_seedsize": {
+ "geom": "text",
+"classed": "geom29_text_seedsize",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "label",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom30_text_seedsize" 
+},
+"geom30_text_seedsize": {
+ "geom": "text",
+"classed": "geom30_text_seedsize",
+"aes": {
+ "x": "1965.5 + x",
+"y": "10 + y * 1.5",
+"label": "sprintf(\"Parent - %s: %.2f\", parent, SeedSize)",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+},
+"geom31_point_seedquality": {
+ "geom": "point",
+"classed": "geom31_point_seedquality",
+"aes": {
+ "x": "Year",
+"y": "SeedQuality",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "na.rm": false,
+"colour": "black",
+"size":      5,
+"fill": "white",
+"alpha":   0.75,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom32_point_seedquality" 
+},
+"geom32_point_seedquality": {
+ "geom": "point",
+"classed": "geom32_point_seedquality",
+"aes": {
+ "x": "Year",
+"y": "SeedQuality",
+"clickSelects": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      3,
+"guide": "none",
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom33_point_seedquality" 
+},
+"geom33_point_seedquality": {
+ "geom": "point",
+"classed": "geom33_point_seedquality",
+"aes": {
+ "x": "Year",
+"y": "SeedQuality",
+"showSelected": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      5,
+"guide": "none",
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom34_text_seedquality" 
+},
+"geom34_text_seedquality": {
+ "geom": "text",
+"classed": "geom34_text_seedquality",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "label",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom35_text_seedquality" 
+},
+"geom35_text_seedquality": {
+ "geom": "text",
+"classed": "geom35_text_seedquality",
+"aes": {
+ "x": "1965.5 + x",
+"y": "1.2 + y/3",
+"label": "sprintf(\"Parent - %s: %.2f\", parent, SeedQuality)",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+},
+"geom36_point_plcount": {
+ "geom": "point",
+"classed": "geom36_point_plcount",
+"aes": {
+ "x": "Year",
+"y": "PlCount",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "na.rm": false,
+"colour": "black",
+"size":      5,
+"fill": "white",
+"alpha":   0.75,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom37_point_plcount" 
+},
+"geom37_point_plcount": {
+ "geom": "point",
+"classed": "geom37_point_plcount",
+"aes": {
+ "x": "Year",
+"y": "PlCount",
+"clickSelects": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      3,
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom38_point_plcount" 
+},
+"geom38_point_plcount": {
+ "geom": "point",
+"classed": "geom38_point_plcount",
+"aes": {
+ "x": "Year",
+"y": "PlCount",
+"showSelected": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      5,
+"guide": "none",
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom39_text_plcount" 
+},
+"geom39_text_plcount": {
+ "geom": "text",
+"classed": "geom39_text_plcount",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "label",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom40_text_plcount" 
+},
+"geom40_text_plcount": {
+ "geom": "text",
+"classed": "geom40_text_plcount",
+"aes": {
+ "x": "1965.5 + x",
+"y": "10 + y * 4",
+"label": "sprintf(\"Parent - %s: %.2f\", parent, PlCount)",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+},
+"geom41_point_yieldOil": {
+ "geom": "point",
+"classed": "geom41_point_yieldOil",
+"aes": {
+ "x": "Yield",
+"y": "Oil",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "na.rm": false,
+"colour": "black",
+"size":      5,
+"fill": "white",
+"alpha":   0.75,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom42_point_yieldOil" 
+},
+"geom42_point_yieldOil": {
+ "geom": "point",
+"classed": "geom42_point_yieldOil",
+"aes": {
+ "x": "Yield",
+"y": "Oil",
+"clickSelects": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      3,
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom43_point_yieldOil" 
+},
+"geom43_point_yieldOil": {
+ "geom": "point",
+"classed": "geom43_point_yieldOil",
+"aes": {
+ "x": "Yield",
+"y": "Oil",
+"showSelected": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      5,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom44_text_yieldOil" 
+},
+"geom44_text_yieldOil": {
+ "geom": "text",
+"classed": "geom44_text_yieldOil",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "label",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom45_text_yieldOil" 
+},
+"geom45_text_yieldOil": {
+ "geom": "text",
+"classed": "geom45_text_yieldOil",
+"aes": {
+ "x": "47 + x",
+"y": "16.5 + y/2",
+"label": "sprintf(\"Parent - %s: Yield = %.2f     Oil = %.2f\", parent, Yield, Oil)",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+},
+"geom46_point_yieldProtein": {
+ "geom": "point",
+"classed": "geom46_point_yieldProtein",
+"aes": {
+ "x": "Yield",
+"y": "Protein",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "na.rm": false,
+"colour": "black",
+"size":      5,
+"fill": "white",
+"alpha":   0.75,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom47_point_yieldProtein" 
+},
+"geom47_point_yieldProtein": {
+ "geom": "point",
+"classed": "geom47_point_yieldProtein",
+"aes": {
+ "x": "Yield",
+"y": "Protein",
+"clickSelects": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      3,
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom48_point_yieldProtein" 
+},
+"geom48_point_yieldProtein": {
+ "geom": "point",
+"classed": "geom48_point_yieldProtein",
+"aes": {
+ "x": "Yield",
+"y": "Protein",
+"showSelected": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      5,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom49_text_yieldProtein" 
+},
+"geom49_text_yieldProtein": {
+ "geom": "text",
+"classed": "geom49_text_yieldProtein",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "label",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom50_text_yieldProtein" 
+},
+"geom50_text_yieldProtein": {
+ "geom": "text",
+"classed": "geom50_text_yieldProtein",
+"aes": {
+ "x": "47 + x",
+"y": "30.5 + y",
+"label": "sprintf(\"Parent - %s: Yield = %.2f     Protein = %.2f\", parent, Yield, Protein)",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+},
+"geom51_point_proteinOil": {
+ "geom": "point",
+"classed": "geom51_point_proteinOil",
+"aes": {
+ "x": "Protein",
+"y": "Oil",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "na.rm": false,
+"colour": "black",
+"size":      5,
+"fill": "white",
+"alpha":   0.75,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom52_point_proteinOil" 
+},
+"geom52_point_proteinOil": {
+ "geom": "point",
+"classed": "geom52_point_proteinOil",
+"aes": {
+ "x": "Protein",
+"y": "Oil",
+"clickSelects": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      3,
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom53_point_proteinOil" 
+},
+"geom53_point_proteinOil": {
+ "geom": "point",
+"classed": "geom53_point_proteinOil",
+"aes": {
+ "x": "Protein",
+"y": "Oil",
+"showSelected": "Cultivar",
+"colour": "sequenced" 
+},
+"params": {
+ "na.rm": false,
+"size":      5,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"PANEL": "integer",
+"fill": "rgb" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom54_text_proteinOil" 
+},
+"geom54_text_proteinOil": {
+ "geom": "text",
+"classed": "geom54_text_proteinOil",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "label",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom55_text_proteinOil" 
+},
+"geom55_text_proteinOil": {
+ "geom": "text",
+"classed": "geom55_text_proteinOil",
+"aes": {
+ "x": "35 + x",
+"y": "16.5 + y/2",
+"label": "sprintf(\"Parent - %s: Protein = %.2f     Oil = %.2f\", parent, Protein, Oil)",
+"showSelected": "Cultivar" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+} 
+},
+"selectors": {
+ "Cultivar": {
+ "selected": "69338-51615-71",
+"type": "single",
+"update": [
+ "geom1_point_yield",
+"geom2_point_yield",
+"geom3_point_yield",
+"geom4_text_yield",
+"geom5_text_yield",
+"geom6_point_protein",
+"geom7_point_protein",
+"geom8_point_protein",
+"geom9_text_protein",
+"geom10_text_protein",
+"geom11_point_oil",
+"geom12_point_oil",
+"geom13_point_oil",
+"geom14_text_oil",
+"geom15_text_oil",
+"geom16_point_maturity",
+"geom17_point_maturity",
+"geom18_point_maturity",
+"geom19_text_maturity",
+"geom20_text_maturity",
+"geom21_point_lodging",
+"geom22_point_lodging",
+"geom23_point_lodging",
+"geom24_text_lodging",
+"geom25_text_lodging",
+"geom26_point_seedsize",
+"geom27_point_seedsize",
+"geom28_point_seedsize",
+"geom29_text_seedsize",
+"geom30_text_seedsize",
+"geom31_point_seedquality",
+"geom32_point_seedquality",
+"geom33_point_seedquality",
+"geom34_text_seedquality",
+"geom35_text_seedquality",
+"geom36_point_plcount",
+"geom37_point_plcount",
+"geom38_point_plcount",
+"geom39_text_plcount",
+"geom40_text_plcount",
+"geom41_point_yieldOil",
+"geom42_point_yieldOil",
+"geom43_point_yieldOil",
+"geom44_text_yieldOil",
+"geom45_text_yieldOil",
+"geom46_point_yieldProtein",
+"geom47_point_yieldProtein",
+"geom48_point_yieldProtein",
+"geom49_text_yieldProtein",
+"geom50_text_yieldProtein",
+"geom51_point_proteinOil",
+"geom52_point_proteinOil",
+"geom53_point_proteinOil",
+"geom54_text_proteinOil",
+"geom55_text_proteinOil" 
+] 
+} 
+},
+"plots": {
+ "yield": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom1_point_yield",
+"geom2_point_yield",
+"geom3_point_yield",
+"geom4_text_yield",
+"geom5_text_yield" 
+],
+"axis1": {
+ "x": [
+ 0.013369,
+0.22727,
+0.44118,
+0.65508,
+0.86898 
+],
+"xlab": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"xrange": [ 1918.8, 2012.2 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.16942,
+0.37603,
+0.58264,
+0.78926,
+0.99587 
+],
+"ylab": [
+ "30",
+"40",
+"50",
+"60",
+"70" 
+],
+"yrange": [   21.8,   70.2 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Year",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "Yield",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"ylabs": [
+ "30",
+"40",
+"50",
+"60",
+"70" 
+],
+"legend": {},
+"title": "Yield",
+"options": {
+ "width":    400,
+"height":    250 
+} 
+},
+"protein": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom6_point_protein",
+"geom7_point_protein",
+"geom8_point_protein",
+"geom9_text_protein",
+"geom10_text_protein" 
+],
+"axis1": {
+ "x": [
+ 0.013369,
+0.22727,
+0.44118,
+0.65508,
+0.86898 
+],
+"xlab": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"xrange": [ 1918.8, 2012.2 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.045455,
+0.29798,
+0.55051,
+0.80303 
+],
+"ylab": [
+ "30.0",
+"32.5",
+"35.0",
+"37.5" 
+],
+"yrange": [  29.55,  39.45 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Year",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "Protein",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"ylabs": [
+ "30.0",
+"32.5",
+"35.0",
+"37.5" 
+],
+"title": "Protein",
+"options": {
+ "width":    400,
+"height":    250 
+} 
+},
+"oil": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom11_point_oil",
+"geom12_point_oil",
+"geom13_point_oil",
+"geom14_text_oil",
+"geom15_text_oil" 
+],
+"axis1": {
+ "x": [
+ 0.013369,
+0.22727,
+0.44118,
+0.65508,
+0.86898 
+],
+"xlab": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"xrange": [ 1918.8, 2012.2 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.045455,
+0.22727,
+0.40909,
+0.59091,
+0.77273,
+0.95455 
+],
+"ylab": [
+ "16",
+"17",
+"18",
+"19",
+"20",
+"21" 
+],
+"yrange": [  15.75,  21.25 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Year",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "Oil",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"ylabs": [
+ "16",
+"17",
+"18",
+"19",
+"20",
+"21" 
+],
+"title": "Oil",
+"options": {
+ "width":    400,
+"height":    250 
+} 
+},
+"maturity": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom16_point_maturity",
+"geom17_point_maturity",
+"geom18_point_maturity",
+"geom19_text_maturity",
+"geom20_text_maturity" 
+],
+"axis1": {
+ "x": [
+ 0.013369,
+0.22727,
+0.44118,
+0.65508,
+0.86898 
+],
+"xlab": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"xrange": [ 1918.8, 2012.2 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.13343,
+0.42669,
+0.71994 
+],
+"ylab": [
+ "910",
+"920",
+"930" 
+],
+"yrange": [ 905.45, 939.55 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Year",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "Maturity",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"ylabs": [
+ "910",
+"920",
+"930" 
+],
+"legend": {},
+"title": "Maturity",
+"options": {
+ "width":    400,
+"height":    250 
+} 
+},
+"lodging": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom21_point_lodging",
+"geom22_point_lodging",
+"geom23_point_lodging",
+"geom24_text_lodging",
+"geom25_text_lodging" 
+],
+"axis1": {
+ "x": [
+ 0.013369,
+0.22727,
+0.44118,
+0.65508,
+0.86898 
+],
+"xlab": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"xrange": [ 1918.8, 2012.2 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.045455,
+0.23485,
+0.42424,
+0.61364,
+0.80303,
+0.99242 
+],
+"ylab": [
+ "1.0",
+"1.5",
+"2.0",
+"2.5",
+"3.0",
+"3.5" 
+],
+"yrange": [   0.88,   3.52 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Year",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "Lodging",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"ylabs": [
+ "1.0",
+"1.5",
+"2.0",
+"2.5",
+"3.0",
+"3.5" 
+],
+"legend": {},
+"title": "Lodging",
+"options": {
+ "width":    400,
+"height":    250 
+} 
+},
+"seedsize": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom26_point_seedsize",
+"geom27_point_seedsize",
+"geom28_point_seedsize",
+"geom29_text_seedsize",
+"geom30_text_seedsize" 
+],
+"axis1": {
+ "x": [
+ 0.013369,
+0.22727,
+0.44118,
+0.65508,
+0.86898 
+],
+"xlab": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"xrange": [ 1918.8, 2012.2 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.21074,
+0.45868,
+0.70661,
+0.95455 
+],
+"ylab": [
+ "12",
+"15",
+"18",
+"21" 
+],
+"yrange": [   9.45,  21.55 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Year",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "SeedSize",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"ylabs": [
+ "12",
+"15",
+"18",
+"21" 
+],
+"legend": {},
+"title": "Seed Size",
+"options": {
+ "width":    400,
+"height":    250 
+} 
+},
+"seedquality": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom31_point_seedquality",
+"geom32_point_seedquality",
+"geom33_point_seedquality",
+"geom34_text_seedquality",
+"geom35_text_seedquality" 
+],
+"axis1": {
+ "x": [
+ 0.013369,
+0.22727,
+0.44118,
+0.65508,
+0.86898 
+],
+"xlab": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"xrange": [ 1918.8, 2012.2 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.1875,
+0.40057,
+0.61364,
+0.8267 
+],
+"ylab": [
+ "1.5",
+"2.0",
+"2.5",
+"3.0" 
+],
+"yrange": [   1.06, 3.4067 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Year",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "SeedQuality",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"ylabs": [
+ "1.5",
+"2.0",
+"2.5",
+"3.0" 
+],
+"legend": {},
+"title": "Seed Quality",
+"options": {
+ "width":    400,
+"height":    250 
+} 
+},
+"plcount": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom36_point_plcount",
+"geom37_point_plcount",
+"geom38_point_plcount",
+"geom39_text_plcount",
+"geom40_text_plcount" 
+],
+"axis1": {
+ "x": [
+ 0.013369,
+0.22727,
+0.44118,
+0.65508,
+0.86898 
+],
+"xlab": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"xrange": [ 1918.8, 2012.2 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.045455,
+0.34775,
+0.65004,
+0.95233 
+],
+"ylab": [
+ "10",
+"20",
+"30",
+"40" 
+],
+"yrange": [ 8.4963, 41.577 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Year",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "PlCount",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "1920",
+"1940",
+"1960",
+"1980",
+"2000" 
+],
+"ylabs": [
+ "10",
+"20",
+"30",
+"40" 
+],
+"legend": {
+ "Sequenced": {
+ "guide": "legend",
+"geoms": [ "point", "point" ],
+"title": "Sequenced",
+"entries": [
+ {
+ "pointcolour": "#0000FF",
+"pointshape":     16,
+"pointsize":      3,
+"label": [ "TRUE" ] 
+},
+{
+ "pointcolour": "#FF0000",
+"pointshape":     16,
+"pointsize":      3,
+"label": [ "FALSE" ] 
+} 
+] 
+} 
+},
+"title": "Pl Count",
+"options": {
+ "width":    400,
+"height":    250 
+} 
+},
+"yieldOil": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom41_point_yieldOil",
+"geom42_point_yieldOil",
+"geom43_point_yieldOil",
+"geom44_text_yieldOil",
+"geom45_text_yieldOil" 
+],
+"axis1": {
+ "x": [
+ 0.070694,
+0.32141,
+0.57213,
+0.82284 
+],
+"xlab": [
+ "30",
+"40",
+"50",
+"60" 
+],
+"xrange": [  27.18, 67.066 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.14646,
+0.34848,
+0.55051,
+0.75253,
+0.95455 
+],
+"ylab": [
+ "17",
+"18",
+"19",
+"20",
+"21" 
+],
+"yrange": [ 16.275, 21.225 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Yield",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "Oil",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "30",
+"40",
+"50",
+"60" 
+],
+"ylabs": [
+ "17",
+"18",
+"19",
+"20",
+"21" 
+],
+"title": "Yield and Oil Content",
+"options": {
+ "width":    300,
+"height":    300 
+} 
+},
+"yieldProtein": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom46_point_yieldProtein",
+"geom47_point_yieldProtein",
+"geom48_point_yieldProtein",
+"geom49_text_yieldProtein",
+"geom50_text_yieldProtein" 
+],
+"axis1": {
+ "x": [
+ 0.070694,
+0.32141,
+0.57213,
+0.82284 
+],
+"xlab": [
+ "30",
+"40",
+"50",
+"60" 
+],
+"xrange": [  27.18, 67.066 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.25936,
+0.52674,
+0.79412 
+],
+"ylab": [
+ "32.5",
+"35.0",
+"37.5" 
+],
+"yrange": [ 30.075, 39.425 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Yield",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "Protein",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "30",
+"40",
+"50",
+"60" 
+],
+"ylabs": [
+ "32.5",
+"35.0",
+"37.5" 
+],
+"title": "Yield and Protein Content",
+"options": {
+ "width":    300,
+"height":    300 
+} 
+},
+"proteinOil": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom51_point_proteinOil",
+"geom52_point_proteinOil",
+"geom53_point_proteinOil",
+"geom54_text_proteinOil",
+"geom55_text_proteinOil" 
+],
+"axis1": {
+ "x": [
+ 0.042714,
+0.34392,
+0.64513,
+0.94634 
+],
+"xlab": [
+ "32",
+"34",
+"36",
+"38" 
+],
+"xrange": [ 31.716, 38.356 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.14646,
+0.34848,
+0.55051,
+0.75253,
+0.95455 
+],
+"ylab": [
+ "17",
+"18",
+"19",
+"20",
+"21" 
+],
+"yrange": [ 16.275, 21.225 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Protein",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "Oil",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "32",
+"34",
+"36",
+"38" 
+],
+"ylabs": [
+ "17",
+"18",
+"19",
+"20",
+"21" 
+],
+"title": "Protein and Oil Content",
+"options": {
+ "width":    300,
+"height":    300 
+} 
+} 
+} 
+}

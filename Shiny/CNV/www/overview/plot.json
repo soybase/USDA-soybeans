@@ -1,0 +1,964 @@
+{
+ "geoms": {
+ "geom1_tallrect_overview": {
+ "geom": "tallrect",
+"classed": "geom1_tallrect_overview",
+"aes": {
+ "xmin": "start",
+"xmax": "end",
+"clickSelects": "seqnames",
+"fill": "I(\"transparent\")" 
+},
+"params": {
+ "colour": "black",
+"alpha":   0.25,
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "fill": "rgb",
+"xmin": "numeric",
+"xmax": "numeric",
+"clickSelects": "factor",
+"PANEL": "integer",
+"group": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom2_area_overview" 
+},
+"geom2_area_overview": {
+ "geom": "ribbon",
+"classed": "geom2_area_overview",
+"aes": {
+ "x": "x",
+"y": "y",
+"group": "seqnames",
+"clickSelects": "seqnames",
+"colour": "factor(color)",
+"fill": "factor(color)" 
+},
+"params": {
+ "na.rm": false,
+"alpha":      2,
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "colour": "rgb",
+"fill": "rgb",
+"x": "numeric",
+"y": "numeric",
+"group": "integer",
+"clickSelects": "factor",
+"PANEL": "integer",
+"ymin": "numeric",
+"ymax": "numeric",
+"xmin": "numeric",
+"xmax": "numeric" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "group" 
+] 
+},
+"geom3_tallrect_varietyopts": {
+ "geom": "tallrect",
+"classed": "geom3_tallrect_varietyopts",
+"aes": {
+ "xmin": "rank - 0.45",
+"xmax": "rank + 0.45",
+"clickSelects": "Variety",
+"showSelected": "seqnames" 
+},
+"params": {
+ "fill": "grey80",
+"alpha":    0.1,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "xmin": "numeric",
+"xmax": "numeric",
+"clickSelects": "factor",
+"showSelected": "factor",
+"PANEL": "integer",
+"group": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom4_text_varietyopts" 
+},
+"geom4_text_varietyopts": {
+ "geom": "text",
+"classed": "geom4_text_varietyopts",
+"aes": {
+ "x": "118/2",
+"y": "3000",
+"label": "sprintf(\"Chromosome %s\", gsub(\"Chr0?\", \"\", seqnames))",
+"showSelected": "seqnames" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom5_segment_varietyopts" 
+},
+"geom5_segment_varietyopts": {
+ "geom": "segment",
+"classed": "geom5_segment_varietyopts",
+"aes": {
+ "x": "rank",
+"y": "CNVs",
+"xend": "rank",
+"yend": "0",
+"tooltip": "Variety",
+"showSelected": "seqnames" 
+},
+"params": {
+ "lineend": "butt",
+"na.rm": false,
+"size":      3,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"xend": "numeric",
+"y": "numeric",
+"yend": "numeric",
+"tooltip": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom6_segment_varietyopts" 
+},
+"geom6_segment_varietyopts": {
+ "geom": "segment",
+"classed": "geom6_segment_varietyopts",
+"aes": {
+ "x": "rank",
+"y": "CNVs",
+"xend": "rank",
+"yend": "0",
+"colour": "factor(color)",
+"tooltip": "Variety",
+"showSelected": "seqnames",
+"showSelected2": "Variety" 
+},
+"params": {
+ "lineend": "butt",
+"na.rm": false,
+"size":      3,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected",
+"showSelected2" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"xend": "numeric",
+"y": "numeric",
+"yend": "numeric",
+"tooltip": "factor",
+"showSelected": "factor",
+"showSelected2": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected",
+"showSelected2" 
+],
+"nextgeom": "geom7_text_varietyopts" 
+},
+"geom7_text_varietyopts": {
+ "geom": "text",
+"classed": "geom7_text_varietyopts",
+"aes": {
+ "x": "rank",
+"y": "CNVs + offset * 30",
+"label": "Variety",
+"showSelected": "seqnames",
+"showSelected2": "Variety",
+"colour": "factor(color)" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected",
+"showSelected2" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"showSelected2": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected",
+"showSelected2" 
+] 
+},
+"geom8_line_chromosomeplot": {
+ "geom": "line",
+"classed": "geom8_line_chromosomeplot",
+"aes": {
+ "x": "x",
+"y": "chr.y.scale",
+"showSelected": "seqnames",
+"tooltip": "Overall Density" 
+},
+"params": {
+ "chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"showSelected": "factor",
+"tooltip": "factor",
+"PANEL": "integer",
+"group": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+],
+"nextgeom": "geom9_line_chromosomeplot" 
+},
+"geom9_line_chromosomeplot": {
+ "geom": "line",
+"classed": "geom9_line_chromosomeplot",
+"aes": {
+ "x": "x",
+"y": "yscale",
+"group": "Variety",
+"colour": "factor(color)",
+"tooltip": "Variety",
+"clickSelects": "Variety",
+"showSelected2": "seqnames",
+"showSelected": "Variety" 
+},
+"params": {
+ "chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected2",
+"showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"group": "integer",
+"tooltip": "factor",
+"clickSelects": "factor",
+"showSelected2": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected2",
+"showSelected",
+"group" 
+],
+"nextgeom": "geom10_text_chromosomeplot" 
+},
+"geom10_text_chromosomeplot": {
+ "geom": "text",
+"classed": "geom10_text_chromosomeplot",
+"aes": {
+ "x": "mid",
+"y": "1",
+"label": "sprintf(\"Chromosome %s\", gsub(\"Chr0?\", \"\", seqnames))",
+"showSelected": "seqnames" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+},
+"geom11_hline_varietydensplot": {
+ "geom": "hline",
+"classed": "geom11_hline_varietydensplot",
+"aes": {
+ "yintercept": "0" 
+},
+"params": {
+ "colour": "grey",
+"chunk_vars": [ ] 
+},
+"subset_order": [],
+"types": {
+ "yintercept": "numeric",
+"PANEL": "numeric",
+"group": "integer",
+"yend": "numeric",
+"y": "numeric" 
+},
+"PANEL":      1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [],
+"nextgeom": "geom12_line_varietydensplot" 
+},
+"geom12_line_varietydensplot": {
+ "geom": "line",
+"classed": "geom12_line_varietydensplot",
+"aes": {
+ "x": "x",
+"y": "ydiff",
+"group": "Variety",
+"colour": "factor(color)",
+"tooltip": "Variety",
+"clickSelects": "Variety",
+"showSelected2": "seqnames",
+"showSelected": "Variety" 
+},
+"params": {
+ "chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected2",
+"showSelected" 
+],
+"types": {
+ "colour": "rgb",
+"x": "numeric",
+"y": "numeric",
+"group": "integer",
+"tooltip": "factor",
+"clickSelects": "factor",
+"showSelected2": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected2",
+"showSelected",
+"group" 
+],
+"nextgeom": "geom13_text_varietydensplot" 
+},
+"geom13_text_varietydensplot": {
+ "geom": "text",
+"classed": "geom13_text_varietydensplot",
+"aes": {
+ "x": "x",
+"y": "y",
+"label": "Variety",
+"clickSelects": "Variety",
+"showSelected2": "seqnames",
+"showSelected": "Variety" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected2",
+"showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"clickSelects": "factor",
+"showSelected2": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected2",
+"showSelected" 
+],
+"nextgeom": "geom14_text_varietydensplot" 
+},
+"geom14_text_varietydensplot": {
+ "geom": "text",
+"classed": "geom14_text_varietydensplot",
+"aes": {
+ "x": "mid",
+"y": "1",
+"label": "sprintf(\"Chromosome %s\", gsub(\"Chr0?\", \"\", seqnames))",
+"showSelected": "seqnames" 
+},
+"params": {
+ "parse": false,
+"chunk_vars": [ ] 
+},
+"subset_order": [
+ "showSelected" 
+],
+"types": {
+ "x": "numeric",
+"y": "numeric",
+"label": "factor",
+"showSelected": "factor",
+"PANEL": "integer" 
+},
+"PANEL": 1,
+"chunks": 1,
+"total": 1,
+"chunk_order": [],
+"nest_order": [
+ "showSelected" 
+] 
+} 
+},
+"selectors": {
+ "seqnames": {
+ "selected": "Chr01",
+"type": "single",
+"update": [
+ "geom1_tallrect_overview",
+"geom2_area_overview",
+"geom3_tallrect_varietyopts",
+"geom4_text_varietyopts",
+"geom5_segment_varietyopts",
+"geom6_segment_varietyopts",
+"geom7_text_varietyopts",
+"geom8_line_chromosomeplot",
+"geom9_line_chromosomeplot",
+"geom10_text_chromosomeplot",
+"geom12_line_varietydensplot",
+"geom13_text_varietydensplot",
+"geom14_text_varietydensplot" 
+] 
+},
+"Variety": {
+ "selected": [ "Dunfield", "IA3023" ],
+"type": "multiple",
+"update": [
+ "geom3_tallrect_varietyopts",
+"geom6_segment_varietyopts",
+"geom7_text_varietyopts",
+"geom9_line_chromosomeplot",
+"geom9_line_chromosomeplot",
+"geom12_line_varietydensplot",
+"geom12_line_varietydensplot",
+"geom13_text_varietydensplot",
+"geom13_text_varietydensplot" 
+] 
+} 
+},
+"plots": {
+ "overview": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom1_tallrect_overview",
+"geom2_area_overview" 
+],
+"axis1": {
+ "x": [
+ 0.072676,
+0.12316,
+0.16836,
+0.21539,
+0.26071,
+0.30557,
+0.35155,
+0.39583,
+0.44278,
+0.49152,
+0.53286,
+0.56871,
+0.60987,
+0.65528,
+0.70353,
+0.74645,
+0.78453,
+0.83225,
+0.88435,
+0.9316 
+],
+"xlab": [
+ "01",
+"02",
+"03",
+"04",
+"05",
+"06",
+"07",
+"08",
+"09",
+"10",
+"11",
+"12",
+"13",
+"14",
+"15",
+"16",
+"17",
+"18",
+"19",
+"20" 
+],
+"xrange": [ -4.7443e+07, 9.9631e+08 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.045455,
+0.25967,
+0.4739,
+0.68812,
+0.90234 
+],
+"ylab": [
+ "0e+00",
+"1e-07",
+"2e-07",
+"3e-07",
+"4e-07" 
+],
+"yrange": [ -2.1219e-08, 4.4559e-07 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Chromosome",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "Normalized CNV Count",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "01",
+"02",
+"03",
+"04",
+"05",
+"06",
+"07",
+"08",
+"09",
+"10",
+"11",
+"12",
+"13",
+"14",
+"15",
+"16",
+"17",
+"18",
+"19",
+"20" 
+],
+"ylabs": [
+ "0e+00",
+"1e-07",
+"2e-07",
+"3e-07",
+"4e-07" 
+],
+"legend": {},
+"title": "Whole-Genome CNV Density (all varieties)",
+"options": {
+ "width":    800,
+"height":    400 
+} 
+},
+"varietyopts": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom3_tallrect_varietyopts",
+"geom4_text_varietyopts",
+"geom5_segment_varietyopts",
+"geom6_segment_varietyopts",
+"geom7_text_varietyopts" 
+],
+"axis1": {
+ "x": [
+ 0.041214,
+0.27253,
+0.50386,
+0.73518,
+0.9665 
+],
+"xlab": [
+ "0",
+"30",
+"60",
+"90",
+"120" 
+],
+"xrange": [ -5.345, 124.34 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.045455,
+0.34848,
+0.65152,
+0.95455 
+],
+"ylab": [
+ "0",
+"1000",
+"2000",
+"3000" 
+],
+"yrange": [   -150,   3150 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Varieties ranked by # CNVs on the selected chromosome",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "# CNVs",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "0",
+"30",
+"60",
+"90",
+"120" 
+],
+"ylabs": [
+ "0",
+"1000",
+"2000",
+"3000" 
+],
+"legend": {},
+"title": "Number of CNVs by Variety",
+"options": {
+ "width":    800,
+"height":    400 
+} 
+},
+"chromosomeplot": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom8_line_chromosomeplot",
+"geom9_line_chromosomeplot",
+"geom10_text_chromosomeplot" 
+],
+"axis1": {
+ "x": [
+ 0.045455,
+0.20215,
+0.35884,
+0.51553,
+0.67222,
+0.82891,
+0.9856 
+],
+"xlab": [
+ "0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6" 
+],
+"xrange": [ -2.9009e+06, 6.0919e+07 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.045455,
+0.2619,
+0.47835,
+0.69481,
+0.91126 
+],
+"ylab": [
+ "0.00",
+"0.25",
+"0.50",
+"0.75",
+"1.00" 
+],
+"yrange": [ -0.0525, 1.1025 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Base Pair (Millions)",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "Scaled Density",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6" 
+],
+"ylabs": [
+ "0.00",
+"0.25",
+"0.50",
+"0.75",
+"1.00" 
+],
+"legend": {},
+"title": "Density of CNVs (overall + selected variety)",
+"options": {
+ "width":    800,
+"height":    400 
+} 
+},
+"varietydensplot": {
+ "strips": {
+ "top": [
+ "" 
+],
+"right": [
+ "" 
+],
+"n": {
+ "top":      0,
+"right":      0 
+} 
+},
+"layout": {
+ "PANEL": [ 1 ],
+"ROW": [ 1 ],
+"COL": [ 1 ],
+"SCALE_X": [ 1 ],
+"SCALE_Y": [ 1 ],
+"AXIS_X": [ true ],
+"AXIS_Y": [ true ],
+"coord_fixed": [ false ],
+"width_proportion": [      1 ],
+"height_proportion": [      1 ] 
+},
+"geoms": [
+ "geom11_hline_varietydensplot",
+"geom12_line_varietydensplot",
+"geom13_text_varietydensplot",
+"geom14_text_varietydensplot" 
+],
+"axis1": {
+ "x": [
+ 0.045455,
+0.20215,
+0.35884,
+0.51553,
+0.67222,
+0.82891,
+0.9856 
+],
+"xlab": [
+ "0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6" 
+],
+"xrange": [ -2.9009e+06, 6.0919e+07 ],
+"xline": true,
+"xticks": true,
+"y": [
+ 0.045455,
+0.27273,
+   0.5,
+0.72727,
+0.95455 
+],
+"ylab": [
+ "-1.0",
+"-0.5",
+"0.0",
+"0.5",
+"1.0" 
+],
+"yrange": [   -1.1,    1.1 ],
+"yline": true,
+"yticks": true 
+},
+"xtitle": "Base Pair (Millions)",
+"xanchor": "middle",
+"xangle":      0,
+"ytitle": "Difference in Normalized CNV Count: Variety - Overall",
+"yanchor": "end",
+"yangle":      0,
+"xlabs": [
+ "0",
+"1",
+"2",
+"3",
+"4",
+"5",
+"6" 
+],
+"ylabs": [
+ "-1.0",
+"-0.5",
+"0.0",
+"0.5",
+"1.0" 
+],
+"legend": {},
+"title": "Difference in Normalized CNV Count: Variety - Overall",
+"options": {
+ "width":    800,
+"height":    400 
+} 
+} 
+} 
+}
