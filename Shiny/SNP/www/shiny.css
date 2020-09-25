@@ -1,0 +1,25 @@
+#bases, #glymaID, #glymaID2, #glymaID3, #chrStart {
+  height: 30pt;
+}
+
+#toc {
+  margin-top: 60pt;
+}
+
+.white tr td, .white.table-hover tbody tr td, .white.table-striped tbody tr td, .white.table-bordered tr td, .white.table-condensed tr td{
+  border: #ffffff solid 0;
+  background-color: #ffffff;
+}
+
+.popover-content table tbody tr td {
+  padding-left:2px;
+  padding-right:2px;
+  font-size:75%;
+}
+
+.td-limit {
+    max-width: 70px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

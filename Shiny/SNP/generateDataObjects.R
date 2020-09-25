@@ -77,7 +77,7 @@ col.names <- c(CHROM="Chromosome", POS="Position", REF="Reference", ALT="Alterna
 # snpList <- vcfTable[,c(1, 2, 4, 5, 8, 11, 12, 13, 14, 15)] %>% group_by(Chromosome, Variety)
 snpList <- vcfTable %>% group_by(Chromosome, Variety)
 snpList <- filter(snpList, Alt_Allele_Freq>0)
-save(snpList, file="snpList.rda")
+save(snpList, file="snpList.rda", compress="xz", compression_level=9)
 
 # Clean up
 rm(col.names, i, idx, nmax.d, vcfTable)
@@ -101,14 +101,14 @@ varieties <- unique(snpList$Variety)
 varieties <- varieties[order(varieties)]
 varieties <- c(varieties[!grepl("^[1-9]", varieties)], varieties[grepl("^[1-9]", varieties)])
 seqnames <- unique(snpList$Chromosome)
-save(nsnips, chr.summary, varieties, seqnames, file="ShinyStart.rda")
+save(nsnips, chr.summary, varieties, seqnames, file="ShinyStart.rda", compress="xz", compression_level=9)
 
 snp.summary <- table(snpList$Variety)
-save(snp.summary, file="snpSummary.rda")
+save(snp.summary, file="snpSummary.rda", compress="xz", compression_level=9)
 
 snp.density <- group_by(snpList, Chromosome, Variety) %>%
   do(as.data.frame(density(.$Position, n=2048*4, adjust=0.1, from=1, to=max(.$Position), weights=(.$Alt_Allele_Count)/sum(.$Alt_Allele_Count))[1:2]))
-save(snp.density, file="SNPDensity.RData")
+save(snp.density, file="SNPDensity.rda", compress="xz", compression_level=9)
 
 
 # num.vars <- 10
@@ -128,7 +128,7 @@ snp <- snp[,1:7]
 
 snp.counts <- snp %>% gather(Nucleotide, Count, 4:7)
 snp.counts <- filter(snp.counts, Count>0)
-save(snp.counts, file="SNPCounts.RData")
+save(snp.counts, file="SNPCounts.rda", compress="xz", compression_level=9)
 
 rm(chr.summary, snp, snp.counts, snp.density, snpList, vcfTable)
 gc()
@@ -208,7 +208,7 @@ snpList.GlymaSummary <- GlymaIDSNPs %>% group_by(Chromosome, ID)%>% select(Varie
 snpList.GlymaSummary <- left_join(snpList.GlymaSummary, GlymaIDList[,c("ID", "link", "chrnum", "searchstr")])
 snpList.GlymaSummary$ID[is.na(snpList.GlymaSummary$ID)] <- "No Match"
 snpList.GlymaSummary$link[is.na(snpList.GlymaSummary$link)] <- "No Match"
-save(snpList.VarietySummary, snpList.GlymaSummary, file="./GlymaSNPsummary.rda")
+save(snpList.VarietySummary, snpList.GlymaSummary, file="./GlymaSNPsummary.rda", compress="xz", compression_level=9)
 
 # Clean up
 rm(snpGlymaFull, uniqueSNPs, GlymaIDSNPs)
@@ -232,7 +232,7 @@ tree$year[tree$child=="IA 3023"] <- 2003
 # tree <- subset(tree, child!="Manchu")
 # tree[tree$child=="PI 70502","child"] <- "Richland"
 
-save(tree, file="tree.rda")
+save(tree, file="tree.rda", compress="xz", compression_level=9)
 rm("tree2")
 #--------------------------------------------------------------------------------
 

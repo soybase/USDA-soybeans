@@ -1,5 +1,5 @@
 
-library(plyr)
+#library(plyr) # generates warning if loaded after dplyr
 library(reshape2)
 library(ggplot2)
 library(stringr)

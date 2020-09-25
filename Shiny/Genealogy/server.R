@@ -1,6 +1,5 @@
 library(shiny)
 library(ggplot2)
-library(RColorBrewer)
 library(plyr)
 library(reshape2)
 
@@ -8,15 +7,9 @@ library(reshape2)
 # Data required for this app:
 # created in generateDataObjects.R (run once to set up data for display)
 
-load("tree.rda")
-source("SelectGeneology.R")
+source("SelectGeneology.R") # defines tree
 library(phyViz)
 treeGraph <- treeToIG(tree, isDirected=FALSE)
-
-objlist <- ls()
-if(!"kevinbacon"%in%objlist){
-  load("kevinbacon.rda")
-}
 
 fix <- function(x){
   tolower(gsub("\\.", "", gsub(" ", "", gsub("-", "", x))))

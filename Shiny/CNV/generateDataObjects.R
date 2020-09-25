@@ -145,7 +145,7 @@ varieties <- as.character(unique(glymaIDs$Variety))
 seqnames <- as.character(unique(glymaIDs$Chromosome))
 save(varieties, seqnames, file="ShinyStart.rda")
 
-save(glymaIDs, segranges.df, segranges.df2, chr.summary, file="ChrPlot.rda")
+save(glymaIDs, segranges.df, segranges.df2, chr.summary, file="ChrPlot.rda", compress="xz", compression_level=9)
 save(glymaIDs, file="GlymaIDs.rda")
 
 #--------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ tmp$parent <- gsub("Roy", "NC Roy", tmp$parent)
 tree <- rbind.fill(tree, tmp)
 rm(tmp)
 
-save(tree, file="tree.rda")
+save(tree, file="tree.rda", compress="xz", compression_level=9)
 # rm("tree2")
 #--------------------------------------------------------------------------------
 

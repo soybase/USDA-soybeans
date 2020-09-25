@@ -28,13 +28,8 @@ pairwise.btn <- tags$button(
 #------- Head Scripts ------
 head.scripts <- 
   tags$head(
-#     
-#     singleton(tags$script(type="text/javascript", charset="utf8", src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js")),
-#     singleton(tags$script(type="text/javascript", charset="utf8", src="http://cdn.datatables.net/1.10.3/js/jquery.dataTables.js")),
-#     singleton(tags$link(rel="stylesheet", type="text/css", href="http://cdn.datatables.net/1.10.3/css/jquery.dataTables.css")),
-#     singleton(tags$link(href="libs/bootstrap-3.3.4/css/themes/cerulean/bootstrap.min.css", rel="stylesheet")),
-#     singleton(tags$link(href="libs/bootstrap-3.3.4/css/bootstrap.min.css", rel="stylesheet")),
-    singleton(tags$script(src="libs/bootstrap-3.3.4/js/bootstrap.min.js", type="text/javascript")),
+    singleton(tags$head(tags$script(src = "https://d3js.org/d3.v3.min.js"))),
+#   singleton(tags$script(src="google-analytics.js", type="text/javascript")),
     singleton(tags$style(type="text/css", "a[data-value='Copy Number Variation'] {font-size:18px; line-height:20px; height:50px;}")),
     singleton(tags$link(href="shiny.css", rel="stylesheet"))
   )
@@ -344,10 +339,12 @@ navbarPage(
   navbarMenu("Barcode Plots",
              copyLocation(), 
              copyNumber()),
-  navbarMenu("Search CNVs",
-    tabPanel("by Location", uiOutput("CNVList")),
-    tabPanel("by Variety", uiOutput("GlymaTable"))
-    ),
+## 2017-07-03 (weeks): this hasn't worked since at least Feb. 2016
+##                     (potential JavaScript issue); disabling for now
+# navbarMenu("Search CNVs",
+#   tabPanel("by Location", uiOutput("CNVList")),
+#   tabPanel("by Variety", uiOutput("GlymaTable"))
+#   ),
   tabPanel("Field Trials", uiOutput("YieldInfo")),
   tabPanel("Genealogy", plotOutput("FamilyTree", width="100%", height=600)),
   methodology(),

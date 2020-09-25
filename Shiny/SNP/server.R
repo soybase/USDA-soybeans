@@ -52,7 +52,7 @@ load("ShinyStart.rda")
 
 objlist <- ls()
 if(!"snp.counts"%in%objlist){
-  load("SNPCounts.RData")
+  load("SNPCounts.rda")
   snp.counts <- snp.counts %>% arrange(Chromosome, Position) %>% group_by(Chromosome) 
 }
 
@@ -77,7 +77,7 @@ if(!"snpList.GlymaSummary"%in%objlist | !"snpList.PositionSummary"%in%objlist){
 }
 
 if(!"snp.density"%in%objlist){
-  load("SNPDensity.RData")
+  load("SNPDensity.rda")
 }
 
 # End of dataset initialization
