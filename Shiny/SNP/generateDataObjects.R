@@ -77,7 +77,8 @@ col.names <- c(CHROM="Chromosome", POS="Position", REF="Reference", ALT="Alterna
 # snpList <- vcfTable[,c(1, 2, 4, 5, 8, 11, 12, 13, 14, 15)] %>% group_by(Chromosome, Variety)
 snpList <- vcfTable %>% group_by(Chromosome, Variety)
 snpList <- filter(snpList, Alt_Allele_Freq>0)
-save(snpList, file="snpList.rda", compress="xz", compression_level=9)
+# save ungrouped for compatibility (grouped_df format has changed between tibble versions)
+snpList %>% ungroup %>% saveRDS(file="snpList.rds", compress="xz")
 
 # Clean up
 rm(col.names, i, idx, nmax.d, vcfTable)
@@ -106,11 +107,6 @@ save(nsnips, chr.summary, varieties, seqnames, file="ShinyStart.rda", compress="
 snp.summary <- table(snpList$Variety)
 save(snp.summary, file="snpSummary.rda", compress="xz", compression_level=9)
 
-snp.density <- group_by(snpList, Chromosome, Variety) %>%
-  do(as.data.frame(density(.$Position, n=2048*4, adjust=0.1, from=1, to=max(.$Position), weights=(.$Alt_Allele_Count)/sum(.$Alt_Allele_Count))[1:2]))
-save(snp.density, file="SNPDensity.rda", compress="xz", compression_level=9)
-
-
 # num.vars <- 10
 
 n <- length(unique(varieties))
@@ -130,7 +126,7 @@ snp.counts <- snp %>% gather(Nucleotide, Count, 4:7)
 snp.counts <- filter(snp.counts, Count>0)
 save(snp.counts, file="SNPCounts.rda", compress="xz", compression_level=9)
 
-rm(chr.summary, snp, snp.counts, snp.density, snpList, vcfTable)
+rm(chr.summary, snp, snp.counts, snpList, vcfTable)
 gc()
 #--------------------------------------------------------------------------------
 
@@ -208,7 +204,10 @@ snpList.GlymaSummary <- GlymaIDSNPs %>% group_by(Chromosome, ID)%>% select(Varie
 snpList.GlymaSummary <- left_join(snpList.GlymaSummary, GlymaIDList[,c("ID", "link", "chrnum", "searchstr")])
 snpList.GlymaSummary$ID[is.na(snpList.GlymaSummary$ID)] <- "No Match"
 snpList.GlymaSummary$link[is.na(snpList.GlymaSummary$link)] <- "No Match"
-save(snpList.VarietySummary, snpList.GlymaSummary, file="./GlymaSNPsummary.rda", compress="xz", compression_level=9)
+names(snpList.GlymaSummary) <- gsub("Number.of.Varieties", "TotalVarietiesWithSNPs", names(snpList.GlymaSummary))
+names(snpList.GlymaSummary) <- gsub("Number.of.SNP.Sites", "TotalSNPSites", names(snpList.GlymaSummary))
+snpList.GlymaSummary %>% ungroup %>% saveRDS(file="snpList.GlymaSummary.rds", compress="xz")
+snpList.VarietySummary %>% ungroup %>% saveRDS(file="snpList.VarietySummary.rds", compress="xz")
 
 # Clean up
 rm(snpGlymaFull, uniqueSNPs, GlymaIDSNPs)

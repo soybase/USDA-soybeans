@@ -63,21 +63,17 @@ if(!"GlymaIDList"%in%objlist){
 }
 
 if(!"snpList"%in%objlist){
-  load("snpList.rda")
-  snpList <- snpList %>% group_by(Chromosome, Variety)
+  snpList <- readRDS("snpList.rds") %>% group_by(Chromosome, Variety)
 }
 
 if(!"snpList.GlymaSummary"%in%objlist | !"snpList.PositionSummary"%in%objlist){
-  load("GlymaSNPsummary.rda")
-  names(snpList.GlymaSummary) <- gsub("Number.of.Varieties", "TotalVarietiesWithSNPs", names(snpList.GlymaSummary))
-  names(snpList.GlymaSummary) <- gsub("Number.of.SNP.Sites", "NumberOfSNPs", names(snpList.GlymaSummary))
-  snpList.GlymaSummary <- snpList.GlymaSummary %>% group_by(Chromosome, ID)
-  snpList.PositionSummary <- snpList.VarietySummary %>% group_by(Chromosome, Position, ID)
-  rm(snpList.VarietySummary)
+  snpList.GlymaSummary <- readRDS("snpList.GlymaSummary.rds") %>% group_by(Chromosome, ID)
+  snpList.PositionSummary <- readRDS("snpList.VarietySummary.rds") %>% group_by(Chromosome, Position, ID)
 }
 
 if(!"snp.density"%in%objlist){
-  load("SNPDensity.rda")
+  snp.density <- group_by(snpList, Chromosome, Variety) %>%
+    do(as.data.frame(density(.$Position, n=2048*4, adjust=0.1, from=1, to=max(.$Position), weights=(.$Alt_Allele_Count)/sum(.$Alt_Allele_Count))[1:2]))
 }
 
 # End of dataset initialization
