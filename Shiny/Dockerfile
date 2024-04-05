@@ -42,4 +42,11 @@ COPY --from=docs /srv/SNP/Documentation.html SNP/
 
 RUN find . -name '*.tar.xz' | while read -r f; do tar -C $(dirname "$f") -xJf "$f" && rm "$f"; done
 
+COPY --chmod=0555 ./runApp.R /usr/local/bin/runApp.R
+
 USER nobody
+
+ENTRYPOINT /usr/local/bin/runApp.R
+
+# Need to set working_dir in compose / workingDir in k8s manifest
+# to appropriate /srv/<app> directory

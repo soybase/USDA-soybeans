@@ -2,20 +2,17 @@ services:
   cnv:
     build: .
     ports:
-      - "8001:8001"
+      - "8001:8000"
     working_dir: /srv/CNV
-    entrypoint: Rscript -e 'library(shiny); runApp(host = "0.0.0.0", port = 8001)'
 
   genealogy:
     build: .
     ports:
-      - "8002:8002"
+      - "8002:8000"
     working_dir: /srv/Genealogy
-    entrypoint: Rscript -e 'library(shiny); runApp(host = "0.0.0.0", port = 8002)'
 
   snp:
     build: .
     ports:
-      - "8003:8003"
+      - "8003:8000"
     working_dir: /srv/SNP
-    entrypoint: Rscript -e 'library(shiny); runApp(host = "0.0.0.0", port = 8003)'
