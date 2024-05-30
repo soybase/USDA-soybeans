@@ -12,6 +12,13 @@ output:
     custom.header: www/bootstrap-script.html
 ---
 
+<!-- jimhester/knitrBootstrap issue #198 -->
+```{css, echo=FALSE}
+body {
+  max-width: none !important;
+}
+```
+
 ```{r setup, echo=FALSE}
 library(knitr)
 library(htmltools)

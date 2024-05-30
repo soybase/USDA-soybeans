@@ -10,6 +10,13 @@ output:
     menu: FALSE
 ---
 
+<!-- jimhester/knitrBootstrap issue #198 -->
+```{css, echo=FALSE}
+body {
+  max-width: none !important;
+}
+```
+
 # Data Collection 
 
 Linked sources of genealogy information? 
