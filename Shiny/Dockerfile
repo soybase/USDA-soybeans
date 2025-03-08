@@ -1,6 +1,6 @@
 # shiny-verse instead of shiny for devtools & dplyr
 FROM rocker/shiny-verse:3.5.3
-
+RUN echo "options(repos = c(CRAN='https://packagemanager.posit.co/cran/__linux__/bionic/2019-05-02'), download.file.method = 'libcurl')" >>  /usr/local/lib/R/etc/Rprofile.site
 RUN installGithub.r --update=FALSE dicook/phyViz@18595fb83c8f604e896408fbe201f1c7f700ab20
 # https://github.com/rocker-org/shiny/issues/68
 RUN install2.r --error --skipinstalled \
